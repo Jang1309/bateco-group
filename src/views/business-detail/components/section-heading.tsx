@@ -4,7 +4,6 @@ type SectionHeadingProps = {
   className?: string
 }
 
-// Eyebrow vàng có vạch + tiêu đề, dùng chung cho các section của trang chi tiết lĩnh vực
 const SectionHeading = ({ eyebrow, title, className }: SectionHeadingProps) => (
   <div
     data-aos='business-rise'

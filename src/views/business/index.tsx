@@ -1,5 +1,5 @@
-import BusinessHero from './hero'
-import BusinessSectors from './sectors'
+import BusinessHero from '@/views/business/hero'
+import BusinessSectors from '@/views/business/sectors'
 
 const BusinessView = () => {
   return (

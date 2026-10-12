@@ -8,7 +8,5 @@ import ROUTES from '@/configs/routes'
 export const SOLID_HEADER_ROUTES = [ROUTES.business] as const
 
 export function isSolidHeaderRoute(pathname: string) {
-  return SOLID_HEADER_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`),
-  )
+  return SOLID_HEADER_ROUTES.some((route) => pathname === route || pathname.startsWith(`${route}/`))
 }

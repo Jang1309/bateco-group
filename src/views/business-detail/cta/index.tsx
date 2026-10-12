@@ -5,9 +5,10 @@ import ROUTES from '@/configs/routes'
 import { Link } from '@/i18n/navigation'
 import { OFFICES } from '@/layouts/footer/data'
 
+import ContactItem from './components/contact-item'
+
 const HEAD_OFFICE = OFFICES[0]
 
-// TODO: thay ảnh placeholder bằng ảnh tòa nhà Bateco
 const SectorCta = () => {
   return (
     <section className='bg-[#FAFBFC] px-[3.75rem] py-[5.5rem] xsm:px-[1.5rem] xsm:py-[3.5rem]'>
@@ -16,7 +17,6 @@ const SectorCta = () => {
         data-aos-duration='800'
         className='group relative mx-auto max-w-[95rem] overflow-hidden bg-[#0F1C33] shadow-[0_1.5rem_3.5rem_rgba(15,28,51,0.22)]'
       >
-        {/* Ảnh nằm nửa phải, mờ dần sang nền xanh ở bên trái */}
         <div className='absolute inset-y-0 right-0 w-[55%] overflow-hidden xsm:inset-x-0 xsm:top-0 xsm:bottom-auto xsm:h-[14rem] xsm:w-full'>
           <Image
             src='/home/vision/d-img-1.jpg'
@@ -31,7 +31,6 @@ const SectorCta = () => {
           />
         </div>
 
-        {/* Quầng sáng vàng + khung góc trang trí */}
         <div
           aria-hidden
           className='pointer-events-none absolute -top-[10rem] -left-[8rem] size-[26rem] rounded-full bg-[radial-gradient(circle,rgba(223,186,115,0.22)_0%,transparent_65%)]'
@@ -99,33 +98,5 @@ const SectorCta = () => {
     </section>
   )
 }
-
-type ContactItemProps = {
-  icon: typeof Phone
-  label: string
-  value: string
-  href: string
-}
-
-const ContactItem = ({ icon: Icon, label, value, href }: ContactItemProps) => (
-  <li>
-    <a
-      href={href}
-      className='group/item flex items-center gap-[0.875rem]'
-    >
-      <span className='flex size-[2.5rem] items-center justify-center rounded-full border border-[#DFBA73]/50 text-[#DFBA73] transition-colors duration-300 group-hover/item:bg-[#DFBA73] group-hover/item:text-[#0F1C33]'>
-        <Icon className='size-[1rem]' />
-      </span>
-      <span>
-        <span className='block text-[0.6875rem] font-bold tracking-[0.16em] text-white/50 uppercase'>
-          {label}
-        </span>
-        <span className='block text-[0.9375rem] font-semibold text-white transition-colors duration-300 group-hover/item:text-[#DFBA73]'>
-          {value}
-        </span>
-      </span>
-    </a>
-  </li>
-)
 
 export default SectorCta

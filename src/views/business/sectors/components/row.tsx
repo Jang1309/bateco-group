@@ -1,40 +1,15 @@
 import Image from 'next/image'
 
 import { Link } from '@/i18n/navigation'
-import Logo from '@/layouts/header/components/logo'
 import { cn } from '@/lib/utils'
+import type { Sector } from '@/views/business/data'
 
-import { type Sector, SECTORS } from './data'
-
-const BusinessSectors = () => {
-  return (
-    <section className='relative pb-[6rem] xsm:pb-[3.5rem] pt-[1.875rem] bg-[#FAFBFC]'>
-      {/* Logo giữa 2 vạch vàng, ngăn phần giới thiệu với danh sách lĩnh vực */}
-      <div
-        data-aos='business-rise'
-        data-aos-duration='800'
-        className='mx-auto flex max-w-[95rem] items-center gap-[1.25rem] px-[3.75rem] xsm:px-[1.5rem]'
-      >
-        <span className='h-[0.0875rem] flex-1 bg-[linear-gradient(90deg,transparent,#C8A462)]' />
-        <Logo imageClassName='h-[2.5rem] xsm:h-[2.25rem]' />
-        <span className='h-[0.0875rem] flex-1 bg-[linear-gradient(90deg,#C8A462,transparent)]' />
-      </div>
-
-      <ol className='mx-auto mt-[4rem] max-w-[95rem] px-[3.75rem] xsm:mt-[2.5rem] xsm:px-[1.5rem]'>
-        {SECTORS.map((sector, index) => (
-          <SectorRow
-            key={sector.id}
-            sector={sector}
-            index={index}
-          />
-        ))}
-      </ol>
-    </section>
-  )
+type SectorRowProps = {
+  sector: Sector
+  index: number
 }
 
-// Mỗi lĩnh vực là 1 hàng 2 cột bằng nhau (ảnh | chữ), đổi bên xen kẽ, các hàng nằm sát nhau
-const SectorRow = ({ sector, index }: { sector: Sector; index: number }) => {
+const SectorRow = ({ sector, index }: SectorRowProps) => {
   const reversed = index % 2 === 1
 
   return (
@@ -67,7 +42,7 @@ const SectorRow = ({ sector, index }: { sector: Sector; index: number }) => {
         <h2 className='mt-[1rem] max-w-[32rem] text-[2rem] leading-[1.3] font-bold tracking-[0.01em] text-[#B88E4F] uppercase xsm:text-[1.375rem]'>
           {sector.title}
         </h2>
-        <p className='mt-[1.25rem] text-justify font-medium max-w-[34rem] text-[1rem] leading-[1.75] text-[#1F2A37] xsm:text-[0.9375rem]'>
+        <p className='mt-[1.25rem] max-w-[34rem] text-justify text-[1rem] leading-[1.75] font-medium text-[#1F2A37] xsm:text-[0.9375rem]'>
           {sector.description}
         </p>
         <Link
@@ -81,4 +56,4 @@ const SectorRow = ({ sector, index }: { sector: Sector; index: number }) => {
   )
 }
 
-export default BusinessSectors
+export default SectorRow

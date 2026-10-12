@@ -40,6 +40,5 @@ export const OTHER_NEWS: OtherNewsItem[] = [
     date: '08.09.2026',
     titleKey: 'evtol',
     href: ROUTES.news,
-    bold: true,
   },
 ]

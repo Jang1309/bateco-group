@@ -4,8 +4,6 @@ import { Menu, X } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
-import LocaleSwitcher from '@/layouts/header/components/locale-switcher'
-import { ALL_NAV } from '@/layouts/header/data'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -16,6 +14,8 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { Link, usePathname } from '@/i18n/navigation'
+import LocaleSwitcher from '@/layouts/header/components/locale-switcher'
+import { ALL_NAV } from '@/layouts/header/data'
 import { cn } from '@/lib/utils'
 
 export default function MobileMenu() {

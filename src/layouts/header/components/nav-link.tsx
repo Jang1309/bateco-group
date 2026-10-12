@@ -31,7 +31,7 @@ export default function NavLink({
       href={item.href}
       onClick={onClick}
       className={cn(
-        'whitespace-nowrap text-[0.85rem] font-medium transition-colors duration-200',
+        'header-on-scroll whitespace-nowrap text-[0.85rem] font-semibold uppercase transition-colors duration-200',
         active ? activeClassName : inactiveClassName,
         className,
       )}

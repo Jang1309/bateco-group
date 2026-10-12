@@ -188,6 +188,19 @@ input[type='number'] {
   }
 }
 
+.header-scrolled .header-on-scroll,
+.header-scrolled .header-on-scroll:hover {
+  color: #fff;
+}
+
+.header-scrolled .header-logo-default {
+  opacity: 0;
+}
+
+.header-scrolled .header-logo-white {
+  opacity: 1;
+}
+
 @keyframes slider-y {
   from {
     transform: translate3d(0, 0, 0);
@@ -206,5 +219,72 @@ input[type='number'] {
   }
   html {
     @apply font-sans;
+  }
+}
+
+@keyframes business-hero-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.75rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes business-hero-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.business-hero-rise,
+.business-hero-fade {
+  animation-duration: 0.85s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+}
+
+.business-hero-rise {
+  animation-name: business-hero-rise;
+}
+
+.business-hero-fade {
+  animation-name: business-hero-fade;
+}
+
+[data-aos='business-rise'] {
+  opacity: 0;
+  transform: translate3d(0, 1.25rem, 0);
+  transition-property: opacity, transform;
+}
+
+[data-aos='business-rise'].aos-animate {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .business-hero-rise,
+  .business-hero-fade {
+    animation: none;
+  }
+
+  [data-aos='business-rise'] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes vision-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
   }
 }

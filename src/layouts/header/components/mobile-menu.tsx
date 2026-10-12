@@ -32,7 +32,7 @@ export default function MobileMenu() {
         <Button
           variant='ghost'
           size='icon'
-          className='size-[2.5rem] text-[#2a2a2a]'
+          className='header-on-scroll size-[2.5rem] text-[#2a2a2a]'
           aria-label={t('openMenu')}
         >
           <Menu className='size-[1.25rem]' />

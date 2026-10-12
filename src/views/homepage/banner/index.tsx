@@ -1,27 +1,25 @@
-import Image from 'next/image'
+import { getTranslations } from 'next-intl/server'
 
-import BannerContent from './components/content'
+import Banner from '@/components/shared/banner'
+import ROUTES from '@/configs/routes'
 
-const Banner = () => {
+const HomeBanner = async () => {
+  const t = await getTranslations('Banner')
+
   return (
-    <section className='relative w-full overflow-hidden'>
-      <h1 className='sr-only'>Bateco Group</h1>
-      <Image
-        src='/home/d-banner.png'
-        alt='banner'
-        width={1000}
-        height={1000}
-        unoptimized
-        priority
-        className='h-auto w-full'
-      />
-      <div
-        aria-hidden
-        className='pointer-events-none absolute inset-y-0 left-0 w-[80%] bg-[linear-gradient(90deg,#fff_0%,#fff_30%,rgba(255,255,255,0)_100%)]'
-      />
-      <BannerContent />
-    </section>
+    <Banner
+      imageSrc='/home/d-banner.png'
+      imageAlt='banner'
+      srTitle='Bateco Group'
+      eyebrow={t('eyebrow')}
+      titleLine1={t('titleLine1')}
+      titleLine2={t('titleLine2')}
+      description={t('description')}
+      showButton
+      primary={{ href: ROUTES.about, label: t('ctaPrimary') }}
+      secondary={{ href: '#ecosystem', label: t('ctaSecondary') }}
+    />
   )
 }
 
-export default Banner
+export default HomeBanner

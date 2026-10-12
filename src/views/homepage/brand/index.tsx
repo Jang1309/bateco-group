@@ -54,7 +54,10 @@ const HomeBrand = async () => {
     <section className='bg-white'>
       <div className='mx-auto grid w-full max-w-[95rem] grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] items-center gap-[4.5rem] px-[3.75rem] py-[4.5rem] xsm:grid-cols-1 xsm:gap-[2rem] xsm:px-[1.5rem] xsm:py-[2.5rem]'>
         <div className='relative pr-[11rem] xsm:pr-0'>
-          <div className='flex flex-col gap-[0.45rem]'>
+          <div
+            data-aos='fade-right'
+            className='flex flex-col gap-[0.45rem]'
+          >
             <BrandFrame
               id='brand-field'
               src='/home/brand/image-2.png'
@@ -80,19 +83,24 @@ const HomeBrand = async () => {
             height={100}
             className='absolute inset-0 z-0 h-full w-full'
           />
-          <div className='relative z-10'>
+          <div
+            data-aos='fade-up'
+            data-aos-delay='150'
+            className='relative z-10'
+          >
             <span className='block h-[0.14rem] w-[3.25rem] bg-[#F6A600]' />
             <h2 className='mt-[0.85rem] text-[2.35rem] font-bold uppercase leading-[1.15] text-[#1a2b48] xsm:text-[1.75rem]'>
-              <span className='block'>{t('titleLine1')}</span>
-              <span className='block'>{t('titleLine2')}</span>
+              <span className='block'>
+                {t('titleLine1')} <span>{t('titleLine2')}</span>
+              </span>
             </h2>
-            <p className='mt-[1.35rem] max-w-[36rem] text-[1rem] leading-[1.7] text-[#3a3a3a] xsm:text-[0.9375rem]'>
+            <p className='mt-[1.35rem] max-w-[36rem] text-[1rem] leading-[1.7] text-[#3a3a3a] xsm:text-[0.9375rem] text-justify'>
               {t('meaning')}
             </p>
-            <p className='mt-[1.5rem] max-w-[36rem] border-l-[0.18rem] border-[#D97706CC] bg-[#F59E0B0D] px-[1.15rem] py-[0.95rem] text-[1rem] leading-[1.7] text-[#3a3a3a] xsm:text-[0.9375rem]'>
+            <p className='mt-[1.5rem] text-justify max-w-[36rem] border-l-[0.18rem] border-[#D97706CC] bg-[#F59E0B0D] px-[1.15rem] py-[0.95rem] text-[1rem] leading-[1.7] text-[#3a3a3a] xsm:text-[0.9375rem]'>
               {t('mark')}
             </p>
-            <p className='mt-[1.5rem] max-w-[36rem] text-[1rem] leading-[1.7] text-[#2c2c2c] xsm:text-[0.9375rem]'>
+            <p className='mt-[1.5rem] text-justify max-w-[36rem] text-[1rem] leading-[1.7] text-[#2c2c2c] xsm:text-[0.9375rem]'>
               {t('cultureLead')} <strong className='font-bold'>{t('cultureValues')}</strong>{' '}
               {t('cultureRest')}
             </p>

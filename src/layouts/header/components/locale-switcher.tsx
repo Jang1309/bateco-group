@@ -2,6 +2,7 @@
 
 import { ChevronDown } from 'lucide-react'
 import Image from 'next/image'
+import { useParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 
 import {
@@ -38,11 +39,17 @@ export default function LocaleSwitcher({ className }: { className?: string }) {
   const locale = useLocale() as Locale
   const router = useRouter()
   const pathname = usePathname()
+  const params = useParams()
   const current = LOCALE_META[locale] ?? LOCALE_META.vi
 
   const switchLocale = (next: Locale) => {
     if (next === locale) return
-    router.replace(pathname, { locale: next })
+    // Route động (vd. /linh-vuc-kinh-doanh/[slug]) cần truyền kèm params để dựng lại URL
+    router.replace(
+      // @ts-expect-error -- params luôn khớp với pathname hiện tại
+      { pathname, params },
+      { locale: next },
+    )
   }
 
   return (
@@ -50,7 +57,7 @@ export default function LocaleSwitcher({ className }: { className?: string }) {
       <DropdownMenuTrigger
         aria-label={t('localeLabel')}
         className={cn(
-          'flex-y-center gap-[0.5rem] rounded-sm text-[0.75rem] font-medium text-[#2a2a2a] outline-none transition-colors hover:text-[#1e3a6e] focus-visible:ring-2 focus-visible:ring-[#1e3a6e]/50',
+          'header-on-scroll flex-y-center gap-[0.5rem] rounded-sm text-[0.75rem] font-medium text-[#2a2a2a] outline-none transition-colors hover:text-[#1e3a6e] focus-visible:ring-2 focus-visible:ring-[#1e3a6e]/50',
           className,
         )}
       >

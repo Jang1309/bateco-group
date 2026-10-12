@@ -20,7 +20,10 @@ const HomeNews = async () => {
       </div>
 
       <div className='mx-auto flex w-full max-w-[95rem] items-stretch gap-[4.375rem] px-[3.75rem] py-[3rem] xsm:flex-col xsm:gap-[1.5rem] xsm:px-[1.5rem] xsm:py-[2rem]'>
-        <div className='min-w-0 flex-1 overflow-hidden bg-[#f5f5f5] shadow-[0_0.3125rem_1.875rem_rgba(0,0,0,0.06)]'>
+        <div
+          data-aos='fade-right'
+          className='min-w-0 flex-1 overflow-hidden bg-[#f5f5f5] shadow-[0_0.3125rem_1.875rem_rgba(0,0,0,0.06)]'
+        >
           <Image
             src='/home/news/featured.jpg'
             alt={t('featuredTitle')}
@@ -32,11 +35,18 @@ const HomeNews = async () => {
         </div>
 
         <div className='flex min-w-0 flex-1 flex-col justify-center pl-[1.25rem] xsm:pl-0'>
-          <h2 className='text-[2.5rem] font-bold leading-[3.25rem] text-[#525252] xsm:text-[1.5rem] xsm:leading-[1.85rem]'>
+          <h2
+            data-aos='fade-up'
+            className='text-[2.5rem] font-bold leading-[3.25rem] text-[#525252] xsm:text-[1.5rem] xsm:leading-[1.85rem]'
+          >
             {t('featuredTitle')}
           </h2>
 
-          <div className='mt-[1.25rem] flex items-center pt-[0.25rem]'>
+          <div
+            data-aos='fade-up'
+            data-aos-delay='100'
+            className='mt-[1.25rem] flex items-center pt-[0.25rem]'
+          >
             <span className='text-[0.875rem] font-bold uppercase leading-[1.25rem] tracking-[0.04rem] text-[#b68d4c]'>
               {t('hot')}
             </span>
@@ -44,10 +54,9 @@ const HomeNews = async () => {
               |
             </span>
             <span className='flex items-center pl-[0.75rem]'>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src='/home/news/clock.svg'
-                alt=''
+                alt='clock'
                 width={16}
                 height={16}
                 className='size-[1.25rem]'
@@ -58,7 +67,11 @@ const HomeNews = async () => {
             </span>
           </div>
 
-          <p className='mt-[1.25rem] max-w-[36rem] pt-[0.25rem] pb-[0.75rem] text-[1rem] font-normal leading-[1.5rem] text-[#525252]'>
+          <p
+            data-aos='fade-up'
+            data-aos-delay='200'
+            className='mt-[1.25rem] max-w-[36rem] pt-[0.25rem] pb-[0.75rem] text-[1rem] font-normal leading-[1.5rem] text-[#525252]'
+          >
             {t('featuredExcerpt')}
           </p>
 
@@ -72,7 +85,10 @@ const HomeNews = async () => {
       </div>
 
       <div className='mx-auto w-full max-w-[95rem] px-[3.75rem] xsm:px-[1.5rem]'>
-        <div className='flex items-center justify-between border-b border-[#e6dcbf] pb-[2.5rem]'>
+        <div
+          data-aos='fade-up'
+          className='flex items-center justify-between border-b border-[#e6dcbf] pb-[2.5rem]'
+        >
           <div className='flex items-center gap-[0.9375rem]'>
             <span className='h-[1.875rem] w-[0.15625rem] bg-[#b88e4f]' />
             <h2 className='text-[1.25rem] font-normal uppercase leading-[1.75rem] tracking-[0.16rem] text-[#333] xsm:text-[1rem] xsm:tracking-[0.08rem]'>
@@ -84,10 +100,9 @@ const HomeNews = async () => {
             className='flex items-center gap-[0.5rem] text-[0.8125rem] font-semibold uppercase leading-[1.25rem] tracking-[0.04rem] text-[#b88e4f] transition-opacity hover:opacity-80'
           >
             {t('viewAll')}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src='/home/news/arrow.svg'
-              alt=''
+              alt='arrow'
               width={16}
               height={16}
               className='size-[1.25rem]'

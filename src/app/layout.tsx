@@ -3,6 +3,7 @@ import { Arimo } from 'next/font/google'
 import NextTopLoader from 'nextjs-toploader'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
+import { AosProvider } from '@/components/providers/aos-provider'
 import { LenisProvider } from '@/components/providers/lenis-provider'
 import { QueryProvider } from '@/components/providers/query-provider'
 import '@/styles/globals.css'
@@ -33,7 +34,8 @@ export default function RootLayout({
     <html lang='en'>
       <body
         suppressHydrationWarning
-        className={`${arimo.variable} font-sans antialiased`}
+        // overflow-x-clip: chặn thanh cuộn ngang khi phần tử AOS trượt vào từ mép phải
+        className={`${arimo.variable} overflow-x-clip font-sans antialiased`}
       >
         <NextTopLoader
           color='#2563eb'
@@ -46,7 +48,9 @@ export default function RootLayout({
         />
         <QueryProvider>
           <NuqsAdapter>
-            <LenisProvider>{children}</LenisProvider>
+            <LenisProvider>
+              <AosProvider>{children}</AosProvider>
+            </LenisProvider>
           </NuqsAdapter>
         </QueryProvider>
       </body>

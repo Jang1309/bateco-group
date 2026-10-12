@@ -15,6 +15,10 @@ export const routing = defineRouting({
       vi: '/linh-vuc-kinh-doanh',
       en: '/business-sectors',
     },
+    '/linh-vuc-kinh-doanh/[slug]': {
+      vi: '/linh-vuc-kinh-doanh/[slug]',
+      en: '/business-sectors/[slug]',
+    },
     '/quan-he-nha-dau-tu': {
       vi: '/quan-he-nha-dau-tu',
       en: '/investor-relations',

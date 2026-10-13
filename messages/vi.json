@@ -134,5 +134,11 @@
     "adapt": "Khởi nghiệp & Thích nghi",
     "foundation": "Xây móng trên nền DVCN",
     "mindset": "Đổi mới tư duy"
+  },
+  "AboutPage": {
+    "scrollCue": "Scroll to Bateco",
+    "expand": "Xem thêm",
+    "collapse": "Thu gọn",
+    "companyLists": "Danh sách công ty thành viên và liên kết"
   }
 }

@@ -1,0 +1,28 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="750" height="421.88" viewBox="0 0 750 421.88" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="SVG" clip-path="url(#clip0_0_23)">
+<path id="Vector" d="M112.5 375.002V168.752L206.25 131.252L300 168.752V375.002" stroke="#C59B27" stroke-opacity="0.4" stroke-width="1.125" stroke-dasharray="2.81 2.81"/>
+<path id="Vector_2" d="M206.25 131.252V375.002" stroke="#C59B27" stroke-opacity="0.4" stroke-width="1.125"/>
+<g id="Vector_3">
+<path d="M206.25 131.252V65.627L210.938 56.252L215.625 65.627V131.252H206.25" fill="#C59B27" fill-opacity="0.06"/>
+<path d="M206.25 131.252V65.627L210.938 56.252L215.625 65.627V131.252H206.25" stroke="#C59B27" stroke-opacity="0.4" stroke-width="1.125"/>
+</g>
+<path id="Vector_4" d="M131.25 187.502L187.5 164.064" stroke="#C59B27" stroke-opacity="0.4" stroke-width="1.125"/>
+<path id="Vector_5" d="M131.25 215.627L187.5 192.189" stroke="#C59B27" stroke-opacity="0.4" stroke-width="1.125"/>
+<path id="Vector_6" d="M131.25 243.752L187.5 220.314" stroke="#C59B27" stroke-opacity="0.4" stroke-width="1.125"/>
+<path id="Vector_7" d="M131.25 271.877L187.5 248.439" stroke="#C59B27" stroke-opacity="0.4" stroke-width="1.125"/>
+<path id="Vector_8" d="M225 164.064L281.25 187.502" stroke="#C59B27" stroke-opacity="0.4" stroke-width="1.125"/>
+<path id="Vector_9" d="M225 192.189L281.25 215.627" stroke="#C59B27" stroke-opacity="0.4" stroke-width="1.125"/>
+<path id="Vector_10" d="M225 220.314L281.25 243.752" stroke="#C59B27" stroke-opacity="0.4" stroke-width="1.125"/>
+<path id="Vector_11" d="M225 248.439L281.25 271.877" stroke="#C59B27" stroke-opacity="0.4" stroke-width="1.125"/>
+<path id="Vector_12" d="M337.5 375.002V243.752L412.5 206.252L487.5 243.752V375.002" stroke="#C59B27" stroke-opacity="0.4" stroke-width="1.125"/>
+<path id="Vector_13" d="M412.5 206.252V375.002" stroke="#C59B27" stroke-opacity="0.4" stroke-width="1.125"/>
+<path id="Vector_14" d="M440.625 187.502L525 159.377L609.375 196.877V375.002" stroke="#C59B27" stroke-opacity="0.4" stroke-width="0.75"/>
+<path id="Vector_15" d="M37.5 375.003C168.75 356.253 300 370.315 421.875 356.253C543.75 342.19 656.25 342.19 750 360.94" stroke="#C59B27" stroke-opacity="0.4" stroke-width="0.9375"/>
+<path id="Vector_16" d="M543.75 150.002L581.25 121.877L618.75 150.002M581.25 121.877V187.502" stroke="#C59B27" stroke-opacity="0.4" stroke-width="0.703125"/>
+</g>
+<defs>
+<clipPath id="clip0_0_23">
+<rect width="750" height="421.88" fill="white"/>
+</clipPath>
+</defs>
+</svg>

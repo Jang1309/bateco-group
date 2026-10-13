@@ -2,6 +2,7 @@ import Image from 'next/image'
 import type { ComponentProps } from 'react'
 
 import { Link } from '@/i18n/navigation'
+import { cn } from '@/lib/utils'
 
 type BannerLink = {
   href: ComponentProps<typeof Link>['href']
@@ -24,6 +25,9 @@ type BannerProps = {
   showButton?: boolean
   primary?: BannerLink
   secondary?: BannerAnchor
+  className?: string
+  imageClassName?: string
+  animated?: boolean
 }
 
 const Banner = ({
@@ -37,9 +41,12 @@ const Banner = ({
   showButton = false,
   primary,
   secondary,
+  className,
+  imageClassName,
+  animated = false,
 }: BannerProps) => {
   return (
-    <section className='relative h-[100vh] w-full overflow-hidden'>
+    <section className={cn('relative h-[100vh] w-full overflow-hidden', className)}>
       {srTitle ? <h1 className='sr-only'>{srTitle}</h1> : null}
       <Image
         src={imageSrc}
@@ -48,7 +55,7 @@ const Banner = ({
         height={1000}
         unoptimized
         priority
-        className='h-auto w-full'
+        className={cn('h-auto w-full', animated && 'banner-reveal-image', imageClassName)}
       />
       <div
         aria-hidden
@@ -62,16 +69,30 @@ const Banner = ({
       <div className='absolute inset-0 z-[1] flex items-center'>
         <div className='mx-auto w-full max-w-[95rem] px-[2.5rem] xsm:px-[1.5rem]'>
           <div className='relative border-l-[0.1875rem] border-[#b5935e] pl-[3.125rem] xsm:max-w-full xsm:pl-[1.25rem]'>
-            <p className='text-[0.875rem] font-bold tracking-[0.08rem] text-[#1a2b48] uppercase'>
+            <p
+              className={cn(
+                'text-[0.875rem] font-bold tracking-[0.08rem] text-[#1a2b48] uppercase',
+                animated && 'banner-reveal-fade',
+              )}
+            >
               {eyebrow}
             </p>
 
             <h2 className='mt-[1.25rem] text-[3rem] leading-[1.35] font-bold uppercase xsm:mt-[1rem] xsm:text-[2.25rem]'>
-              <span className='block text-[#b5935e]'>{titleLine1}</span>
-              <span className='block text-[#1a2b48]'>{titleLine2}</span>
+              <span className={cn('block text-[#b5935e]', animated && 'banner-reveal-line')}>
+                {titleLine1}
+              </span>
+              <span className={cn('block text-[#1a2b48]', animated && 'banner-reveal-line')}>
+                {titleLine2}
+              </span>
             </h2>
 
-            <p className='mt-[1.5rem] max-w-[28rem] text-[1.0625rem] leading-[1.55] font-medium text-[#1a2b48] xsm:mt-[1rem] xsm:text-[0.9375rem]'>
+            <p
+              className={cn(
+                'mt-[1.5rem] max-w-[28rem] text-[1.0625rem] leading-[1.55] font-medium text-[#1a2b48] xsm:mt-[1rem] xsm:text-[0.9375rem]',
+                animated && 'banner-reveal-fade banner-reveal-late',
+              )}
+            >
               {description}
             </p>
 

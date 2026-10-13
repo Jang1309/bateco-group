@@ -288,3 +288,218 @@ input[type='number'] {
     width: 100%;
   }
 }
+
+@keyframes banner-reveal-zoom {
+  from {
+    transform: scale(1.045);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes banner-reveal-line {
+  from {
+    opacity: 0;
+    transform: translate3d(-3.5rem, 0, 0);
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    clip-path: inset(0 0% 0 0);
+  }
+}
+
+@keyframes banner-reveal-fade {
+  from {
+    opacity: 0;
+    transform: translate3d(-2rem, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.banner-reveal-image {
+  animation: banner-reveal-zoom 1.45s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+.banner-reveal-line {
+  animation: banner-reveal-line 1.05s cubic-bezier(0.25, 1, 0.5, 1) 0.12s both;
+}
+
+.banner-reveal-line + .banner-reveal-line {
+  animation-delay: 0.22s;
+}
+
+.banner-reveal-fade {
+  animation: banner-reveal-fade 0.78s cubic-bezier(0.22, 1, 0.36, 1) 0.38s both;
+}
+
+.banner-reveal-late {
+  animation-delay: 0.5s;
+}
+
+@keyframes about-scroll-line {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+.about-scroll-line {
+  animation: about-scroll-line 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes about-orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.about-orbit-spin,
+.about-orbit-counter {
+  animation: about-orbit-spin 60s linear infinite;
+}
+
+.about-orbit-counter {
+  animation-direction: reverse;
+}
+
+.about-orbit[data-paused='true'] .about-orbit-spin,
+.about-orbit[data-paused='true'] .about-orbit-counter,
+.about-orbit[data-paused='true'] .about-orbit-signal,
+.about-orbit[data-paused='true'] .about-hub-ring {
+  animation-play-state: paused;
+}
+
+@keyframes about-orbit-signal {
+  0% {
+    transform: rotate(var(--angle)) translateX(var(--signal-from));
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(var(--angle)) translateX(calc(var(--signal-to) - var(--signal-length)));
+    opacity: 0;
+  }
+}
+
+.about-orbit-signal {
+  --signal-length: 2rem;
+  --signal-from: 6.875rem;
+  --signal-to: calc(32.8cqw - 2.74rem);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--signal-length);
+  height: 0.156rem;
+  margin-top: -0.078rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(197, 155, 39, 0), #c59b27 70%, #f3d98b);
+  box-shadow: 0 0 0.3rem rgba(243, 217, 139, 0.55);
+  opacity: 0;
+  transform-origin: 0 50%;
+  pointer-events: none;
+  animation: about-orbit-signal 2.8s cubic-bezier(0.45, 0, 0.55, 1) var(--delay, 0s) infinite both;
+}
+
+@media (max-width: 639px) {
+  .about-orbit-signal {
+    --signal-length: 1.25rem;
+    --signal-from: 3.75rem;
+    --signal-to: calc(32.8cqw - 1.95rem);
+  }
+}
+
+.about-hub-ring {
+  position: absolute;
+  inset: -0.234rem;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0turn 0.62turn,
+    rgba(243, 217, 139, 0.15) 0.72turn,
+    #f3d98b 0.9turn,
+    #fff7db 0.95turn,
+    transparent 0.955turn
+  );
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 0.25rem),
+    #000 calc(100% - 0.234rem)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 0.25rem),
+    #000 calc(100% - 0.234rem)
+  );
+  animation: about-orbit-spin 8s linear infinite;
+}
+
+@keyframes about-pulse {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.06, 1.04);
+  }
+}
+
+.about-pulse[data-active='true']::after {
+  position: absolute;
+  inset: -0.3125rem;
+  border: 0.25rem solid rgba(197, 155, 39, 0.35);
+  border-radius: inherit;
+  content: '';
+  pointer-events: none;
+  animation: about-pulse 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner-reveal-image,
+  .banner-reveal-line,
+  .banner-reveal-fade,
+  .about-scroll-line,
+  .about-orbit-spin,
+  .about-orbit-counter,
+  .about-orbit-signal,
+  .about-hub-ring,
+  .about-pulse[data-active='true']::after {
+    animation: none;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+
+  [data-reveal-path] {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    opacity: 1 !important;
+  }
+}

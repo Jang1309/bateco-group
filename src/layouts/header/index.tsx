@@ -25,7 +25,7 @@ const Header = () => {
           solid && 'bg-white shadow-[0_1px_0_#e8edf5]',
         )}
       >
-        <div className='mx-auto flex h-[5.5rem] max-w-[95rem] items-center xsm:h-[6.5rem]'>
+        <div className='mx-auto flex h-[5.5rem] max-w-[95rem] items-center xsm:h-[4.5rem]'>
           <MobileBar />
           <DesktopNav />
         </div>
@@ -33,7 +33,7 @@ const Header = () => {
       {solid ? (
         <div
           aria-hidden
-          className='h-[5.5rem] xsm:h-[6.5rem]'
+          className='h-[5.5rem] xsm:h-[4.5rem]'
         />
       ) : null}
     </>

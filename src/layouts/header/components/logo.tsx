@@ -10,14 +10,16 @@ import { cn } from '@/lib/utils'
 type LogoProps = {
   className?: string
   imageClassName?: string
+  onClick?: () => void
 }
 
-export default function Logo({ className, imageClassName }: LogoProps) {
+export default function Logo({ className, imageClassName, onClick }: LogoProps) {
   const t = useTranslations('Header')
 
   return (
     <Link
       href={ROUTES.home}
+      onClick={onClick}
       className={cn('shrink-0', className)}
       aria-label={t('logoAlt')}
     >

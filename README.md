@@ -20,6 +20,7 @@ pnpm dev
 | `pnpm start` | Chạy bản standalone sau khi build |
 | `pnpm lint` / `pnpm lint:fix` | ESLint |
 | `pnpm format` / `pnpm format:check` | Prettier |
+| `pnpm test` | Unit test bằng `node:test` (file `src/**/*.test.mjs`). Cần Node ≥ 22.18 để import thẳng file `.ts` |
 
 Xem kích thước bundle (Next 16 không in cột Size / First Load JS trong log build):
 
@@ -116,6 +117,7 @@ Locale không có trong `routing.locales` thì `notFound()`. Route chưa có pag
 | Việc | URL vi | URL en | View |
 | --- | --- | --- | --- |
 | Trang chủ | `/` | `/en` | `views/homepage` |
+| Giới thiệu | `/gioi-thieu` | `/en/about` | `views/about` |
 | Lĩnh vực kinh doanh | `/linh-vuc-kinh-doanh` | `/en/business-sectors` | `views/business` |
 | Chi tiết lĩnh vực | `/linh-vuc-kinh-doanh/[slug]` | `/en/business-sectors/[slug]` | `views/business-detail` |
 
@@ -133,7 +135,6 @@ Menu và `ROUTES` đã trỏ tới các path này. Vào link sẽ 404 cho đến
 
 | Key | Internal pathname | URL en |
 | --- | --- | --- |
-| `about` | `/gioi-thieu` | `/en/about` |
 | `investor` | `/quan-he-nha-dau-tu` | `/en/investor-relations` |
 | `projects` | `/du-an` | `/en/projects` |
 | `news` | `/tin-tuc` | `/en/news` |
@@ -161,6 +162,16 @@ Menu và `ROUTES` đã trỏ tới các path này. Vào link sẽ 404 cho đến
 ### Chi tiết lĩnh vực
 
 `views/business-detail` nhận `sector` và ghép: `hero`, `intro`, `projects`, `ecosystem`, `cta`. Tiêu đề section dùng chung nằm ở `components/section-heading.tsx`.
+
+### Giới thiệu
+
+`views/about` nhận `content: AboutContent` (type và mock ở `views/about/data.ts`). Page truyền `ABOUT_CONTENT`. Khi có backend, chỉ cần thay nguồn data trong `app/[locale]/(vi)/gioi-thieu/page.tsx`, view giữ nguyên. Nội dung hiện là tiếng Việt cho cả `/en/about`, giống trang lĩnh vực; chỉ nhãn UI nằm ở namespace `AboutPage`.
+
+Section theo thứ tự: `hero` (shared `Banner` với `animated`), `message`, `pillars`, `leadership` (card chủ tịch + marquee `InfiniteSlider`, dưới 5 người thì hiện hàng tĩnh), `history` (desktop: growth line tự chạy lặp từ mốc đầu tới mốc cuối, khung hiển thị 5 card và trượt theo line khi có hơn 5 mốc, card line đang tới có viền vàng, hover card thì nền tối; tự dừng khi section ra khỏi màn hình và chạy lại từ đầu khi vào giữa màn hình; reduced-motion hiện tĩnh 5 card đầu; mobile: list dọc, card ở giữa màn hình có viền vàng), `ecosystem` (đóng/mở danh sách công ty + sơ đồ orbit có xung tín hiệu trên spoke và viền hub quay, dừng khi ra khỏi màn hình).
+
+- Animation reveal dùng `views/about/components/reveal.tsx` (motion `whileInView`, chạy lại mỗi lần vào viewport). Phần tử có `data-reveal` / `data-reveal-path` được `globals.css` hiện ngay khi `prefers-reduced-motion: reduce`.
+- Hình học dùng chung (vị trí satellite, path và vị trí card của timeline) ở `views/about/lib/geometry.ts`, có test kèm. Số lượng item tùy data.
+- Ảnh ở `public/gioi-thieu/`; ảnh Tầm nhìn / Sứ mệnh / Giá trị ở `public/gioi-thieu/pillars/`.
 
 ---
 
@@ -224,6 +235,8 @@ import ROUTES from '@/configs/routes'
 
 `srTitle` là `h1` chỉ cho screen reader. Không truyền thì banner không thêm `h1` — trang khác nên có `h1` riêng.
 
+Prop tùy chọn, mặc định không đổi gì: `className` (ghép vào `section`, vd. đổi chiều cao), `imageClassName` (ghép vào ảnh), `animated` (hiệu ứng vào trang bằng CSS, tắt khi giảm chuyển động). Trang Giới thiệu dùng cả ba.
+
 ---
 
 ## 8. Header và footer
@@ -242,8 +255,10 @@ Hai kiểu header:
 Thêm trang header trắng: sửa `src/layouts/header/solid-routes.ts`.
 
 ```ts
-export const SOLID_HEADER_ROUTES = [ROUTES.business, ROUTES.about] as const
+export const SOLID_HEADER_ROUTES = [ROUTES.business] as const
 ```
+
+Trang Giới thiệu dùng header trong suốt như trang chủ, nên không nằm trong danh sách này.
 
 Dùng pathname nội bộ (`/linh-vuc-kinh-doanh`), không viết URL tiếng Anh. `usePathname` của next-intl trả pathname nội bộ, nên `/en/business-sectors` vẫn khớp. Route con (`/linh-vuc-kinh-doanh/[slug]`) cũng được tính.
 

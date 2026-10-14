@@ -134,5 +134,11 @@
     "adapt": "Founding & adaptation",
     "foundation": "Building on a technology base",
     "mindset": "A new way of thinking"
+  },
+  "AboutPage": {
+    "scrollCue": "Scroll to Bateco",
+    "expand": "Show more",
+    "collapse": "Show less",
+    "companyLists": "Member and affiliated companies"
   }
 }

@@ -18,6 +18,7 @@ export const POINTS: MapPoint[] = [
   { name: 'Lai Châu', lat: 22.3964, lon: 103.4582 },
   { name: 'Quảng Ninh', lat: 21.25, lon: 107.55, label: 'right' },
   { name: 'TP. Hồ Chí Minh', lat: 10.7769, lon: 106.7009 },
+  { name: 'Đà Nẵng', lat: 16.0678, lon: 108.2205 },
 ]
 
 // Khung nhìn của public/vn.svg (phải khớp thuộc tính viewBox trong file)

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import ENV from '@/configs/env'
+
 class CF7Request {
   private formData: FormData
 
@@ -11,7 +13,7 @@ class CF7Request {
   }
 
   private getEndpoint(id: string): string {
-    const baseUrl = process.env.NEXT_PUBLIC_API_CF7
+    const baseUrl = ENV.API_CF7
     if (!baseUrl) {
       throw new Error('API base URL is not defined in environment variables.')
     }

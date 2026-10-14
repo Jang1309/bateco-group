@@ -11,6 +11,10 @@ export const routing = defineRouting({
       vi: '/gioi-thieu',
       en: '/about',
     },
+    '/gioi-thieu/van-ban-quan-tri': {
+      vi: '/gioi-thieu/van-ban-quan-tri',
+      en: '/about/governance-documents',
+    },
     '/linh-vuc-kinh-doanh': {
       vi: '/linh-vuc-kinh-doanh',
       en: '/business-sectors',

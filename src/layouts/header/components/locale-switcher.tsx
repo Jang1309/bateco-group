@@ -15,14 +15,14 @@ import { usePathname, useRouter } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
 
-const LOCALE_META = {
+export const LOCALE_META = {
   vi: { flag: '/header/flag-vn.svg', labelKey: 'localeVi' as const },
   en: { flag: '/header/flag-en.svg', labelKey: 'localeEn' as const },
 } as const
 
 type Locale = (typeof routing.locales)[number]
 
-function Flag({ src }: { src: string }) {
+export function Flag({ src }: { src: string }) {
   return (
     <Image
       src={src}
@@ -34,13 +34,11 @@ function Flag({ src }: { src: string }) {
   )
 }
 
-export default function LocaleSwitcher({ className }: { className?: string }) {
-  const t = useTranslations('Header')
+export function useSwitchLocale() {
   const locale = useLocale() as Locale
   const router = useRouter()
   const pathname = usePathname()
   const params = useParams()
-  const current = LOCALE_META[locale] ?? LOCALE_META.vi
 
   const switchLocale = (next: Locale) => {
     if (next === locale) return
@@ -51,6 +49,14 @@ export default function LocaleSwitcher({ className }: { className?: string }) {
       { locale: next },
     )
   }
+
+  return { locale, switchLocale }
+}
+
+export default function LocaleSwitcher({ className }: { className?: string }) {
+  const t = useTranslations('Header')
+  const { locale, switchLocale } = useSwitchLocale()
+  const current = LOCALE_META[locale] ?? LOCALE_META.vi
 
   return (
     <DropdownMenu>

@@ -25,6 +25,9 @@ export function useScrollHeader(
     lastScrollY.current = window.scrollY
     el.style.transform = 'translateY(0)'
 
+    // Mobile: header trong suốt dễ chìm vào ảnh banner, nên dùng nền trắng mờ khi ở đầu trang
+    const mobileQuery = window.matchMedia('(max-width: 639px)')
+
     const updateBackground = () => {
       if (ticking.current) return
       ticking.current = true
@@ -33,14 +36,24 @@ export function useScrollHeader(
         const scrollY = window.scrollY
         const isScrolled = scrollY > 80
 
+        const isMobile = mobileQuery.matches
+        const frostedTop = isMobile && !solid
+
         el.classList.toggle('header-scrolled', isScrolled)
         el.style.backgroundColor = isScrolled
           ? 'rgba(31, 56, 100, 0.9)'
           : solid
             ? '#fff'
-            : 'transparent'
-        el.style.backdropFilter = isScrolled ? 'blur(1.25rem)' : 'none'
-        el.style.boxShadow = solid && !isScrolled ? '0 1px 0 #e8edf5' : 'none'
+            : frostedTop
+              ? 'rgba(255, 255, 255, 0.82)'
+              : 'transparent'
+        el.style.backdropFilter = isScrolled
+          ? 'blur(1.25rem)'
+          : frostedTop
+            ? 'blur(0.75rem)'
+            : 'none'
+        el.style.boxShadow =
+          (solid || frostedTop) && !isScrolled ? '0 1px 0 rgba(26, 43, 72, 0.08)' : 'none'
 
         if (scrollY <= 0) {
           el.style.transform = 'translateY(0)'
@@ -55,8 +68,12 @@ export function useScrollHeader(
 
     updateBackground()
     window.addEventListener('scroll', updateBackground, { passive: true })
+    mobileQuery.addEventListener('change', updateBackground)
 
-    return () => window.removeEventListener('scroll', updateBackground)
+    return () => {
+      window.removeEventListener('scroll', updateBackground)
+      mobileQuery.removeEventListener('change', updateBackground)
+    }
   }, [headerRef, isClient, solid])
 
   return headerRef

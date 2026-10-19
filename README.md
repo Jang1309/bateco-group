@@ -13,14 +13,14 @@ pnpm install
 pnpm dev
 ```
 
-| Script | Việc làm |
-| --- | --- |
-| `pnpm dev` | Dev server |
-| `pnpm build` | `lint:fix`, format toàn repo, rồi `next build` |
-| `pnpm start` | Chạy bản standalone sau khi build |
-| `pnpm lint` / `pnpm lint:fix` | ESLint |
-| `pnpm format` / `pnpm format:check` | Prettier |
-| `pnpm test` | Unit test bằng `node:test` (file `src/**/*.test.mjs`). Cần Node ≥ 22.18 để import thẳng file `.ts` |
+| Script                              | Việc làm                                                                                           |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                          | Dev server                                                                                         |
+| `pnpm build`                        | `lint:fix`, format toàn repo, rồi `next build`                                                     |
+| `pnpm start`                        | Chạy bản standalone sau khi build                                                                  |
+| `pnpm lint` / `pnpm lint:fix`       | ESLint                                                                                             |
+| `pnpm format` / `pnpm format:check` | Prettier                                                                                           |
+| `pnpm test`                         | Unit test bằng `node:test` (file `src/**/*.test.mjs`). Cần Node ≥ 22.18 để import thẳng file `.ts` |
 
 Xem kích thước bundle (Next 16 không in cột Size / First Load JS trong log build):
 
@@ -30,11 +30,11 @@ ANALYZE=true pnpm build
 
 Biến môi trường (`src/configs/env.ts`):
 
-| Biến | Dùng cho |
-| --- | --- |
+| Biến                 | Dùng cho      |
+| -------------------- | ------------- |
 | `NEXT_PUBLIC_DOMAIN` | Domain public |
-| `NEXT_PUBLIC_CMS` | Origin CMS |
-| `NEXT_PUBLIC_API` | Prefix API |
+| `NEXT_PUBLIC_CMS`    | Origin CMS    |
+| `NEXT_PUBLIC_API`    | Prefix API    |
 
 Build dùng `output: 'standalone'`.
 
@@ -42,15 +42,15 @@ Build dùng `output: 'standalone'`.
 
 ## 2. Stack
 
-| Nhóm | Công nghệ |
-| --- | --- |
-| Core | Next.js 16 (App Router), React 19, TypeScript |
-| Style | Tailwind CSS 4, shadcn/ui, font Arimo |
-| i18n | next-intl |
-| Data | TanStack Query, nuqs |
-| Motion | Lenis, AOS, GSAP, Motion |
-| Forms | react-hook-form + zod |
-| Ảnh | `next/image`, format webp |
+| Nhóm   | Công nghệ                                     |
+| ------ | --------------------------------------------- |
+| Core   | Next.js 16 (App Router), React 19, TypeScript |
+| Style  | Tailwind CSS 4, shadcn/ui, font Arimo         |
+| i18n   | next-intl                                     |
+| Data   | TanStack Query, nuqs                          |
+| Motion | Lenis, AOS, GSAP, Motion                      |
+| Forms  | react-hook-form + zod                         |
+| Ảnh    | `next/image`, format webp                     |
 
 ---
 
@@ -114,12 +114,12 @@ Locale không có trong `routing.locales` thì `notFound()`. Route chưa có pag
 
 ### Đang có UI
 
-| Việc | URL vi | URL en | View |
-| --- | --- | --- | --- |
-| Trang chủ | `/` | `/en` | `views/homepage` |
-| Giới thiệu | `/gioi-thieu` | `/en/about` | `views/about` |
-| Lĩnh vực kinh doanh | `/linh-vuc-kinh-doanh` | `/en/business-sectors` | `views/business` |
-| Chi tiết lĩnh vực | `/linh-vuc-kinh-doanh/[slug]` | `/en/business-sectors/[slug]` | `views/business-detail` |
+| Việc                | URL vi                        | URL en                        | View                    |
+| ------------------- | ----------------------------- | ----------------------------- | ----------------------- |
+| Trang chủ           | `/`                           | `/en`                         | `views/homepage`        |
+| Giới thiệu          | `/gioi-thieu`                 | `/en/about`                   | `views/about`           |
+| Lĩnh vực kinh doanh | `/linh-vuc-kinh-doanh`        | `/en/business-sectors`        | `views/business`        |
+| Chi tiết lĩnh vực   | `/linh-vuc-kinh-doanh/[slug]` | `/en/business-sectors/[slug]` | `views/business-detail` |
 
 Slug chi tiết lấy từ `SECTOR_DETAILS` trong `views/business-detail/data.ts`. `dynamicParams = false`: slug lạ trả 404. Năm slug hiện tại:
 
@@ -133,13 +133,13 @@ Slug chi tiết lấy từ `SECTOR_DETAILS` trong `views/business-detail/data.ts
 
 Menu và `ROUTES` đã trỏ tới các path này. Vào link sẽ 404 cho đến khi có `page.tsx`:
 
-| Key | Internal pathname | URL en |
-| --- | --- | --- |
+| Key        | Internal pathname     | URL en                   |
+| ---------- | --------------------- | ------------------------ |
 | `investor` | `/quan-he-nha-dau-tu` | `/en/investor-relations` |
-| `projects` | `/du-an` | `/en/projects` |
-| `news` | `/tin-tuc` | `/en/news` |
-| `careers` | `/co-hoi-nghe-nghiep` | `/en/careers` |
-| `contact` | `/lien-he` | `/en/contact` |
+| `projects` | `/du-an`              | `/en/projects`           |
+| `news`     | `/tin-tuc`            | `/en/news`               |
+| `careers`  | `/co-hoi-nghe-nghiep` | `/en/careers`            |
+| `contact`  | `/lien-he`            | `/en/contact`            |
 
 ### Trang chủ
 
@@ -219,7 +219,7 @@ Data tĩnh (danh sách ngành, dự án, copy chưa qua CMS) để cạnh view, 
 import Banner from '@/components/shared/banner'
 import ROUTES from '@/configs/routes'
 
-<Banner
+;<Banner
   imageSrc='/home/d-banner.png'
   eyebrow='BATECO GROUP'
   titleLine1='KHÁM PHÁ'
@@ -247,10 +247,10 @@ Menu: `layouts/header/data.ts` (`LEFT_NAV`, `RIGHT_NAV`). Copy nằm ở namespa
 
 Hai kiểu header:
 
-| Trang | Lúc ở đầu | Khi cuộn quá 80px |
-| --- | --- | --- |
-| Trang chủ | Trong suốt, đè lên banner | Nền xanh `rgba(31, 56, 100, 0.9)`, chữ và logo trắng, có blur. Kéo xuống thì header trượt lên, kéo lên thì hiện lại |
-| Route trong `SOLID_HEADER_ROUTES` | Nền trắng, banner bắt đầu bên dưới header | Cùng kiểu xanh như trang chủ |
+| Trang                             | Lúc ở đầu                                 | Khi cuộn quá 80px                                                                                                   |
+| --------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Trang chủ                         | Trong suốt, đè lên banner                 | Nền xanh `rgba(31, 56, 100, 0.9)`, chữ và logo trắng, có blur. Kéo xuống thì header trượt lên, kéo lên thì hiện lại |
+| Route trong `SOLID_HEADER_ROUTES` | Nền trắng, banner bắt đầu bên dưới header | Cùng kiểu xanh như trang chủ                                                                                        |
 
 Thêm trang header trắng: sửa `src/layouts/header/solid-routes.ts`.
 
@@ -268,12 +268,12 @@ Dùng pathname nội bộ (`/linh-vuc-kinh-doanh`), không viết URL tiếng An
 
 Cấu hình: `src/i18n/routing.ts`.
 
-| | |
-| --- | --- |
-| Locales | `vi`, `en` |
-| Mặc định | `vi` |
-| Prefix | `as-needed` — `/` là tiếng Việt, `/en` là tiếng Anh |
-| Detect | tắt (`localeDetection: false`) |
+|          |                                                     |
+| -------- | --------------------------------------------------- |
+| Locales  | `vi`, `en`                                          |
+| Mặc định | `vi`                                                |
+| Prefix   | `as-needed` — `/` là tiếng Việt, `/en` là tiếng Anh |
+| Detect   | tắt (`localeDetection: false`)                      |
 
 Link nội bộ luôn lấy từ `@/i18n/navigation`, không dùng `next/link`.
 
@@ -356,12 +356,12 @@ export default ExamplePage
 configs/  →  fetches/  →  services/  →  page hoặc view
 ```
 
-| Tầng | Vai trò |
-| --- | --- |
-| `configs/env.ts` | `DOMAIN`, `CMS`, `API` |
-| `configs/endpoints.ts` | Path API |
-| `fetches/fetchData.ts` | `fetch` tới CMS |
-| `services/*` | Hàm theo domain, vd. `tourService.getTours()` |
+| Tầng                   | Vai trò                                       |
+| ---------------------- | --------------------------------------------- |
+| `configs/env.ts`       | `DOMAIN`, `CMS`, `API`                        |
+| `configs/endpoints.ts` | Path API                                      |
+| `fetches/fetchData.ts` | `fetch` tới CMS                               |
+| `services/*`           | Hàm theo domain, vd. `tourService.getTours()` |
 
 Nội dung đang hiển thị (ngành, tin, dự án, đối tác) là data tĩnh trong `views/**/data.ts`, chưa lấy từ CMS.
 
@@ -399,13 +399,13 @@ const [q, setQ] = useQueryState('q')
 
 ## 12. Provider
 
-| Provider | File | Gắn ở |
-| --- | --- | --- |
-| TanStack Query | `components/providers/query-provider.tsx` | root layout |
-| nuqs | `nuqs/adapters/next/app` | root layout |
-| Lenis | `components/providers/lenis-provider.tsx` | root layout |
-| AOS | `components/providers/aos-provider.tsx` | root layout |
-| Drawer / Sheet | `drawer-provider.tsx`, `sheet-provider.tsx` | khi cần |
+| Provider       | File                                        | Gắn ở       |
+| -------------- | ------------------------------------------- | ----------- |
+| TanStack Query | `components/providers/query-provider.tsx`   | root layout |
+| nuqs           | `nuqs/adapters/next/app`                    | root layout |
+| Lenis          | `components/providers/lenis-provider.tsx`   | root layout |
+| AOS            | `components/providers/aos-provider.tsx`     | root layout |
+| Drawer / Sheet | `drawer-provider.tsx`, `sheet-provider.tsx` | khi cần     |
 
 AOS khởi tạo một lần: 900ms, `ease-out-cubic`, `once: true`. `prefers-reduced-motion: reduce` thì tắt animation. Đổi route thì `refreshHard()` để bắt phần tử mới.
 
@@ -433,13 +433,13 @@ const lenis = useLenis()
 
 ## 14. SEO và form CMS
 
-| File | Việc |
-| --- | --- |
-| `fetches/getMetaDataRankMath.ts` | Lấy head Rank Math |
-| `utils/parseRankMathHead.ts` | Parse HTML head |
-| `utils/metadataValues.ts` | Map sang metadata Next |
-| `fetches/cf7Request.ts` | Gửi Contact Form 7 |
-| `app/robots.ts` | robots.txt |
+| File                             | Việc                   |
+| -------------------------------- | ---------------------- |
+| `fetches/getMetaDataRankMath.ts` | Lấy head Rank Math     |
+| `utils/parseRankMathHead.ts`     | Parse HTML head        |
+| `utils/metadataValues.ts`        | Map sang metadata Next |
+| `fetches/cf7Request.ts`          | Gửi Contact Form 7     |
+| `app/robots.ts`                  | robots.txt             |
 
 Metadata từng trang export từ `page.tsx` (`title`, `description`, hoặc `generateMetadata` khi phụ thuộc slug).
 
@@ -447,12 +447,12 @@ Metadata từng trang export từ `page.tsx` (`title`, `description`, hoặc `ge
 
 ## 15. Lỗi và 404
 
-| File | Khi nào |
-| --- | --- |
-| `[locale]/not-found.tsx` | `notFound()` trong locale |
-| `app/not-found.tsx` | 404 ngoài cây locale |
-| `[locale]/error.tsx` | Lỗi runtime trong locale |
-| `app/global-error.tsx` | Lỗi root, tự render `html` / `body` |
+| File                     | Khi nào                             |
+| ------------------------ | ----------------------------------- |
+| `[locale]/not-found.tsx` | `notFound()` trong locale           |
+| `app/not-found.tsx`      | 404 ngoài cây locale                |
+| `[locale]/error.tsx`     | Lỗi runtime trong locale            |
+| `app/global-error.tsx`   | Lỗi root, tự render `html` / `body` |
 
 ---
 

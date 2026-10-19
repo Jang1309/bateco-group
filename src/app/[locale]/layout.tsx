@@ -26,9 +26,13 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <NextIntlClientProvider>
-      <Header />
-      {children}
-      <Footer />
+      {/* overflow-x-clip trên wrapper: Chrome mobile bỏ qua overflow của body và nới rộng viewport
+          khi phần tử AOS (fade-left) tràn phải, làm header fixed bị kéo rộng theo */}
+      <div className='overflow-x-clip'>
+        <Header />
+        {children}
+        <Footer />
+      </div>
     </NextIntlClientProvider>
   )
 }

@@ -2,6 +2,8 @@ import bundleAnalyzer from '@next/bundle-analyzer'
 import { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
 
+import './src/configs/env'
+
 const withNextIntl = createNextIntlPlugin()
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',

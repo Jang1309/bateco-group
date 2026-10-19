@@ -2,7 +2,6 @@ import Image from 'next/image'
 import type { ComponentProps } from 'react'
 
 import { Link } from '@/i18n/navigation'
-import { cn } from '@/lib/utils'
 
 type BannerLink = {
   href: ComponentProps<typeof Link>['href']
@@ -41,9 +40,6 @@ const Banner = ({
   showButton = false,
   primary,
   secondary,
-  className,
-  imageClassName,
-  animated = false,
 }: BannerProps) => {
   return (
     <section className='relative h-[100vh] w-full overflow-hidden'>

@@ -37,36 +37,45 @@ const BannerContent = ({
   showButton,
   primary,
   secondary,
+  animated,
 }: Pick<
   BannerProps,
-  'eyebrow' | 'titleHtml' | 'description' | 'showButton' | 'primary' | 'secondary'
+  'eyebrow' | 'titleHtml' | 'description' | 'showButton' | 'primary' | 'secondary' | 'animated'
 >) => (
-  <div className='relative max-w-[40rem] border-l-[0.1875rem] border-[#b5935e] pl-[3.125rem] xsm:max-w-full xsm:pl-[1rem]'>
+  <div
+    className={`relative max-w-[40rem] border-l-[0.1875rem] border-[#b5935e] pl-[3.125rem] xsm:max-w-full xsm:pl-[0.875rem] ${animated ? 'banner-reveal-line' : ''}`}
+  >
     {eyebrow ? (
-      <p className='text-[0.875rem] font-bold tracking-[0.08rem] text-[#1a2b48] uppercase xsm:text-[0.75rem] xsm:tracking-[0.06rem]'>
+      <p
+        className={`text-[0.875rem] font-bold tracking-[0.12em] text-[#1a2b48] uppercase xsm:text-[0.6875rem] xsm:tracking-[0.14em] ${animated ? 'banner-reveal-fade' : ''}`}
+      >
         {eyebrow}
       </p>
     ) : null}
 
     {titleHtml ? (
       <div
-        className='mt-[1.25rem] text-[3rem] leading-[1.35] font-bold text-[#1a2b48] uppercase [&_br]:block [&_p]:m-0 [&_strong]:font-bold [&_strong]:text-[#b5935e] xsm:mt-[0.75rem] xsm:text-[1.75rem] xsm:leading-[1.3]'
+        className={`mt-[1.25rem] text-[3rem] leading-[1.2] font-bold tracking-[0.01em] text-[#1a2b48] uppercase [&_br]:block [&_p]:m-0 [&_strong]:font-bold [&_strong]:text-[#b5935e] xsm:mt-[0.55rem] xsm:text-[1.75rem] xsm:leading-[1.18] ${animated ? 'banner-reveal-fade banner-reveal-late' : ''}`}
         dangerouslySetInnerHTML={{ __html: titleHtml }}
       />
     ) : null}
 
     {description ? (
-      <p className='mt-[1.5rem] max-w-[28rem] text-[1.0625rem] leading-[1.55] font-medium text-[#1a2b48] xsm:mt-[0.75rem] xsm:max-w-none xsm:text-[0.875rem] xsm:leading-[1.5]'>
+      <p
+        className={`mt-[1.5rem] max-w-[28rem] text-[1.0625rem] leading-[1.6] font-medium text-[#1a2b48]/90 xsm:mt-[0.65rem] xsm:max-w-none xsm:text-[0.8125rem] xsm:leading-[1.5] ${animated ? 'banner-reveal-fade banner-reveal-late' : ''}`}
+      >
         {description}
       </p>
     ) : null}
 
     {showButton ? (
-      <div className='mt-[2.25rem] flex flex-wrap items-center gap-[1.75rem] xsm:mt-[1.25rem] xsm:flex-col xsm:items-stretch xsm:gap-[0.75rem]'>
+      <div
+        className={`mt-[2.25rem] flex flex-wrap items-center gap-[1.75rem] xsm:mt-[1.1rem] xsm:flex-col xsm:items-stretch xsm:gap-[0.7rem] ${animated ? 'banner-reveal-fade banner-reveal-late' : ''}`}
+      >
         {primary ? (
           <Link
             href={primary.href}
-            className='inline-flex cursor-pointer items-center justify-center bg-[#b5935e] px-[1.5rem] py-[0.875rem] text-[0.875rem] font-bold tracking-[0.04rem] text-white uppercase shadow-[0_0.25rem_0.75rem_rgba(181,147,94,0.35)] transition-colors hover:bg-[#a4834f] xsm:w-full xsm:py-[0.8rem] xsm:text-[0.8125rem]'
+            className='inline-flex cursor-pointer items-center justify-center bg-[#b5935e] px-[1.75rem] py-[0.95rem] text-[0.875rem] font-bold tracking-[0.06em] text-white uppercase shadow-[0_0.35rem_1.25rem_rgba(181,147,94,0.28)] transition-[background-color,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#a4834f] hover:shadow-[0_0.45rem_1.5rem_rgba(181,147,94,0.38)] active:scale-[0.98] xsm:w-full xsm:py-[0.8rem] xsm:text-[0.75rem]'
           >
             {primary.label}
           </Link>
@@ -75,10 +84,15 @@ const BannerContent = ({
         {secondary ? (
           <a
             href={secondary.href}
-            className='inline-flex cursor-pointer items-center justify-center gap-[0.35rem] text-[0.875rem] font-bold tracking-[0.04rem] text-[#b5935e] uppercase transition-opacity hover:opacity-80 xsm:justify-start xsm:text-[0.8125rem]'
+            className='group inline-flex cursor-pointer items-center justify-center gap-[0.45rem] text-[0.875rem] font-bold tracking-[0.06em] text-[#b5935e] uppercase transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:opacity-75 xsm:justify-start xsm:text-[0.75rem]'
           >
             {secondary.label}
-            <span aria-hidden>↓</span>
+            <span
+              aria-hidden
+              className='inline-block transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0.5'
+            >
+              ↓
+            </span>
           </a>
         ) : null}
       </div>
@@ -97,6 +111,7 @@ const Banner = ({
   showButton = false,
   primary,
   secondary,
+  animated = true,
 }: BannerProps) => {
   const mobileSrc = imageSrcMobile || imageSrc
   const content = (
@@ -107,11 +122,12 @@ const Banner = ({
       showButton={showButton}
       primary={primary}
       secondary={secondary}
+      animated={animated}
     />
   )
 
   return (
-    <section className='relative h-dvh w-full overflow-hidden xsm:flex xsm:h-auto xsm:min-h-0 xsm:flex-col xsm:overflow-visible'>
+    <section className='relative h-dvh w-full overflow-hidden xsm:flex xsm:h-auto xsm:min-h-[100dvh] xsm:flex-col xsm:overflow-visible'>
       {srTitle ? <h1 className='sr-only'>{srTitle}</h1> : null}
 
       {/* Desktop: full-bleed cover */}
@@ -121,30 +137,36 @@ const Banner = ({
         fill
         priority
         sizes='100vw'
-        className='object-cover object-[center_center] xsm:hidden'
+        unoptimized
+        className={`object-cover object-center xsm:hidden ${animated ? 'banner-reveal-image' : ''}`}
+      />
+      <div
+        aria-hidden
+        className='pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#fff_0%,rgba(255,255,255,0.9)_16%,rgba(255,255,255,0.45)_36%,rgba(255,255,255,0)_58%)] xsm:hidden'
       />
       <BannerTopOverlay />
-
-      {/* Mobile: ảnh ngắn ~42vh, không full viewport */}
-      <div className='relative hidden h-[42vh] max-h-[22rem] min-h-[16rem] w-full shrink-0 overflow-hidden xsm:block'>
-        <Image
-          src={mobileSrc}
-          alt={imageAlt}
-          fill
-          priority
-          sizes='100vw'
-          className='object-cover object-center'
-        />
-      </div>
 
       {/* Desktop overlay copy */}
       <div className='absolute inset-0 z-[1] flex items-center xsm:hidden'>
         <div className='mx-auto w-full max-w-[95rem] px-[2.5rem]'>{content}</div>
       </div>
 
-      {/* Mobile: copy dưới ảnh, nền trắng — không đè lên skyline */}
-      <div className='relative z-[1] hidden bg-white px-[1.25rem] pt-[1.5rem] pb-[2rem] xsm:block'>
+      {/* Mobile: text trên (gọn), ảnh dưới chiếm phần còn lại */}
+      <div className='relative z-[1] hidden shrink-0 bg-white px-[1.25rem] translate-y-[8.5rem] pb-[1.15rem] xsm:block'>
         {content}
+      </div>
+      <div
+        className={`relative hidden min-h-[48vh] w-full flex-1 overflow-hidden xsm:block ${animated ? 'banner-reveal-image' : ''}`}
+      >
+        <Image
+          src={mobileSrc}
+          alt={imageAlt}
+          fill
+          priority
+          sizes='100vw'
+          unoptimized
+          className='object-cover object-[center_42%]'
+        />
       </div>
     </section>
   )

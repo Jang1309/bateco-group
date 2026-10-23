@@ -9,6 +9,10 @@ const ENDPOINTS = {
     getSectors: (locale: string) => `api/v1/taxonomies/sectors?lang=${locale}&parent=0&acf=true`,
     getProjects: (locale: string) => `api/v1/get-all/projects?limit=8&lang=${locale}`,
   },
+  introduction: {
+    vi: 'wp/v2/pages/246?_fields=acf&acf_format=standard',
+    en: 'wp/v2/pages/248?_fields=acf&acf_format=standard',
+  },
 }
 
 export default ENDPOINTS

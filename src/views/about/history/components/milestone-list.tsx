@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react'
 
+import type { IntroductionMilestone } from '@/interfaces/introduction.interface'
 import Reveal from '@/views/about/components/reveal'
-import type { AboutMilestone } from '@/views/about/data'
 import MilestoneCard from '@/views/about/history/components/milestone-card'
 
 type MilestoneListProps = {
-  milestones: AboutMilestone[]
+  milestones: IntroductionMilestone[]
 }
 
 const MilestoneList = ({ milestones }: MilestoneListProps) => {

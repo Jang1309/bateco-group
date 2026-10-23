@@ -1,13 +1,25 @@
 import Image from 'next/image'
 
+import type { IntroductionMessage } from '@/interfaces/introduction.interface'
 import Reveal from '@/views/about/components/reveal'
-import type { AboutMessage as AboutMessageData } from '@/views/about/data'
+
+const FALLBACK = '/gioi-thieu/placeholder-avatar.png'
+
+const stripHtml = (value?: string) =>
+  value
+    ?.replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim() || ''
 
 type AboutMessageProps = {
-  message: AboutMessageData
+  data?: IntroductionMessage
 }
 
-const AboutMessage = ({ message }: AboutMessageProps) => {
+const AboutMessage = ({ data }: AboutMessageProps) => {
+  const quote = stripHtml(data?.message)
+  const imageSrc = data?.avatar || FALLBACK
+  const alt = [data?.name, data?.position].filter(Boolean).join(', ') || 'Bateco'
+
   return (
     <section className='bg-white px-[5rem] pt-[7.5rem] xsm:px-[1.5rem] xsm:pt-[3.5rem] xsm:pb-[3rem]'>
       <div className='grid grid-cols-12 gap-[5rem] xsm:grid-cols-1 xsm:gap-[2.5rem]'>
@@ -23,8 +35,8 @@ const AboutMessage = ({ message }: AboutMessageProps) => {
                 className='absolute inset-0'
               >
                 <Image
-                  src={message.image.src}
-                  alt={message.image.alt}
+                  src={imageSrc}
+                  alt={alt}
                   fill
                   sizes='(max-width: 639px) 80vw, 27vw'
                   className='object-cover object-top'
@@ -38,32 +50,38 @@ const AboutMessage = ({ message }: AboutMessageProps) => {
             delay={0.2}
             className='flex flex-col items-center gap-[0.47rem] pt-[2.5rem] text-center xsm:pt-[1.5rem]'
           >
-            <h2 className='text-[2.5rem] leading-[1.19] font-bold text-balance text-[#182433] uppercase xsm:text-[1.5rem]'>
-              {message.name}
-            </h2>
-            <p className='text-[1.17rem] leading-[1.25rem] font-bold text-[#A78044] uppercase xsm:text-[0.8125rem]'>
-              {message.title}
-            </p>
+            {data?.name ? (
+              <h2 className='text-[2.5rem] leading-[1.19] font-bold text-balance text-[#182433] uppercase xsm:text-[1.5rem]'>
+                {data.name}
+              </h2>
+            ) : null}
+            {data?.position ? (
+              <p className='text-[1.17rem] leading-[1.25rem] font-bold text-[#A78044] uppercase xsm:text-[0.8125rem]'>
+                {data.position}
+              </p>
+            ) : null}
           </Reveal>
         </div>
 
         <div className='col-span-8 flex flex-col justify-center pt-[1.25rem] xsm:col-span-1 xsm:pt-0'>
-          <div className='pb-[5rem] xsm:pb-0'>
-            <blockquote className='relative pl-[3.28rem] xsm:pl-[1.25rem]'>
-              <Reveal
-                variant='grow-y'
-                className='absolute inset-y-0 left-0 w-[0.156rem] origin-top bg-[#C29B53] xsm:w-[0.125rem]'
-              />
-              <Reveal
-                variant='unveil'
-                delay={0.15}
-              >
-                <p className='text-[1.5625rem] leading-[2.34rem] text-[#1B2533] xsm:text-[1rem] xsm:leading-[1.65]'>
-                  &ldquo;{message.quote}&rdquo;
-                </p>
-              </Reveal>
-            </blockquote>
-          </div>
+          {quote ? (
+            <div className='pb-[5rem] xsm:pb-0'>
+              <blockquote className='relative pl-[3.28rem] xsm:pl-[1.25rem]'>
+                <Reveal
+                  variant='grow-y'
+                  className='absolute inset-y-0 left-0 w-[0.156rem] origin-top bg-[#C29B53] xsm:w-[0.125rem]'
+                />
+                <Reveal
+                  variant='unveil'
+                  delay={0.15}
+                >
+                  <p className='text-[1.5625rem] leading-[2.34rem] text-[#1B2533] xsm:text-[1rem] xsm:leading-[1.65]'>
+                    &ldquo;{quote}&rdquo;
+                  </p>
+                </Reveal>
+              </blockquote>
+            </div>
+          ) : null}
         </div>
       </div>
     </section>

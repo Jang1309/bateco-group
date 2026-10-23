@@ -3,18 +3,20 @@
 import { useTranslations } from 'next-intl'
 import { useId, useState } from 'react'
 
+import type { IntroductionEcosystemGroup } from '@/interfaces/introduction.interface'
 import { cn } from '@/lib/utils'
 import Reveal from '@/views/about/components/reveal'
-import type { AboutCompanyGroup } from '@/views/about/data'
 
 type CompanyListsProps = {
-  groups: AboutCompanyGroup[]
+  groups: IntroductionEcosystemGroup[]
 }
 
 const CompanyLists = ({ groups }: CompanyListsProps) => {
   const t = useTranslations('AboutPage')
   const [open, setOpen] = useState(true)
   const panelId = useId()
+
+  if (groups.length === 0) return null
 
   return (
     <>
@@ -46,36 +48,41 @@ const CompanyLists = ({ groups }: CompanyListsProps) => {
       >
         <div className='min-h-0 overflow-hidden'>
           <div className='flex flex-col gap-[2.1875rem] pt-[2.5rem] xsm:pt-[1.75rem]'>
-            {groups.map((group, groupIndex) => (
-              <Reveal
-                key={`${groupIndex}-${group.title}`}
-                variant='up'
-              >
-                <h3 className='text-[0.9375rem] leading-[1.25rem] font-bold tracking-[0.047rem] text-[#B88E56] uppercase xsm:text-[0.75rem]'>
-                  {group.title}
-                </h3>
-                <ol className='mt-[1.09rem] grid grid-cols-2 xsm:grid-cols-1'>
-                  {group.companies.map((company, index) => (
-                    <li
-                      key={`${company}-${index}`}
-                      className={cn(
-                        'flex items-center py-[0.625rem]',
-                        index > 1 && 'border-t border-[#EFE7DC]',
-                        index > 0 && 'xsm:border-t xsm:border-[#EFE7DC]',
-                        index % 2 === 0 ? 'pr-[0.625rem] xsm:pr-0' : 'pl-[0.625rem] xsm:pl-0',
-                      )}
-                    >
-                      <span className='w-[1.5625rem] shrink-0 text-[0.9375rem] leading-[1.25rem] font-bold text-[#B88E56] xsm:w-[1.5rem] xsm:text-[0.75rem]'>
-                        {String(index + 1).padStart(2, '0')}
-                      </span>
-                      <span className='pl-[0.9375rem] text-[0.977rem] leading-[1.587rem] text-[#333C48] xsm:pl-[0.5rem] xsm:text-[0.8125rem]'>
-                        {company}
-                      </span>
-                    </li>
-                  ))}
-                </ol>
-              </Reveal>
-            ))}
+            {groups.map((group, groupIndex) => {
+              const companies = group.companies ?? []
+              return (
+                <Reveal
+                  key={`${groupIndex}-${group.title}`}
+                  variant='up'
+                >
+                  {group.title ? (
+                    <h3 className='text-[0.9375rem] leading-[1.25rem] font-bold tracking-[0.047rem] text-[#B88E56] uppercase xsm:text-[0.75rem]'>
+                      {group.title}
+                    </h3>
+                  ) : null}
+                  <ol className='mt-[1.09rem] grid grid-cols-2 xsm:grid-cols-1'>
+                    {companies.map((company, index) => (
+                      <li
+                        key={`${company.name}-${index}`}
+                        className={cn(
+                          'flex items-center py-[0.625rem]',
+                          index > 1 && 'border-t border-[#EFE7DC]',
+                          index > 0 && 'xsm:border-t xsm:border-[#EFE7DC]',
+                          index % 2 === 0 ? 'pr-[0.625rem] xsm:pr-0' : 'pl-[0.625rem] xsm:pl-0',
+                        )}
+                      >
+                        <span className='w-[1.5625rem] shrink-0 text-[0.9375rem] leading-[1.25rem] font-bold text-[#B88E56] xsm:w-[1.5rem] xsm:text-[0.75rem]'>
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
+                        <span className='pl-[0.9375rem] text-[0.977rem] leading-[1.587rem] text-[#333C48] xsm:pl-[0.5rem] xsm:text-[0.8125rem]'>
+                          {company.name}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                </Reveal>
+              )
+            })}
           </div>
         </div>
       </div>

@@ -1,10 +1,10 @@
+import type { IntroductionMilestone } from '@/interfaces/introduction.interface'
 import { cn } from '@/lib/utils'
-import type { AboutMilestone } from '@/views/about/data'
 
 const TAG_COLORS = ['text-[#34D399]', 'text-[#3B82F6]', 'text-[#C59B27]', 'text-[#047857]']
 
 type MilestoneCardProps = {
-  milestone: AboutMilestone
+  milestone: IntroductionMilestone
   index: number
   active?: boolean
 }
@@ -33,7 +33,7 @@ const MilestoneCard = ({ milestone, index, active }: MilestoneCardProps) => (
       {milestone.title}
     </h3>
     <p className='relative text-[0.9375rem] leading-[1.52rem] text-[#475569] transition-colors duration-300 group-hover:text-[#CBD5E1] xsm:text-[0.875rem] xsm:leading-[1.55]'>
-      {milestone.description}
+      {milestone.desc}
     </p>
   </article>
 )

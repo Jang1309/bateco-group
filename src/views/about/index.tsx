@@ -1,4 +1,4 @@
-import type { AboutContent } from '@/views/about/data'
+import type { IntroductionResponse } from '@/interfaces/introduction.interface'
 import AboutEcosystem from '@/views/about/ecosystem'
 import AboutHero from '@/views/about/hero'
 import AboutHistory from '@/views/about/history'
@@ -7,18 +7,18 @@ import AboutMessage from '@/views/about/message'
 import AboutPillars from '@/views/about/pillars'
 
 type AboutViewProps = {
-  content: AboutContent
+  content?: IntroductionResponse
 }
 
 const AboutView = ({ content }: AboutViewProps) => {
   return (
     <main>
-      <AboutHero hero={content.hero} />
-      <AboutMessage message={content.message} />
-      <AboutPillars pillars={content.pillars} />
-      <AboutLeadership leadership={content.leadership} />
-      <AboutHistory history={content.history} />
-      <AboutEcosystem ecosystem={content.ecosystem} />
+      <AboutHero data={content?.banner} />
+      <AboutMessage data={content?.message} />
+      <AboutPillars data={content?.pillars} />
+      <AboutLeadership data={content?.leadership} />
+      <AboutHistory data={content?.history} />
+      <AboutEcosystem data={content?.ecosystem} />
     </main>
   )
 }

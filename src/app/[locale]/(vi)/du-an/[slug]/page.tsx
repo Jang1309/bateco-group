@@ -10,7 +10,8 @@ type Props = {
   params: Promise<{ locale: string; slug: string }>
 }
 
-export const dynamicParams = false
+// Slug từ CMS có thể chưa có trong mock generateStaticParams — tránh 404 HTML phá RSC prefetch.
+export const dynamicParams = true
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>

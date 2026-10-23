@@ -54,6 +54,7 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
         <div className='mx-auto flex w-full max-w-[95rem] items-stretch gap-[4.375rem] px-[3.75rem] py-[3rem] xsm:flex-col xsm:gap-[1.5rem] xsm:px-[1.5rem] xsm:py-[2rem]'>
           <Link
             href={postHref(featured)}
+            prefetch={false}
             data-aos='fade-right'
             className='group min-w-0 flex-1 overflow-hidden bg-[#f5f5f5] shadow-[0_0.3125rem_1.875rem_rgba(0,0,0,0.06)]'
           >
@@ -74,6 +75,7 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
               >
                 <Link
                   href={postHref(featured)}
+                  prefetch={false}
                   className='transition-colors duration-300 hover:text-[#b68d4c]'
                 >
                   {featured.title}
@@ -122,6 +124,7 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
 
             <Link
               href={postHref(featured)}
+              prefetch={false}
               className='mt-[1.25rem] inline-flex w-fit items-center justify-center bg-[#b68d4c] px-[2rem] py-[0.75rem] text-[0.875rem] leading-[1.25rem] font-semibold tracking-[0.04rem] text-white uppercase shadow-[0_0.078rem_0.078rem_rgba(0,0,0,0.05)] transition-colors hover:bg-[#a47d42]'
             >
               {t('readMore')}

@@ -18,6 +18,8 @@ export type OtherNewsSlide = {
 const NewsCard = ({ item }: { item: OtherNewsSlide }) => (
   <Link
     href={item.href}
+    // Chi tiết tin chưa lấy từ CMS — prefetch RSC vào slug lạ gây 500 InvariantError.
+    prefetch={false}
     className='group flex w-[22rem] shrink-0 flex-col xsm:w-[16rem]'
   >
     <div className='overflow-hidden rounded-[0.125rem] bg-[#f1f5f9] shadow-[0_0.078rem_0.156rem_rgba(0,0,0,0.05)]'>

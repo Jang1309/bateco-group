@@ -1,21 +1,24 @@
 import Image from 'next/image'
 
+import type { IntroductionPillarItem } from '@/interfaces/introduction.interface'
 import { cn } from '@/lib/utils'
 import Reveal from '@/views/about/components/reveal'
-import type { AboutPillar } from '@/views/about/data'
 
 const SLANTS = [
   '[clip-path:polygon(7.8rem_0,100%_0,100%_100%,0_100%)]',
   '[clip-path:polygon(0_0,100%_0,100%_100%,7.8rem_100%)]',
 ]
 
+const FALLBACK = '/gioi-thieu/d-banner.png'
+
 type PillarRowProps = {
-  pillar: AboutPillar
+  pillar: IntroductionPillarItem
   index: number
 }
 
 const PillarRow = ({ pillar, index }: PillarRowProps) => {
   const imageFirst = index % 2 === 1
+  const indexLabel = String(index + 1).padStart(2, '0')
 
   return (
     <article
@@ -35,34 +38,38 @@ const PillarRow = ({ pillar, index }: PillarRowProps) => {
             variant='left'
             className='flex items-center gap-[0.625rem] text-[0.9375rem] leading-[1.25rem] tracking-[0.2em] text-[#B9935A] uppercase xsm:text-[0.75rem]'
           >
-            <span>{pillar.index}</span>
+            <span>{indexLabel}</span>
             <span className='h-px w-[1.875rem] bg-[#B9935A]' />
-            <span>{pillar.label}</span>
+            <span>{pillar.subtitle || pillar.title}</span>
           </Reveal>
 
-          <Reveal
-            variant='up'
-            delay={0.1}
-          >
-            <h2 className='flex flex-wrap items-baseline gap-x-[0.3125rem] text-[4.6875rem] leading-none tracking-[-0.025em] text-[#111E30] xsm:text-[2.5rem]'>
-              {pillar.title}
-              <span
-                aria-hidden
-                className='text-[rgba(30,41,59,0.4)]'
-              >
-                —
-              </span>
-            </h2>
-          </Reveal>
+          {pillar.title ? (
+            <Reveal
+              variant='up'
+              delay={0.1}
+            >
+              <h2 className='flex flex-wrap items-baseline gap-x-[0.3125rem] text-[4.6875rem] leading-none tracking-[-0.025em] text-[#111E30] xsm:text-[2.5rem]'>
+                {pillar.title}
+                <span
+                  aria-hidden
+                  className='text-[rgba(30,41,59,0.4)]'
+                >
+                  —
+                </span>
+              </h2>
+            </Reveal>
+          ) : null}
 
-          <Reveal
-            variant='up'
-            delay={0.2}
-          >
-            <p className='max-w-[35rem] pt-[0.9375rem] text-[1.40625rem] leading-[2.1875rem] text-[#55606D] xsm:pt-[0.5rem] xsm:text-[1rem] xsm:leading-[1.6]'>
-              {pillar.description}
-            </p>
-          </Reveal>
+          {pillar.desc ? (
+            <Reveal
+              variant='up'
+              delay={0.2}
+            >
+              <p className='max-w-[35rem] pt-[0.9375rem] text-[1.40625rem] leading-[2.1875rem] text-[#55606D] xsm:pt-[0.5rem] xsm:text-[1rem] xsm:leading-[1.6]'>
+                {pillar.desc}
+              </p>
+            </Reveal>
+          ) : null}
         </div>
       </div>
 
@@ -77,8 +84,8 @@ const PillarRow = ({ pillar, index }: PillarRowProps) => {
           className='absolute inset-0'
         >
           <Image
-            src={pillar.image.src}
-            alt={pillar.image.alt}
+            src={pillar.image || FALLBACK}
+            alt={pillar.title || ''}
             fill
             sizes='(max-width: 639px) 100vw, 48vw'
             className='object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.035]'

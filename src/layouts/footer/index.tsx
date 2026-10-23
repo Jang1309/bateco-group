@@ -29,7 +29,6 @@ const Footer = async ({ footer }: { footer?: FooterData }) => {
         src={background}
         alt=''
         fill
-        unoptimized
         sizes='100vw'
         className='pointer-events-none object-cover object-bottom'
       />
@@ -48,7 +47,6 @@ const Footer = async ({ footer }: { footer?: FooterData }) => {
               alt={t('logoAlt')}
               width={523}
               height={140}
-              unoptimized
               className='h-[2.5rem] w-auto'
             />
           </Link>

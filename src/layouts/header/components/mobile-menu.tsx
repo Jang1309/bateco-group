@@ -142,26 +142,29 @@ export default function MobileMenu({ header }: { header?: Header }) {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((value) => !value)}
-        className='header-on-scroll relative -mr-[0.625rem] size-[2.75rem] text-[#1A2B48]'
+        className='header-on-scroll relative -mr-[0.625rem] flex size-[2.75rem] items-center justify-center text-[#1A2B48]'
       >
-        <span
-          className={cn(
-            'absolute right-[0.625rem] h-[0.125rem] w-[1.375rem] bg-current transition-transform duration-300 ease-out',
-            open ? 'top-[1.3125rem] rotate-45' : 'top-[1rem]',
-          )}
-        />
-        <span
-          className={cn(
-            'absolute top-[1.3125rem] right-[0.625rem] h-[0.125rem] w-[1.375rem] bg-current transition-opacity duration-200',
-            open && 'opacity-0',
-          )}
-        />
-        <span
-          className={cn(
-            'absolute right-[0.625rem] h-[0.125rem] w-[1.375rem] bg-current transition-transform duration-300 ease-out',
-            open ? 'top-[1.3125rem] -rotate-45' : 'top-[1.625rem]',
-          )}
-        />
+        {/* px thay vì rem: rem theo vw ra pixel lẻ, các vạch bị làm tròn thành dày mỏng khác nhau */}
+        <span className='relative h-[14px] w-[22px]'>
+          <span
+            className={cn(
+              'absolute left-0 h-[2px] w-full bg-current transition-transform duration-300 ease-out',
+              open ? 'top-[6px] rotate-45' : 'top-0',
+            )}
+          />
+          <span
+            className={cn(
+              'absolute top-[6px] left-0 h-[2px] w-full bg-current transition-opacity duration-200',
+              open && 'opacity-0',
+            )}
+          />
+          <span
+            className={cn(
+              'absolute left-0 h-[2px] w-full bg-current transition-transform duration-300 ease-out',
+              open ? 'top-[6px] -rotate-45' : 'top-[12px]',
+            )}
+          />
+        </span>
       </button>
 
       <div

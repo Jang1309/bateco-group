@@ -68,7 +68,6 @@ const MilestoneCard = ({
               src={item.icon}
               alt=''
               fill
-              unoptimized
               className='object-contain'
             />
           </motion.span>

@@ -26,7 +26,6 @@ const NewsCard = ({ item }: { item: OtherNewsSlide }) => (
         alt={item.title}
         width={512}
         height={279}
-        unoptimized
         className='h-[13rem] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06] xsm:h-[10rem]'
       />
     </div>

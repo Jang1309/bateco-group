@@ -21,7 +21,6 @@ const HomeJourney = ({ data }: { data?: HomepageJourney }) => {
           alt=''
           fill
           sizes='100vw'
-          unoptimized
           className='scale-[1.12] object-cover object-[center_42%]'
           priority={false}
         />

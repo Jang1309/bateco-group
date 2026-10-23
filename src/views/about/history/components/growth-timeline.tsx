@@ -13,8 +13,8 @@ import {
 import Image from 'next/image'
 import { type ReactNode, useCallback, useEffect, useId, useRef } from 'react'
 
+import type { IntroductionMilestone } from '@/interfaces/introduction.interface'
 import Reveal from '@/views/about/components/reveal'
-import type { AboutMilestone } from '@/views/about/data'
 import MilestoneCard from '@/views/about/history/components/milestone-card'
 import {
   ARROW_SHAPE,
@@ -76,7 +76,7 @@ const TimelineSlot = ({ pan, index, slot, children }: TimelineSlotProps) => {
 }
 
 type GrowthTimelineProps = {
-  milestones: AboutMilestone[]
+  milestones: IntroductionMilestone[]
 }
 
 const GrowthTimeline = ({ milestones }: GrowthTimelineProps) => {

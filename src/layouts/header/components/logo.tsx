@@ -34,7 +34,6 @@ export default function Logo({ logo, logoWhite, className, imageClassName, onCli
           width={280}
           height={84}
           priority
-          unoptimized
           className={cn(
             'header-logo-default h-[3rem] w-auto object-contain transition-opacity duration-300 xsm:h-[3rem]',
             imageClassName,
@@ -46,7 +45,6 @@ export default function Logo({ logo, logoWhite, className, imageClassName, onCli
           width={280}
           height={84}
           aria-hidden
-          unoptimized
           className={cn(
             'header-logo-white pointer-events-none absolute top-0 left-0 h-[3rem] w-auto object-contain opacity-0 transition-opacity duration-300 xsm:h-[3rem]',
             imageClassName,

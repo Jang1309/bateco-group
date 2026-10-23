@@ -46,7 +46,6 @@ const Footprint = ({ data }: { data?: HomepageFootprint }) => {
                 src={image}
                 alt={data?.image_caption || ''}
                 fill
-                unoptimized
                 sizes='(max-width: 639px) 92vw, 36vw'
                 className='object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]'
               />

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 
+import businessFieldService from '@/services/business-field'
 import BusinessView from '@/views/business'
 
 export const metadata: Metadata = {
@@ -17,7 +18,17 @@ const BusinessPage = async ({ params }: Props) => {
   const { locale } = await params
   setRequestLocale(locale)
 
-  return <BusinessView />
+  const [pageResponse, sectorsResponse] = await Promise.all([
+    businessFieldService.getBusinessField(locale),
+    businessFieldService.getSectors(locale),
+  ])
+
+  return (
+    <BusinessView
+      content={pageResponse?.acf}
+      sectors={sectorsResponse?.data ?? []}
+    />
+  )
 }
 
 export default BusinessPage

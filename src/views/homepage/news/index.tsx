@@ -62,7 +62,6 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
               alt={featured.title || ''}
               width={1600}
               height={1067}
-              unoptimized
               className='h-[29.6875rem] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06] xsm:h-[16rem]'
             />
           </Link>

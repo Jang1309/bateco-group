@@ -1,9 +1,15 @@
+import type { SectorItem } from '@/interfaces/sectors.interface'
 import Logo from '@/layouts/header/components/logo'
-import { SECTORS } from '@/views/business/data'
 
 import SectorRow from './components/row'
 
-const BusinessSectors = () => {
+type BusinessSectorsProps = {
+  sectors?: SectorItem[]
+}
+
+const BusinessSectors = ({ sectors = [] }: BusinessSectorsProps) => {
+  if (sectors.length === 0) return null
+
   return (
     <section className='relative bg-[#FAFBFC] pt-[1.875rem] pb-[6rem] xsm:pb-[3.5rem]'>
       <div
@@ -17,9 +23,9 @@ const BusinessSectors = () => {
       </div>
 
       <ol className='mx-auto mt-[4rem] max-w-[95rem] px-[3.75rem] xsm:mt-[2.5rem] xsm:px-[1.5rem]'>
-        {SECTORS.map((sector, index) => (
+        {sectors.map((sector, index) => (
           <SectorRow
-            key={sector.id}
+            key={sector.slug || sector.id || index}
             sector={sector}
             index={index}
           />

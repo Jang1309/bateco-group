@@ -5,17 +5,18 @@ import Image from 'next/image'
 import { type CSSProperties, useRef } from 'react'
 
 import Reveal from '@/views/about/components/reveal'
-import type { AboutSatellite } from '@/views/about/data'
 import { ORBIT_RADIUS, orbitNodes } from '@/views/about/lib/geometry'
 
 type OrbitDiagramProps = {
-  satellites: AboutSatellite[]
+  gallery: string[]
 }
 
-const OrbitDiagram = ({ satellites }: OrbitDiagramProps) => {
+const OrbitDiagram = ({ gallery }: OrbitDiagramProps) => {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { amount: 0.1 })
-  const nodes = orbitNodes(satellites.length)
+  const nodes = orbitNodes(gallery.length)
+
+  if (gallery.length === 0) return null
 
   return (
     <div
@@ -51,7 +52,7 @@ const OrbitDiagram = ({ satellites }: OrbitDiagramProps) => {
               strokeWidth='0.171'
               initial={{ pathLength: 0 }}
               whileInView={{ pathLength: 1 }}
-              viewport={{ once: false, amount: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.9, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
             />
           ))}
@@ -71,9 +72,9 @@ const OrbitDiagram = ({ satellites }: OrbitDiagramProps) => {
           />
         ))}
 
-        {satellites.map((satellite, index) => (
+        {gallery.map((image, index) => (
           <div
-            key={`${satellite.label}-${index}`}
+            key={`${image}-${index}`}
             className='absolute -translate-x-1/2 -translate-y-1/2'
             style={{ left: `${nodes[index].x}%`, top: `${nodes[index].y}%` }}
           >
@@ -83,13 +84,15 @@ const OrbitDiagram = ({ satellites }: OrbitDiagramProps) => {
                 delay={0.3 + index * 0.06}
                 amount={0.1}
               >
-                <div className='flex size-[5.48rem] flex-col items-center justify-center rounded-full border border-[#D8C2A0] bg-white p-[0.55rem] text-center shadow-[0_0.3125rem_1.09rem_-0.078rem_rgba(184,142,86,0.12),0_0.156rem_0.47rem_-0.078rem_rgba(0,0,0,0.05)] xsm:size-[3.9rem] xsm:p-[0.3rem]'>
-                  <span className='text-[0.547rem] leading-[0.547rem] font-bold tracking-[-0.0137rem] text-[#0F2B48] uppercase xsm:text-[0.5rem]'>
-                    {satellite.name}
-                  </span>
-                  <span className='pt-[0.078rem] text-[0.43rem] leading-[0.645rem] font-bold tracking-[0.0215rem] text-[#B88E56] uppercase xsm:text-[0.4375rem]'>
-                    {satellite.label}
-                  </span>
+                <div className='relative flex size-[5.48rem] items-center justify-center overflow-hidden rounded-full border border-[#D8C2A0] bg-white p-[0.7rem] shadow-[0_0.3125rem_1.09rem_-0.078rem_rgba(184,142,86,0.12),0_0.156rem_0.47rem_-0.078rem_rgba(0,0,0,0.05)] xsm:size-[3.9rem] xsm:p-[0.45rem]'>
+                  <Image
+                    src={image}
+                    alt=''
+                    width={88}
+                    height={88}
+                    unoptimized
+                    className='size-full object-contain'
+                  />
                 </div>
               </Reveal>
             </div>

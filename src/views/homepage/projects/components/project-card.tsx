@@ -26,7 +26,6 @@ const ProjectCard = ({ title, date, image, href, aosDelay = 0 }: ProjectCardProp
           src={image}
           alt={title}
           fill
-          unoptimized
           sizes='(max-width: 639px) 85vw, (max-width: 1023px) 45vw, 30vw'
           className='object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]'
         />

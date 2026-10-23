@@ -1,33 +1,40 @@
+'use client'
+
+import { useInView } from 'motion/react'
+import { useRef } from 'react'
+
 import { InfiniteSlider } from '@/components/shared/infinite-slider'
-import type { AboutLeader } from '@/views/about/data'
+import type { IntroductionLeader } from '@/interfaces/introduction.interface'
 import LeaderCard from '@/views/about/leadership/components/leader-card'
 
-const MIN_MARQUEE_ITEMS = 5
-
 type TeamMarqueeProps = {
-  team: AboutLeader[]
+  team: IntroductionLeader[]
 }
 
 const TeamMarquee = ({ team }: TeamMarqueeProps) => {
-  if (team.length < MIN_MARQUEE_ITEMS) {
-    return (
-      <div className='flex flex-wrap justify-center gap-[1.5625rem] py-[1.25rem]'>
-        {team.map((leader, index) => (
-          <LeaderCard
-            key={`${index}-${leader.name}`}
-            leader={leader}
-          />
-        ))}
-      </div>
-    )
-  }
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { margin: '20% 0px', amount: 0.15 })
+
+  if (team.length === 0) return null
 
   return (
-    <div className='w-full py-[1.25rem] [mask-image:linear-gradient(90deg,transparent,#000_6.3%,#000_93.7%,transparent)]'>
+    <div
+      ref={ref}
+      className='relative w-full py-[1.25rem]'
+    >
+      {/* fade cạnh bằng overlay — nhẹ hơn mask-image khi đang transform */}
+      <div
+        aria-hidden
+        className='pointer-events-none absolute inset-y-0 left-0 z-[1] w-[6%] bg-[linear-gradient(90deg,#fff,transparent)]'
+      />
+      <div
+        aria-hidden
+        className='pointer-events-none absolute inset-y-0 right-0 z-[1] w-[6%] bg-[linear-gradient(270deg,#fff,transparent)]'
+      />
       <InfiniteSlider
         gap={0}
         speed={50}
-        speedOnHover={8}
+        paused={!inView}
       >
         {team.map((leader, index) => (
           <div

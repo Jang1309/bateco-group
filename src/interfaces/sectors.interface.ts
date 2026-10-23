@@ -21,4 +21,6 @@ export interface SectorItem {
   }
 }
 
-export type SectorsResponse = SectorItem[]
+export interface SectorsResponse {
+  data?: SectorItem[]
+}

@@ -1,15 +1,17 @@
 import Image from 'next/image'
 
+import type { IntroductionHistory } from '@/interfaces/introduction.interface'
 import Reveal from '@/views/about/components/reveal'
-import type { AboutHistory as AboutHistoryData } from '@/views/about/data'
 import GrowthTimeline from '@/views/about/history/components/growth-timeline'
 import MilestoneList from '@/views/about/history/components/milestone-list'
 
 type AboutHistoryProps = {
-  history: AboutHistoryData
+  data?: IntroductionHistory
 }
 
-const AboutHistory = ({ history }: AboutHistoryProps) => {
+const AboutHistory = ({ data }: AboutHistoryProps) => {
+  const milestones = data?.milestones ?? []
+
   return (
     <section
       id='lich-su'
@@ -43,39 +45,43 @@ const AboutHistory = ({ history }: AboutHistoryProps) => {
       </div>
 
       <div className='relative z-[1] flex items-center justify-between px-[5rem] pt-[4.0625rem] pb-[1.25rem] xsm:flex-col xsm:items-start xsm:gap-[1.25rem] xsm:px-[1.5rem] xsm:pt-[3rem]'>
-        <Reveal
-          variant='left'
-          className='flex items-center gap-[0.9375rem] pt-[1.3rem] xsm:pt-0'
-        >
-          <span className='h-[0.156rem] w-[2.5rem] bg-[#C59B27]' />
-          <span className='text-[1.17rem] leading-[1.25rem] font-bold text-[#C59B27] uppercase xsm:text-[0.8125rem]'>
-            {history.eyebrow}
-          </span>
-        </Reveal>
+        {data?.eyebrow ? (
+          <Reveal
+            variant='left'
+            className='flex items-center gap-[0.9375rem] pt-[1.3rem] xsm:pt-0'
+          >
+            <span className='h-[0.156rem] w-[2.5rem] bg-[#C59B27]' />
+            <span className='text-[1.17rem] leading-[1.25rem] font-bold text-[#C59B27] uppercase xsm:text-[0.8125rem]'>
+              {data.eyebrow}
+            </span>
+          </Reveal>
+        ) : null}
         <Reveal variant='unveil'>
           <div className='flex flex-col items-end xsm:items-start'>
-            <p className='flex items-center gap-[0.625rem] pb-[0.3125rem] text-[1.09rem] leading-[1.5625rem] font-bold text-[#64748B] uppercase xsm:text-[0.8125rem]'>
-              <span className='size-[0.625rem] rounded-full bg-[#C59B27]' />
-              {history.kicker}
-            </p>
-            <h2 className='text-[3.75rem] leading-none font-bold tracking-[-0.094rem] text-[#0B1B2B] xsm:text-[2.25rem] xsm:leading-[1.15]'>
-              {history.title}{' '}
-              <span className='bg-[linear-gradient(90deg,#C59B27,#F59E0B_50%,#9A7416)] bg-clip-text font-normal text-transparent'>
-                {history.highlight}
-              </span>
-            </h2>
+            {data?.kicker ? (
+              <p className='flex items-center gap-[0.625rem] pb-[0.3125rem] text-[1.09rem] leading-[1.5625rem] font-bold text-[#64748B] uppercase xsm:text-[0.8125rem]'>
+                <span className='size-[0.625rem] rounded-full bg-[#C59B27]' />
+                {data.kicker}
+              </p>
+            ) : null}
+            {data?.title ? (
+              <h2
+                className='text-[3.75rem] leading-none font-bold tracking-[-0.094rem] text-[#0B1B2B] [&_p]:m-0 [&_strong]:bg-[linear-gradient(90deg,#C59B27,#F59E0B_50%,#9A7416)] [&_strong]:bg-clip-text [&_strong]:font-normal [&_strong]:text-transparent xsm:text-[1.75rem] xsm:leading-none xsm:whitespace-nowrap xsm:[&_p]:whitespace-nowrap'
+                dangerouslySetInnerHTML={{ __html: data.title }}
+              />
+            ) : null}
           </div>
         </Reveal>
       </div>
 
-      {history.milestones.length > 0 ? <GrowthTimeline milestones={history.milestones} /> : null}
+      {milestones.length > 0 ? <GrowthTimeline milestones={milestones} /> : null}
 
       <div className='relative mt-[1.5rem] hidden xsm:block'>
         <Reveal
           variant='grow-y'
           className='absolute top-0 bottom-0 left-[1.75rem] w-[0.125rem] origin-top bg-[linear-gradient(180deg,#C59B27,#E5B94B)]'
         />
-        <MilestoneList milestones={history.milestones} />
+        <MilestoneList milestones={milestones} />
       </div>
     </section>
   )

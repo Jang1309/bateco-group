@@ -53,7 +53,7 @@ const Reveal = ({ children, variant = 'up', delay = 0, amount = 0.2, className }
         className={className}
         initial='hidden'
         whileInView='show'
-        viewport={{ once: false, amount }}
+        viewport={{ once: true, amount }}
       >
         <motion.div
           data-reveal
@@ -73,7 +73,7 @@ const Reveal = ({ children, variant = 'up', delay = 0, amount = 0.2, className }
       className={className}
       initial={hidden}
       whileInView={show}
-      viewport={{ once: false, amount }}
+      viewport={{ once: true, amount }}
       transition={transition}
     >
       {children}

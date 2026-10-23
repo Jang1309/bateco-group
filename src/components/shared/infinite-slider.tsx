@@ -14,6 +14,8 @@ export type InfiniteSliderProps = {
   direction?: 'horizontal' | 'vertical'
   reverse?: boolean
   className?: string
+  /** Dừng animate khi ngoài viewport — tránh giật khi Lenis/scroll đo lại layout */
+  paused?: boolean
 }
 
 export function InfiniteSlider({
@@ -24,20 +26,23 @@ export function InfiniteSlider({
   direction = 'horizontal',
   reverse = false,
   className,
+  paused = false,
 }: InfiniteSliderProps) {
   const [isHovering, setIsHovering] = useState(false)
   const currentSpeed = isHovering && speedOnHover ? speedOnHover : speed
-  const [ref, { width, height }] = useMeasure()
+  const [ref, bounds] = useMeasure()
+  // round: ResizeObserver subpixel lúc scroll không restart animation
+  const measured = Math.round(direction === 'horizontal' ? bounds.width : bounds.height)
   const translation = useMotionValue(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [key, setKey] = useState(0)
   const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
-    if (prefersReducedMotion) return
+    if (prefersReducedMotion || paused || measured === 0) return
+
     let controls
-    const size = direction === 'horizontal' ? width : height
-    const contentSize = size + gap
+    const contentSize = measured + gap
     const from = reverse ? -contentSize / 2 : 0
     const to = reverse ? 0 : -contentSize / 2
 
@@ -74,13 +79,13 @@ export function InfiniteSlider({
     key,
     translation,
     currentSpeed,
-    width,
-    height,
+    measured,
     gap,
     isTransitioning,
     direction,
     reverse,
     prefersReducedMotion,
+    paused,
   ])
 
   const hoverProps = speedOnHover
@@ -99,7 +104,7 @@ export function InfiniteSlider({
   return (
     <div className={cn('overflow-hidden motion-reduce:overflow-x-auto', className)}>
       <motion.div
-        className='flex w-max'
+        className='flex w-max will-change-transform'
         style={{
           ...(direction === 'horizontal' ? { x: translation } : { y: translation }),
           gap: `${gap}px`,

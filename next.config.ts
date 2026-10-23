@@ -1,8 +1,8 @@
 import bundleAnalyzer from '@next/bundle-analyzer'
-import { NextConfig } from 'next'
+import type { NextConfig } from 'next/dist/server/config-shared'
 import createNextIntlPlugin from 'next-intl/plugin'
 
-import './src/configs/env'
+import '@/configs/env'
 
 const withNextIntl = createNextIntlPlugin()
 const withBundleAnalyzer = bundleAnalyzer({
@@ -10,6 +10,8 @@ const withBundleAnalyzer = bundleAnalyzer({
 })
 
 const nextConfig: NextConfig = {
+  // Cho phép mở dev server từ điện thoại / máy khác qua IP LAN
+  allowedDevOrigins: ['192.168.*.*', '10.*.*.*', '172.*.*.*'],
   images: {
     formats: ['image/webp'],
     minimumCacheTTL: 2678400,
@@ -27,9 +29,7 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   experimental: {
-    viewTransition: true,
     webVitalsAttribution: ['CLS', 'LCP'],
-    // cssChunking: true,
   },
   typescript: {
     ignoreBuildErrors: true,

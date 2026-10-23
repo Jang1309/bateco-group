@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 'use client'
-import { useMotionValue, animate, motion } from 'motion/react'
-import { useState, useEffect } from 'react'
+import { useMotionValue, animate, motion, useReducedMotion } from 'motion/react'
+import { Children, cloneElement, isValidElement, useEffect, useState } from 'react'
 import useMeasure from 'react-use-measure'
 
 import { cn } from '@/lib/utils'
@@ -31,8 +31,10 @@ export function InfiniteSlider({
   const translation = useMotionValue(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [key, setKey] = useState(0)
+  const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
+    if (prefersReducedMotion) return
     let controls
     const size = direction === 'horizontal' ? width : height
     const contentSize = size + gap
@@ -68,7 +70,18 @@ export function InfiniteSlider({
     }
 
     return controls?.stop
-  }, [key, translation, currentSpeed, width, height, gap, isTransitioning, direction, reverse])
+  }, [
+    key,
+    translation,
+    currentSpeed,
+    width,
+    height,
+    gap,
+    isTransitioning,
+    direction,
+    reverse,
+    prefersReducedMotion,
+  ])
 
   const hoverProps = speedOnHover
     ? {
@@ -84,7 +97,7 @@ export function InfiniteSlider({
     : {}
 
   return (
-    <div className={cn('overflow-hidden', className)}>
+    <div className={cn('overflow-hidden motion-reduce:overflow-x-auto', className)}>
       <motion.div
         className='flex w-max'
         style={{
@@ -95,8 +108,17 @@ export function InfiniteSlider({
         ref={ref}
         {...hoverProps}
       >
-        {children}
-        {children}
+        {Children.map(children, (child, index) =>
+          isValidElement(child) ? cloneElement(child, { key: `a-${index}` }) : child,
+        )}
+        <div
+          inert
+          className='contents motion-reduce:hidden'
+        >
+          {Children.map(children, (child, index) =>
+            isValidElement(child) ? cloneElement(child, { key: `b-${index}` }) : child,
+          )}
+        </div>
       </motion.div>
     </div>
   )

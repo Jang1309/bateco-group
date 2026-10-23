@@ -1,178 +1,371 @@
-# Source Code Guide
+# Bateco Group
 
-Tài liệu cấu trúc và cách dùng **Next.js 16 Template**.
+Website tập đoàn Bateco. Next.js 16, App Router, hai ngôn ngữ `vi` (mặc định, không prefix) và `en` (`/en/...`).
 
-Đọc kèm [README.md](./README.md) (setup / env / scripts). Docs UI trong app: `/` (tổng quan) · `/gioi-thieu` (cách hoạt động).
-
----
-
-## 1. Stack
-
-| Nhóm | Công nghệ |
-|------|-----------|
-| Core | Next.js 16 (App Router), React 19, TypeScript |
-| Style | Tailwind CSS 4, shadcn/ui, IBM Plex Sans / Mono |
-| i18n | next-intl (`vi` mặc định, `en`) |
-| Data | TanStack Query, nuqs |
-| Scroll | Lenis, GSAP |
-| Forms | react-hook-form + zod |
-| Deploy | `output: 'standalone'` |
-
-Package manager: **pnpm**. Alias: `@/*` → `src/*`.
+Package manager: **pnpm**. Alias `@/*` trỏ vào `src/*`.
 
 ---
 
-## 2. Cấu trúc thư mục
+## 1. Chạy dự án
+
+```bash
+pnpm install
+pnpm dev
+```
+
+| Script                              | Việc làm                                                                                           |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                          | Dev server                                                                                         |
+| `pnpm build`                        | `lint:fix`, format toàn repo, rồi `next build`                                                     |
+| `pnpm start`                        | Chạy bản standalone sau khi build                                                                  |
+| `pnpm lint` / `pnpm lint:fix`       | ESLint                                                                                             |
+| `pnpm format` / `pnpm format:check` | Prettier                                                                                           |
+| `pnpm test`                         | Unit test bằng `node:test` (file `src/**/*.test.mjs`). Cần Node ≥ 22.18 để import thẳng file `.ts` |
+
+Xem kích thước bundle (Next 16 không in cột Size / First Load JS trong log build):
+
+```bash
+ANALYZE=true pnpm build
+```
+
+Biến môi trường (`src/configs/env.ts`):
+
+| Biến                 | Dùng cho      |
+| -------------------- | ------------- |
+| `NEXT_PUBLIC_DOMAIN` | Domain public |
+| `NEXT_PUBLIC_CMS`    | Origin CMS    |
+| `NEXT_PUBLIC_API`    | Prefix API    |
+
+Build dùng `output: 'standalone'`.
+
+---
+
+## 2. Stack
+
+| Nhóm   | Công nghệ                                     |
+| ------ | --------------------------------------------- |
+| Core   | Next.js 16 (App Router), React 19, TypeScript |
+| Style  | Tailwind CSS 4, shadcn/ui, font Arimo         |
+| i18n   | next-intl                                     |
+| Data   | TanStack Query, nuqs                          |
+| Motion | Lenis, AOS, GSAP, Motion                      |
+| Forms  | react-hook-form + zod                         |
+| Ảnh    | `next/image`, format webp                     |
+
+---
+
+## 3. Cấu trúc
 
 ```text
 src/
-  app/                      # App Router
-    layout.tsx              # Root: fonts, Query, nuqs, Lenis
-    not-found.tsx           # 404 ngoài locale
-    global-error.tsx        # Crash boundary (có html/body riêng)
+  app/                         # Route, layout, metadata
+    layout.tsx                 # Font, Query, nuqs, Lenis, AOS
     [locale]/
-      layout.tsx            # Validate locale + NextIntlClientProvider
-      page.tsx              # Trang chủ (docs overview)
-      gioi-thieu/page.tsx   # Giới thiệu (how it works)
-      error.tsx             # Error boundary theo locale
-      not-found.tsx         # 404 theo locale
-      [...rest]/page.tsx    # Catch-all → notFound()
+      layout.tsx               # Header + page + Footer
+      page.tsx                 # Trang chủ
+      (vi)/business-sectors/
+        page.tsx               # Danh sách lĩnh vực
+        [slug]/page.tsx        # Chi tiết một lĩnh vực
+      [...rest]/page.tsx       # Route lạ → notFound()
+  views/                       # UI theo trang, không chứa routing
+    homepage/                  # Mỗi section một folder
+    business/
+    business-detail/
+  layouts/                     # Header, footer dùng mọi trang
   components/
-    ui/                     # shadcn primitives
-    providers/              # Query, Lenis, Drawer, Sheet
-    site/                   # Section theo project (docs, …)
-  configs/                  # env, endpoints, routes
-  fetches/                  # HTTP CMS / Rank Math / CF7
-  services/                 # Domain wrappers (vd. tour)
-  i18n/                     # routing, request, navigation
-  hooks/                    # Shared hooks
-  lib/                      # cn, …
-  utils/                    # scroll, metadata, parse Rank Math
-  styles/globals.css        # Theme tokens
-  content/                  # Data tĩnh cho docs
-  proxy.ts                  # next-intl middleware (Next 16)
+    ui/                        # shadcn
+    shared/                    # Banner, slider dùng lại giữa các trang
+    providers/                 # Query, Lenis, AOS, Drawer, Sheet
+  configs/                     # env, endpoints, ROUTES
+  fetches/                     # HTTP CMS, Rank Math, CF7
+  services/                    # Bọc domain (vd. tour)
+  i18n/                        # routing, request, navigation
+  hooks/
+  lib/                         # cn()
+  styles/globals.css
+  proxy.ts                     # next-intl middleware (Next 16)
 messages/
   vi.json
   en.json
+public/                        # Ảnh, logo, svg
 ```
+
+`(vi)` là route group: **không** xuất hiện trên URL. Trang lĩnh vực vẫn là `/business-sectors`, bản tiếng Anh là `/en/business-sectors`.
+
+Page chỉ làm routing và metadata. Phần nhìn thấy nằm trong `src/views`.
 
 ---
 
-## 3. Luồng request
+## 4. Luồng request
 
 ```text
 Request
-  → src/proxy.ts                 # locale + pathname rewrite
-  → src/app/layout.tsx           # QueryProvider → NuqsAdapter → LenisProvider
-  → src/app/[locale]/layout.tsx  # setRequestLocale + messages
-  → page.tsx
+  → src/proxy.ts                    # locale + pathname
+  → src/app/layout.tsx              # Query → nuqs → Lenis → AOS
+  → src/app/[locale]/layout.tsx     # setRequestLocale, Header, Footer
+  → page.tsx                        # render view
 ```
 
-- Locale không hợp lệ → `notFound()`
-- Route không tồn tại → `[...rest]` gọi `notFound()` → `[locale]/not-found.tsx`
+Locale không có trong `routing.locales` thì `notFound()`. Route chưa có page rơi vào `[...rest]` rồi cũng `notFound()`.
 
 ---
 
-## 4. i18n & routing
+## 5. Trang
 
-Cấu hình: `src/i18n/routing.ts`
+### Đang có UI
 
-| | |
-|--|--|
-| Locales | `vi`, `en` |
-| Default | `vi` |
-| Prefix | `as-needed` → `/` = vi, `/en/...` = en |
-| Pathnames | `/gioi-thieu` (vi) ↔ `/about` (en) |
+| Việc                | URL vi                     | URL en                        | View                    |
+| ------------------- | -------------------------- | ----------------------------- | ----------------------- |
+| Trang chủ           | `/`                        | `/en`                         | `views/homepage`        |
+| Giới thiệu          | `/about`                   | `/en/about`                   | `views/about`           |
+| Lĩnh vực kinh doanh | `/business-sectors`        | `/en/business-sectors`        | `views/business`        |
+| Chi tiết lĩnh vực   | `/business-sectors/[slug]` | `/en/business-sectors/[slug]` | `views/business-detail` |
 
-### Link nội bộ
+Slug chi tiết lấy từ `SECTOR_DETAILS` trong `views/business-detail/data.ts`. `dynamicParams = false`: slug lạ trả 404. Năm slug hiện tại:
 
-Luôn dùng API từ `@/i18n/navigation` (không dùng `next/link` thuần):
+- `industrial-services`
+- `industrial-real-estate`
+- `defense-security`
+- `green-economy`
+- `advanced-materials`
+
+### Đã khai báo route, chưa có page
+
+Menu và `ROUTES` đã trỏ tới các path này. Vào link sẽ 404 cho đến khi có `page.tsx`:
+
+| Key        | Internal pathname     | URL en                   |
+| ---------- | --------------------- | ------------------------ |
+| `investor` | `/investor-relations` | `/en/investor-relations` |
+| `projects` | `/projects`           | `/en/projects`           |
+| `news`     | `/news`               | `/en/news`               |
+| `careers`  | `/careers`            | `/en/careers`            |
+| `contact`  | `/contact`            | `/en/contact`            |
+
+### Trang chủ
+
+`views/homepage/index.tsx` ghép lần lượt:
+
+1. `banner` — hero, dùng shared `Banner`
+2. `news`
+3. `brand`
+4. `journey` — timeline
+5. `vision`
+6. `investment`
+7. `footprint` — bản đồ
+8. `partners`
+9. `projects`
+
+### Lĩnh vực kinh doanh
+
+`views/business`: `hero` rồi `sectors`. Mỗi hàng ngành là `sectors/components/row.tsx`, link sang trang chi tiết bằng slug.
+
+### Chi tiết lĩnh vực
+
+`views/business-detail` nhận `sector` và ghép: `hero`, `intro`, `projects`, `ecosystem`, `cta`. Tiêu đề section dùng chung nằm ở `components/section-heading.tsx`.
+
+### Giới thiệu
+
+`views/about` nhận `content: AboutContent` (type và mock ở `views/about/data.ts`). Page truyền `ABOUT_CONTENT`. Khi có backend, chỉ cần thay nguồn data trong `app/[locale]/(vi)/about/page.tsx`, view giữ nguyên. Nội dung hiện là tiếng Việt cho cả `/en/about`, giống trang lĩnh vực; chỉ nhãn UI nằm ở namespace `AboutPage`.
+
+Section theo thứ tự: `hero` (shared `Banner` với `animated`), `message`, `pillars`, `leadership` (card chủ tịch + marquee `InfiniteSlider`, dưới 5 người thì hiện hàng tĩnh), `history` (desktop: growth line tự chạy lặp từ mốc đầu tới mốc cuối, khung hiển thị 5 card và trượt theo line khi có hơn 5 mốc, card line đang tới có viền vàng, hover card thì nền tối; tự dừng khi section ra khỏi màn hình và chạy lại từ đầu khi vào giữa màn hình; reduced-motion hiện tĩnh 5 card đầu; mobile: list dọc, card ở giữa màn hình có viền vàng), `ecosystem` (đóng/mở danh sách công ty + sơ đồ orbit có xung tín hiệu trên spoke và viền hub quay, dừng khi ra khỏi màn hình).
+
+- Animation reveal dùng `views/about/components/reveal.tsx` (motion `whileInView`, chạy lại mỗi lần vào viewport). Phần tử có `data-reveal` / `data-reveal-path` được `globals.css` hiện ngay khi `prefers-reduced-motion: reduce`.
+- Hình học dùng chung (vị trí satellite, path và vị trí card của timeline) ở `views/about/lib/geometry.ts`, có test kèm. Số lượng item tùy data.
+- Ảnh ở `public/about/`; ảnh Tầm nhìn / Sứ mệnh / Giá trị ở `public/about/pillars/`.
+
+---
+
+## 6. Cách tách view
+
+Làm giống trang chủ: một section một folder, `index.tsx` là khung, mảnh bên trong để trong `components/`.
+
+```text
+src/views/business/
+  index.tsx
+  data.ts
+  hero/
+    index.tsx
+    components/content.tsx
+  sectors/
+    index.tsx
+    components/row.tsx
+```
+
+`index.tsx` của trang chỉ import các section, không nhét markup vào page.
+
+```tsx
+import BusinessHero from '@/views/business/hero'
+import BusinessSectors from '@/views/business/sectors'
+
+const BusinessView = () => (
+  <main>
+    <BusinessHero />
+    <BusinessSectors />
+  </main>
+)
+```
+
+Data tĩnh (danh sách ngành, dự án, copy chưa qua CMS) để cạnh view, file `data.ts`.
+
+---
+
+## 7. Banner dùng chung
+
+`src/components/shared/banner`. Trang chủ bọc nó ở `views/homepage/banner` để lấy bản dịch.
+
+`showButton` mặc định `false`. Bật nút thì truyền thêm `primary` và/hoặc `secondary`.
+
+```tsx
+import Banner from '@/components/shared/banner'
+import ROUTES from '@/configs/routes'
+
+;<Banner
+  imageSrc='/home/d-banner.png'
+  eyebrow='BATECO GROUP'
+  titleLine1='KHÁM PHÁ'
+  titleLine2='ĐỂ DẪN ĐẦU'
+  description='...'
+  showButton
+  primary={{ href: ROUTES.about, label: 'KHÁM PHÁ BATECO' }}
+  secondary={{ href: '#ecosystem', label: 'HỆ SINH THÁI ĐẦU TƯ' }}
+/>
+```
+
+`primary.href` là pathname nội bộ (qua `Link` của next-intl). `secondary.href` là URL thường, kể cả anchor `#...`.
+
+`srTitle` là `h1` chỉ cho screen reader. Không truyền thì banner không thêm `h1` — trang khác nên có `h1` riêng.
+
+Prop tùy chọn, mặc định không đổi gì: `className` (ghép vào `section`, vd. đổi chiều cao), `imageClassName` (ghép vào ảnh), `animated` (hiệu ứng vào trang bằng CSS, tắt khi giảm chuyển động). Trang Giới thiệu dùng cả ba.
+
+---
+
+## 8. Header và footer
+
+Header: `src/layouts/header`. Footer: `src/layouts/footer`. Cả hai gắn trong `[locale]/layout.tsx`.
+
+Menu: `layouts/header/data.ts` (`LEFT_NAV`, `RIGHT_NAV`). Copy nằm ở namespace `Header` trong `messages/*.json`.
+
+Hai kiểu header:
+
+| Trang                             | Lúc ở đầu                                 | Khi cuộn quá 80px                                                                                                   |
+| --------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Trang chủ                         | Trong suốt, đè lên banner                 | Nền xanh `rgba(31, 56, 100, 0.9)`, chữ và logo trắng, có blur. Kéo xuống thì header trượt lên, kéo lên thì hiện lại |
+| Route trong `SOLID_HEADER_ROUTES` | Nền trắng, banner bắt đầu bên dưới header | Cùng kiểu xanh như trang chủ                                                                                        |
+
+Thêm trang header trắng: sửa `src/layouts/header/solid-routes.ts`.
+
+```ts
+export const SOLID_HEADER_ROUTES = [ROUTES.business] as const
+```
+
+Trang Giới thiệu dùng header trong suốt như trang chủ, nên không nằm trong danh sách này.
+
+Dùng pathname nội bộ (`/business-sectors`), không viết URL tiếng Anh. `usePathname` của next-intl trả pathname nội bộ, nên `/en/business-sectors` vẫn khớp. Route con (`/business-sectors/[slug]`) cũng được tính.
+
+---
+
+## 9. i18n
+
+Cấu hình: `src/i18n/routing.ts`.
+
+|          |                                                     |
+| -------- | --------------------------------------------------- |
+| Locales  | `vi`, `en`                                          |
+| Mặc định | `vi`                                                |
+| Prefix   | `as-needed` — `/` là tiếng Việt, `/en` là tiếng Anh |
+| Detect   | tắt (`localeDetection: false`)                      |
+
+Link nội bộ luôn lấy từ `@/i18n/navigation`, không dùng `next/link`.
 
 ```tsx
 import { Link } from '@/i18n/navigation'
 import ROUTES from '@/configs/routes'
 
-<Link href={ROUTES.home}>Home</Link>
-<Link href={ROUTES.about}>About</Link>
+<Link href={ROUTES.business}>Lĩnh vực</Link>
+
+<Link
+  href={{ pathname: '/business-sectors/[slug]', params: { slug: 'industrial-services' } }}
+>
+  Xem thêm
+</Link>
 ```
 
-`ROUTES` dùng **internal pathname** (`/gioi-thieu`), next-intl tự map URL public theo locale.
+`ROUTES` và key trong `pathnames` là pathname nội bộ. next-intl tự đổi sang URL public theo locale.
+
+Đổi ngôn ngữ: `LocaleSwitcher` gọi `router.replace(pathname, { locale })`.
 
 ### Messages
 
-- File: `messages/vi.json`, `messages/en.json`
-- Load: `src/i18n/request.ts`
-- Trong page: `useTranslations('Namespace')`
+- `messages/vi.json`, `messages/en.json`
+- Load ở `src/i18n/request.ts`
+- Server: `getTranslations('Banner')` hoặc `useTranslations` trong client
+- Namespace đang dùng gồm `Header`, `Banner`, `HomeNews`, phần footer
 
-**Lưu ý ICU:** không viết `{CMS}` / `{locale}` trong string dịch nếu không truyền biến — next-intl sẽ coi đó là placeholder.
+Không viết `{tên}` trong chuỗi dịch nếu không truyền biến. next-intl coi đó là placeholder ICU và sẽ lỗi.
 
 ---
 
-## 5. Thêm page mới
+## 10. Thêm một trang
 
-1. Tạo file:
+1. Khai báo pathname trong `src/i18n/routing.ts` nếu URL hai ngôn ngữ khác nhau.
+2. Thêm key vào `src/configs/routes.ts`.
+3. Thêm mục menu trong `src/layouts/header/data.ts` nếu cần hiện trên header.
+4. Tạo view:
 
 ```text
-src/app/[locale]/ten-trang/page.tsx
+src/views/ten-trang/index.tsx
+src/views/ten-trang/hero/index.tsx
+src/views/ten-trang/hero/components/content.tsx
 ```
 
-2. Skeleton:
+5. Tạo page. Page server đọc `params` bằng `await`, gọi `setRequestLocale` trước khi dùng next-intl.
 
 ```tsx
-import { useTranslations } from 'next-intl'
+import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
-import { use } from 'react'
 
-type Props = { params: Promise<{ locale: string }> }
+import ExampleView from '@/views/example'
 
-export default function ExamplePage({ params }: Props) {
-  const { locale } = use(params)
-  setRequestLocale(locale)
-
-  const t = useTranslations('ExamplePage')
-  return <h1>{t('title')}</h1>
+export const metadata: Metadata = {
+  title: 'Tiêu đề | Bateco Group',
 }
+
+type Props = {
+  params: Promise<{ locale: string }>
+}
+
+const ExamplePage = async ({ params }: Props) => {
+  const { locale } = await params
+  setRequestLocale(locale)
+  return <ExampleView />
+}
+
+export default ExamplePage
 ```
 
-3. Thêm pathname trong `src/i18n/routing.ts` (nếu URL khác nhau theo ngôn ngữ):
+Đặt file tại `src/app/[locale]/ten-trang/page.tsx`. Route group chỉ dùng khi cần chung layout mà không muốn thêm đoạn URL.
 
-```ts
-pathnames: {
-  '/': '/',
-  '/gioi-thieu': { vi: '/gioi-thieu', en: '/about' },
-  '/ten-trang': { vi: '/ten-trang', en: '/example' },
-},
-```
-
-4. Thêm `ROUTES` nếu cần:
-
-```ts
-// src/configs/routes.ts
-const ROUTES = {
-  home: '/',
-  about: '/gioi-thieu',
-  example: '/ten-trang',
-} as const
-```
-
-5. Thêm copy vào `messages/vi.json` và `messages/en.json`.
+6. Copy mới thì thêm cả `vi.json` và `en.json`.
+7. Trang không muốn header đè banner: thêm `ROUTES` tương ứng vào `SOLID_HEADER_ROUTES`.
 
 ---
 
-## 6. Data layer
+## 11. Data
 
 ```text
-configs/  →  fetches/  →  services/  →  page / component
+configs/  →  fetches/  →  services/  →  page hoặc view
 ```
 
-| Tầng | Vai trò | Ví dụ |
-|------|---------|--------|
-| `configs/env.ts` | `DOMAIN`, `CMS`, `API` từ env | `ENV.CMS` |
-| `configs/endpoints.ts` | Path API | `ENDPOINTS.tour.list` |
-| `fetches/fetchData.ts` | `fetch(CMS + API + endpoint)` | GET/POST generic |
-| `services/*` | Bọc domain | `tourService.getTours()` |
+| Tầng                   | Vai trò                                       |
+| ---------------------- | --------------------------------------------- |
+| `configs/env.ts`       | `DOMAIN`, `CMS`, `API`                        |
+| `configs/endpoints.ts` | Path API                                      |
+| `fetches/fetchData.ts` | `fetch` tới CMS                               |
+| `services/*`           | Hàm theo domain, vd. `tourService.getTours()` |
 
-### Gọi trên Server Component
+Nội dung đang hiển thị (ngành, tin, dự án, đối tác) là data tĩnh trong `views/**/data.ts`, chưa lấy từ CMS.
+
+Server Component:
 
 ```tsx
 import tourService from '@/services/tour'
@@ -180,7 +373,7 @@ import tourService from '@/services/tour'
 const tours = await tourService.getTours()
 ```
 
-### Gọi trên Client (TanStack Query)
+Client, TanStack Query:
 
 ```tsx
 'use client'
@@ -193,9 +386,7 @@ const { data } = useQuery({
 })
 ```
 
-Provider đã gắn ở root (`QueryProvider`). DevTools bật sẵn.
-
-### URL state (nuqs)
+`QueryProvider` gắn ở root. URL state dùng nuqs, `NuqsAdapter` cũng ở root:
 
 ```tsx
 'use client'
@@ -204,80 +395,74 @@ import { useQueryState } from 'nuqs'
 const [q, setQ] = useQueryState('q')
 ```
 
-`NuqsAdapter` đã wrap trong root layout.
-
 ---
 
-## 7. Providers
+## 12. Provider
 
-| Provider | File | Gắn ở |
-|----------|------|--------|
-| TanStack Query | `components/providers/query-provider.tsx` | root layout |
-| nuqs | `nuqs/adapters/next/app` | root layout |
-| Lenis | `components/providers/lenis-provider.tsx` | root layout |
-| Drawer / Sheet | `drawer-provider.tsx`, `sheet-provider.tsx` | mount khi cần |
+| Provider       | File                                        | Gắn ở       |
+| -------------- | ------------------------------------------- | ----------- |
+| TanStack Query | `components/providers/query-provider.tsx`   | root layout |
+| nuqs           | `nuqs/adapters/next/app`                    | root layout |
+| Lenis          | `components/providers/lenis-provider.tsx`   | root layout |
+| AOS            | `components/providers/aos-provider.tsx`     | root layout |
+| Drawer / Sheet | `drawer-provider.tsx`, `sheet-provider.tsx` | khi cần     |
 
-### Lenis
+AOS khởi tạo một lần: 900ms, `ease-out-cubic`, `once: true`. `prefers-reduced-motion: reduce` thì tắt animation. Đổi route thì `refreshHard()` để bắt phần tử mới.
+
+Animation riêng của trang lĩnh vực là `business-rise` trong `globals.css` (lên khoảng `1.25rem`). Hero trang đó không dùng AOS vì `transform` làm vỡ chữ gradient; dùng class `business-hero-rise` và `business-hero-fade`.
+
+Lenis:
 
 ```tsx
 'use client'
 import { useLenis } from 'lenis/react'
 
 const lenis = useLenis()
-// lenis?.scrollTo(0)
 ```
 
 ---
 
-## 8. UI (shadcn)
+## 13. UI
 
-- Components: `src/components/ui/*`
-- Utility class merge: `import { cn } from '@/lib/utils'`
-- Thêm component: dùng CLI shadcn theo `components.json`
-
-Section theo site: đặt ở `src/components/site/`.
-
----
-
-## 9. SEO / CMS helpers
-
-| File | Mục đích |
-|------|----------|
-| `fetches/getMetaDataRankMath.ts` | Lấy head Rank Math |
-| `utils/parseRankMathHead.ts` | Parse HTML head |
-| `utils/metadataValues.ts` | Map metadata |
-| `fetches/cf7Request.ts` | Submit Contact Form 7 |
-
-Env cần có: `NEXT_PUBLIC_DOMAIN`, `NEXT_PUBLIC_CMS`, `NEXT_PUBLIC_API` (xem README).
+- Primitive: `src/components/ui/*`, thêm bằng CLI shadcn (`components.json`)
+- Dùng lại giữa các trang: `src/components/shared/*`
+- Class: `import { cn } from '@/lib/utils'`
+- Ảnh tĩnh để trong `public/`, dẫn bằng path tuyệt đối (`/home/d-banner.png`, `/header/d-logo.png`)
 
 ---
 
-## 10. Error & 404
+## 14. SEO và form CMS
 
-| File | Khi nào |
-|------|---------|
-| `[locale]/not-found.tsx` | `notFound()` trong locale |
-| `app/not-found.tsx` | 404 ngoài locale tree |
-| `[locale]/error.tsx` | Runtime error trong locale |
-| `app/global-error.tsx` | Lỗi root (thay cả html/body) |
+| File                             | Việc                   |
+| -------------------------------- | ---------------------- |
+| `fetches/getMetaDataRankMath.ts` | Lấy head Rank Math     |
+| `utils/parseRankMathHead.ts`     | Parse HTML head        |
+| `utils/metadataValues.ts`        | Map sang metadata Next |
+| `fetches/cf7Request.ts`          | Gửi Contact Form 7     |
+| `app/robots.ts`                  | robots.txt             |
 
----
-
-## 11. Convention nhanh
-
-1. Page mới luôn nằm trong `app/[locale]/…`
-2. `setRequestLocale(locale)` trước khi dùng next-intl trên server
-3. Navigate bằng `@/i18n/navigation` + internal pathname
-4. Không để `{variable}` trong JSON messages nếu không truyền giá trị
-5. Fetch CMS qua `services` → `fetches`, không hardcode URL trong page
-6. Client-only (Lenis, Query hooks, nuqs) → `'use client'`
+Metadata từng trang export từ `page.tsx` (`title`, `description`, hoặc `generateMetadata` khi phụ thuộc slug).
 
 ---
 
-## 12. URL tham chiếu
+## 15. Lỗi và 404
 
-| Locale | Home | Giới thiệu |
-|--------|------|------------|
-| vi | `/` | `/gioi-thieu` |
-| en | `/en` | `/en/about` |
-# bateco-group
+| File                     | Khi nào                             |
+| ------------------------ | ----------------------------------- |
+| `[locale]/not-found.tsx` | `notFound()` trong locale           |
+| `app/not-found.tsx`      | 404 ngoài cây locale                |
+| `[locale]/error.tsx`     | Lỗi runtime trong locale            |
+| `app/global-error.tsx`   | Lỗi root, tự render `html` / `body` |
+
+---
+
+## 16. Quy ước
+
+1. Page nằm trong `app/[locale]/…`. View nằm trong `views/`. Không viết UI dài trong `page.tsx`.
+2. Server Component gọi `setRequestLocale(locale)` trước next-intl.
+3. Điều hướng bằng `@/i18n/navigation` và pathname nội bộ.
+4. Không để `{biến}` trong JSON nếu không truyền giá trị.
+5. Gọi CMS qua `services` → `fetches`. Không gắn URL CMS trong page.
+6. Client-only (Lenis, Query, nuqs, AOS hook) thì `'use client'`.
+7. Section mới: folder + `index.tsx` + `components/` cho phần con.
+8. Header trắng, không đè banner: thêm route vào `SOLID_HEADER_ROUTES`.

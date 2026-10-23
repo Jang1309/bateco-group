@@ -2,7 +2,6 @@ import { notFound } from 'next/navigation'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 
-import Header from '@/layouts/header'
 import { routing } from '@/i18n/routing'
 
 type Props = {
@@ -25,8 +24,9 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <NextIntlClientProvider>
-      <Header />
-      {children}
+      {/* overflow-x-clip trên wrapper: Chrome mobile bỏ qua overflow của body và nới rộng viewport
+          khi phần tử AOS (fade-left) tràn phải, làm header fixed bị kéo rộng theo */}
+      <div className='overflow-x-clip'>{children}</div>
     </NextIntlClientProvider>
   )
 }

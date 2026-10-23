@@ -2,6 +2,7 @@
 
 import { ChevronDown } from 'lucide-react'
 import Image from 'next/image'
+import { useParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 
 import {
@@ -14,14 +15,14 @@ import { usePathname, useRouter } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
 
-const LOCALE_META = {
+export const LOCALE_META = {
   vi: { flag: '/header/flag-vn.svg', labelKey: 'localeVi' as const },
   en: { flag: '/header/flag-en.svg', labelKey: 'localeEn' as const },
 } as const
 
 type Locale = (typeof routing.locales)[number]
 
-function Flag({ src }: { src: string }) {
+export function Flag({ src }: { src: string }) {
   return (
     <Image
       src={src}
@@ -33,24 +34,36 @@ function Flag({ src }: { src: string }) {
   )
 }
 
-export default function LocaleSwitcher({ className }: { className?: string }) {
-  const t = useTranslations('Header')
+export function useSwitchLocale() {
   const locale = useLocale() as Locale
   const router = useRouter()
   const pathname = usePathname()
-  const current = LOCALE_META[locale] ?? LOCALE_META.vi
+  const params = useParams()
 
   const switchLocale = (next: Locale) => {
     if (next === locale) return
-    router.replace(pathname, { locale: next })
+    // Route động (vd. /business-sectors/[slug]) cần truyền kèm params để dựng lại URL
+    router.replace(
+      // @ts-expect-error -- params luôn khớp với pathname hiện tại
+      { pathname, params },
+      { locale: next },
+    )
   }
+
+  return { locale, switchLocale }
+}
+
+export default function LocaleSwitcher({ className }: { className?: string }) {
+  const t = useTranslations('Header')
+  const { locale, switchLocale } = useSwitchLocale()
+  const current = LOCALE_META[locale] ?? LOCALE_META.vi
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
         aria-label={t('localeLabel')}
         className={cn(
-          'flex-y-center gap-[0.5rem] rounded-sm text-[0.75rem] font-medium text-[#2a2a2a] outline-none transition-colors hover:text-[#1e3a6e] focus-visible:ring-2 focus-visible:ring-[#1e3a6e]/50',
+          'header-on-scroll flex-y-center gap-[0.5rem] rounded-sm text-[0.75rem] font-medium text-[#2a2a2a] outline-none transition-colors hover:text-[#1e3a6e] focus-visible:ring-2 focus-visible:ring-[#1e3a6e]/50',
           className,
         )}
       >

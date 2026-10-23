@@ -14,41 +14,68 @@ export default function GlobalError({ error, reset }: Props) {
 
   return (
     <html lang='vi'>
-      <body className='antialiased'>
+      <body
+        style={{
+          margin: 0,
+          minHeight: '100dvh',
+          background: '#FDFBF7',
+          color: '#1a2b48',
+          fontFamily: 'system-ui, sans-serif',
+        }}
+      >
         <main
           style={{
             display: 'flex',
-            minHeight: '100vh',
+            minHeight: '100dvh',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             gap: '1rem',
             padding: '1.5rem',
             textAlign: 'center',
-            fontFamily: 'system-ui, sans-serif',
           }}
         >
-          <p style={{ margin: 0, fontSize: '0.875rem', color: '#737373' }}>Error</p>
-          <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 600 }}>
+          <p
+            style={{
+              margin: 0,
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              color: '#b5935e',
+            }}
+          >
+            Error
+          </p>
+          <h1
+            style={{
+              margin: 0,
+              fontSize: '1.75rem',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+            }}
+          >
             Something went wrong
           </h1>
-          <p style={{ margin: 0, maxWidth: '28rem', color: '#737373' }}>
+          <p style={{ margin: 0, maxWidth: '28rem', color: '#475569', lineHeight: 1.6 }}>
             An unexpected error occurred. Please try again.
           </p>
           <button
             type='button'
             onClick={reset}
             style={{
-              marginTop: '0.5rem',
-              height: '2.5rem',
-              padding: '0 1rem',
+              marginTop: '1rem',
+              height: '2.75rem',
+              padding: '0 1.5rem',
               border: 'none',
-              borderRadius: '0.375rem',
-              background: '#171717',
-              color: '#fafafa',
+              background: '#b5935e',
+              color: '#fff',
               fontSize: '0.875rem',
-              fontWeight: 500,
+              fontWeight: 700,
+              letterSpacing: '0.04rem',
+              textTransform: 'uppercase',
               cursor: 'pointer',
+              boxShadow: '0 0.25rem 0.75rem rgba(181,147,94,0.35)',
             }}
           >
             Try again

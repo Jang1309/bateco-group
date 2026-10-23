@@ -1,27 +1,47 @@
-import Image from 'next/image'
+import type { ComponentProps } from 'react'
 
-import BannerContent from './components/content'
+import Banner from '@/components/shared/banner'
+import { Link } from '@/i18n/navigation'
+import type { HomepageBanner } from '@/interfaces/homepage.interface'
 
-const Banner = () => {
+const stripHtml = (value?: string) =>
+  value
+    ?.replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim() || ''
+
+const FALLBACK = '/home/d-banner.png'
+
+const HomeBanner = ({ data }: { data?: HomepageBanner }) => {
+  const plainTitle = stripHtml(data?.title) || 'Bateco Group'
+  const imageSrc = data?.background_pc || data?.background_mobile || FALLBACK
+  const imageSrcMobile = data?.background_mobile || data?.background_pc || FALLBACK
+  const primary =
+    data?.button_1?.url && data.button_1.title
+      ? {
+          href: data.button_1.url as ComponentProps<typeof Link>['href'],
+          label: data.button_1.title,
+        }
+      : undefined
+  const secondary =
+    data?.button_2?.url && data.button_2.title
+      ? { href: data.button_2.url, label: data.button_2.title }
+      : undefined
+
   return (
-    <section className='relative w-full overflow-hidden'>
-      <h1 className='sr-only'>Bateco Group</h1>
-      <Image
-        src='/home/d-banner.png'
-        alt='banner'
-        width={1000}
-        height={1000}
-        unoptimized
-        priority
-        className='h-auto w-full'
-      />
-      <div
-        aria-hidden
-        className='pointer-events-none absolute inset-y-0 left-0 w-[80%] bg-[linear-gradient(90deg,#fff_0%,#fff_30%,rgba(255,255,255,0)_100%)]'
-      />
-      <BannerContent />
-    </section>
+    <Banner
+      imageSrc={imageSrc}
+      imageSrcMobile={imageSrcMobile}
+      imageAlt={plainTitle}
+      srTitle={plainTitle}
+      eyebrow={data?.subtitle || ''}
+      titleHtml={data?.title}
+      description={data?.desc || ''}
+      showButton={Boolean(primary || secondary)}
+      primary={primary}
+      secondary={secondary}
+    />
   )
 }
 
-export default Banner
+export default HomeBanner

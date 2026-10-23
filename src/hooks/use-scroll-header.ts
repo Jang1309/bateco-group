@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 
 import { useIsClient } from '@/hooks/use-is-client'
 
-export function useScrollHeader(headerRef: React.RefObject<HTMLElement>) {
+export function useScrollHeader(headerRef: React.RefObject<HTMLElement | null>) {
   const lastScrollY = useRef(0)
   const ticking = useRef(false)
   const isClient = useIsClient()
@@ -16,6 +16,7 @@ export function useScrollHeader(headerRef: React.RefObject<HTMLElement>) {
     if (!el) return
 
     lastScrollY.current = window.scrollY
+    el.style.transform = 'translateY(0)'
 
     const updateBackground = () => {
       if (ticking.current) return
@@ -24,9 +25,11 @@ export function useScrollHeader(headerRef: React.RefObject<HTMLElement>) {
       requestAnimationFrame(() => {
         const scrollY = window.scrollY
         const isScrolled = scrollY > 80
+
         el.classList.toggle('header-scrolled', isScrolled)
-        el.style.backgroundColor = isScrolled ? 'rgb(253 253 254 / 0.52)' : 'transparent'
+        el.style.backgroundColor = isScrolled ? 'rgba(31, 56, 100, 0.9)' : 'transparent'
         el.style.backdropFilter = isScrolled ? 'blur(1.25rem)' : 'none'
+        el.style.boxShadow = 'none'
 
         if (scrollY <= 0) {
           el.style.transform = 'translateY(0)'
@@ -42,7 +45,9 @@ export function useScrollHeader(headerRef: React.RefObject<HTMLElement>) {
     updateBackground()
     window.addEventListener('scroll', updateBackground, { passive: true })
 
-    return () => window.removeEventListener('scroll', updateBackground)
+    return () => {
+      window.removeEventListener('scroll', updateBackground)
+    }
   }, [headerRef, isClient])
 
   return headerRef

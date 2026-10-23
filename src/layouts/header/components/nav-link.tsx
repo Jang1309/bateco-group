@@ -1,14 +1,11 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
-
 import { Link, usePathname } from '@/i18n/navigation'
+import type { ILink } from '@/interfaces/link.interface'
 import { cn } from '@/lib/utils'
 
-import type { NavItem } from '../data'
-
 type NavLinkProps = {
-  item: NavItem
+  link?: ILink
   className?: string
   activeClassName?: string
   inactiveClassName?: string
@@ -16,27 +13,28 @@ type NavLinkProps = {
 }
 
 export default function NavLink({
-  item,
+  link,
   className,
   activeClassName = 'text-[#3b6db5]',
   inactiveClassName = 'text-[#2a2a2a] hover:text-[#1e3a6e]',
   onClick,
 }: NavLinkProps) {
-  const t = useTranslations('Header')
   const pathname = usePathname()
-  const active = pathname === item.href || pathname.startsWith(`${item.href}/`)
+  const href = link?.url || '/'
+  const active = pathname === href || pathname.startsWith(`${href}/`)
 
   return (
     <Link
-      href={item.href}
+      href={href}
+      target={link?.target}
       onClick={onClick}
       className={cn(
-        'whitespace-nowrap text-[0.85rem] font-medium transition-colors duration-200',
+        'header-on-scroll whitespace-nowrap text-[0.85rem] font-semibold uppercase transition-colors duration-200',
         active ? activeClassName : inactiveClassName,
         className,
       )}
     >
-      {t(item.key)}
+      {link?.title}
     </Link>
   )
 }

@@ -31,13 +31,29 @@ export const routing = defineRouting({
       vi: '/du-an',
       en: '/projects',
     },
+    '/du-an/[slug]': {
+      vi: '/du-an/[slug]',
+      en: '/projects/[slug]',
+    },
     '/tin-tuc': {
       vi: '/tin-tuc',
       en: '/news',
     },
+    '/tin-tuc/[slug]': {
+      vi: '/tin-tuc/[slug]',
+      en: '/news/[slug]',
+    },
+    '/tin-tuc/danh-muc/[slug]': {
+      vi: '/tin-tuc/danh-muc/[slug]',
+      en: '/news/category/[slug]',
+    },
     '/co-hoi-nghe-nghiep': {
       vi: '/co-hoi-nghe-nghiep',
       en: '/careers',
+    },
+    '/co-hoi-nghe-nghiep/[slug]': {
+      vi: '/co-hoi-nghe-nghiep/[slug]',
+      en: '/careers/[slug]',
     },
     '/lien-he': {
       vi: '/lien-he',

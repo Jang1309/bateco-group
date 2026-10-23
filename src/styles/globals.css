@@ -503,3 +503,142 @@ input[type='number'] {
     opacity: 1 !important;
   }
 }
+
+/* Nội dung bài viết từ CMS (render bằng dangerouslySetInnerHTML) */
+.news-content {
+  color: #334155;
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.news-content table,
+.news-content pre,
+.news-content iframe,
+.news-content video,
+.news-content img {
+  max-width: 100%;
+}
+
+.news-content table {
+  display: block;
+  overflow-x: auto;
+}
+
+.news-content > * + * {
+  margin-top: 1.25rem;
+}
+
+.news-content h2,
+.news-content h3 {
+  color: #1a2b48;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.news-content h2 {
+  margin-top: 2.75rem;
+  font-size: 1.625rem;
+}
+
+.news-content h3 {
+  margin-top: 2.25rem;
+  font-size: 1.3125rem;
+}
+
+.news-content strong {
+  color: #1a2b48;
+  font-weight: 700;
+}
+
+.news-content a {
+  color: #b5935e;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.news-content ul,
+.news-content ol {
+  padding-left: 1.375rem;
+}
+
+.news-content ul {
+  list-style: disc;
+}
+
+.news-content ol {
+  list-style: decimal;
+}
+
+.news-content li + li {
+  margin-top: 0.5rem;
+}
+
+.news-content li::marker {
+  color: #b5935e;
+}
+
+.news-content figure,
+.news-content img {
+  margin-top: 2.25rem;
+  margin-bottom: 2.25rem;
+}
+
+.news-content img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.875rem;
+}
+
+.news-content figure img {
+  margin: 0;
+}
+
+.news-content figcaption {
+  margin-top: 0.75rem;
+  color: #94a3b8;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.news-content blockquote {
+  margin: 2.5rem 0;
+  border-left: 0.1875rem solid #b5935e;
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: #faf6ef;
+  padding: 1.5rem 1.75rem;
+  color: #1a2b48;
+  font-size: 1.1875rem;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+@media (max-width: 639px) {
+  .news-content {
+    font-size: 1rem;
+  }
+
+  .news-content h2 {
+    font-size: 1.375rem;
+  }
+
+  .news-content h3 {
+    font-size: 1.1875rem;
+  }
+
+  .news-content blockquote {
+    padding: 1.25rem;
+    font-size: 1.0625rem;
+  }
+}
+
+html > body[data-scroll-locked] {
+  overflow: auto !important;
+  --removed-body-scroll-bar-size: 0px;
+  margin-right: 0 !important;
+}

@@ -1,6 +1,6 @@
 const HeroContent = () => {
   return (
-    <div className='relative mx-auto max-w-[70rem] px-[1.5rem] text-center'>
+    <div className='relative z-[1] mx-auto max-w-[70rem] px-[1.5rem] text-center'>
       <p
         className='business-hero-rise inline-flex items-center gap-[0.75rem] text-[0.8125rem] font-semibold tracking-[0.25em] text-[#B88E4F] uppercase'
         style={{ animationDelay: '40ms' }}

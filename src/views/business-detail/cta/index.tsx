@@ -3,11 +3,14 @@ import Image from 'next/image'
 
 import ROUTES from '@/configs/routes'
 import { Link } from '@/i18n/navigation'
-import { OFFICES } from '@/layouts/footer/data'
 
 import ContactItem from './components/contact-item'
 
-const HEAD_OFFICE = OFFICES[0]
+// shortcut: hardcoded until site-setting wired into this CTA
+const HEAD_OFFICE = {
+  hotline: '097 380 8808',
+  email: 'info@batecogroup.vn',
+}
 
 const SectorCta = () => {
   return (

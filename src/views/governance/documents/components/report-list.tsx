@@ -1,3 +1,4 @@
+import type { GovernanceBasePath } from '@/views/governance/base-path'
 import { REPORTS_PER_PAGE, type ReportsCategory } from '@/views/governance/data'
 
 import GovernancePagination, { paginate } from './pagination'
@@ -7,9 +8,10 @@ type ReportListProps = {
   category: ReportsCategory
   heading: string
   page: number
+  basePath?: GovernanceBasePath
 }
 
-const ReportList = ({ category, heading, page }: ReportListProps) => {
+const ReportList = ({ category, heading, page, basePath }: ReportListProps) => {
   const {
     items: reports,
     currentPage,
@@ -49,6 +51,7 @@ const ReportList = ({ category, heading, page }: ReportListProps) => {
         categoryId={category.id}
         currentPage={currentPage}
         totalPages={totalPages}
+        basePath={basePath}
       />
     </>
   )

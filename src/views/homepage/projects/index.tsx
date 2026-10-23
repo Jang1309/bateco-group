@@ -9,14 +9,13 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import ROUTES from '@/configs/routes'
 import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
-
-import { PROJECTS } from './data'
+import ProjectCard from '@/views/homepage/projects/components/project-card'
+import { PROJECTS } from '@/views/homepage/projects/data'
 
 import 'swiper/css'
 
-// Nút nổi 2 bên slider, căn giữa theo chiều cao card
 const NAV_BUTTON =
-  'absolute top-1/2 z-10 flex size-[3rem] -translate-y-1/2 items-center justify-center rounded-full border border-[#C6A15B] bg-white text-[#B88E4F] shadow-[0_0.5rem_1.25rem_rgba(153,110,39,0.2)] transition-[background-color,color,opacity] duration-300 hover:bg-[#C6A15B] hover:text-white disabled:pointer-events-none disabled:opacity-0 xsm:size-[2.5rem]'
+  'absolute top-1/2 z-10 flex size-[3rem] -translate-y-1/2 items-center justify-center rounded-full border border-[#C6A15B] bg-white text-[#B88E4F] shadow-[0_0.5rem_1.25rem_rgba(153,110,39,0.2)] transition-[background-color,color,opacity] duration-300 hover:bg-[#C6A15B] hover:text-white disabled:pointer-events-none disabled:opacity-0 xsm:hidden'
 
 const Projects = () => {
   const [swiper, setSwiper] = useState<SwiperType | null>(null)
@@ -92,35 +91,13 @@ const Projects = () => {
                 key={project.title}
                 className='!h-auto'
               >
-                {/* Bọc ngoài để AOS không đè transition hover của card; các card hiện lần lượt */}
-                <div
-                  data-aos='fade-up'
-                  data-aos-delay={Math.min(index, 2) * 150}
-                  className='h-full'
-                >
-                  <Link
-                    href={project.href}
-                    className='group flex h-full flex-col border border-[#EADFC8] bg-white transition-[border-color,box-shadow] duration-300 hover:border-[#C6A15B] hover:shadow-[0_1rem_2.5rem_rgba(153,110,39,0.14)]'
-                  >
-                    <div className='relative aspect-[4/3] overflow-hidden bg-[#F5F5F5]'>
-                      <Image
-                        src={project.image}
-                        alt={project.title}
-                        fill
-                        sizes='(max-width: 639px) 85vw, (max-width: 1023px) 45vw, 30vw'
-                        className='object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]'
-                      />
-                    </div>
-                    <div className='flex flex-1 flex-col items-center px-[2rem] pt-[1.75rem] pb-[1.5rem] text-center xsm:px-[1.25rem]'>
-                      <h3 className='line-clamp-3 text-[1rem] leading-[1.6] font-bold tracking-[0.02em] text-[#1F2A37] uppercase transition-colors duration-300 group-hover:text-[#B88E4F]'>
-                        {project.title}
-                      </h3>
-                      <time className='mt-auto pt-[1.5rem] text-[0.75rem] font-medium tracking-[0.08em] text-[#6B7280]'>
-                        {project.date}
-                      </time>
-                    </div>
-                  </Link>
-                </div>
+                <ProjectCard
+                  title={project.title}
+                  date={project.date}
+                  image={project.image}
+                  href={project.href}
+                  aosDelay={Math.min(index, 2) * 150}
+                />
               </SwiperSlide>
             ))}
           </Swiper>

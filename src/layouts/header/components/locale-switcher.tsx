@@ -42,7 +42,7 @@ export function useSwitchLocale() {
 
   const switchLocale = (next: Locale) => {
     if (next === locale) return
-    // Route động (vd. /linh-vuc-kinh-doanh/[slug]) cần truyền kèm params để dựng lại URL
+    // Route động (vd. /business-sectors/[slug]) cần truyền kèm params để dựng lại URL
     router.replace(
       // @ts-expect-error -- params luôn khớp với pathname hiện tại
       { pathname, params },

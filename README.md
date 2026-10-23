@@ -63,7 +63,7 @@ src/
     [locale]/
       layout.tsx               # Header + page + Footer
       page.tsx                 # Trang chủ
-      (vi)/linh-vuc-kinh-doanh/
+      (vi)/business-sectors/
         page.tsx               # Danh sách lĩnh vực
         [slug]/page.tsx        # Chi tiết một lĩnh vực
       [...rest]/page.tsx       # Route lạ → notFound()
@@ -90,7 +90,7 @@ messages/
 public/                        # Ảnh, logo, svg
 ```
 
-`(vi)` là route group: **không** xuất hiện trên URL. Trang lĩnh vực vẫn là `/linh-vuc-kinh-doanh`, bản tiếng Anh là `/en/business-sectors`.
+`(vi)` là route group: **không** xuất hiện trên URL. Trang lĩnh vực vẫn là `/business-sectors`, bản tiếng Anh là `/en/business-sectors`.
 
 Page chỉ làm routing và metadata. Phần nhìn thấy nằm trong `src/views`.
 
@@ -114,20 +114,20 @@ Locale không có trong `routing.locales` thì `notFound()`. Route chưa có pag
 
 ### Đang có UI
 
-| Việc                | URL vi                        | URL en                        | View                    |
-| ------------------- | ----------------------------- | ----------------------------- | ----------------------- |
-| Trang chủ           | `/`                           | `/en`                         | `views/homepage`        |
-| Giới thiệu          | `/gioi-thieu`                 | `/en/about`                   | `views/about`           |
-| Lĩnh vực kinh doanh | `/linh-vuc-kinh-doanh`        | `/en/business-sectors`        | `views/business`        |
-| Chi tiết lĩnh vực   | `/linh-vuc-kinh-doanh/[slug]` | `/en/business-sectors/[slug]` | `views/business-detail` |
+| Việc                | URL vi                     | URL en                        | View                    |
+| ------------------- | -------------------------- | ----------------------------- | ----------------------- |
+| Trang chủ           | `/`                        | `/en`                         | `views/homepage`        |
+| Giới thiệu          | `/about`                   | `/en/about`                   | `views/about`           |
+| Lĩnh vực kinh doanh | `/business-sectors`        | `/en/business-sectors`        | `views/business`        |
+| Chi tiết lĩnh vực   | `/business-sectors/[slug]` | `/en/business-sectors/[slug]` | `views/business-detail` |
 
 Slug chi tiết lấy từ `SECTOR_DETAILS` trong `views/business-detail/data.ts`. `dynamicParams = false`: slug lạ trả 404. Năm slug hiện tại:
 
-- `dich-vu-cong-nghiep`
-- `bat-dong-san-ha-tang-cong-nghiep`
-- `an-ninh-quoc-phong`
-- `kinh-te-xanh-phat-trien-ben-vung`
-- `san-xuat-vat-lieu-moi`
+- `industrial-services`
+- `industrial-real-estate`
+- `defense-security`
+- `green-economy`
+- `advanced-materials`
 
 ### Đã khai báo route, chưa có page
 
@@ -135,11 +135,11 @@ Menu và `ROUTES` đã trỏ tới các path này. Vào link sẽ 404 cho đến
 
 | Key        | Internal pathname     | URL en                   |
 | ---------- | --------------------- | ------------------------ |
-| `investor` | `/quan-he-nha-dau-tu` | `/en/investor-relations` |
-| `projects` | `/du-an`              | `/en/projects`           |
-| `news`     | `/tin-tuc`            | `/en/news`               |
-| `careers`  | `/co-hoi-nghe-nghiep` | `/en/careers`            |
-| `contact`  | `/lien-he`            | `/en/contact`            |
+| `investor` | `/investor-relations` | `/en/investor-relations` |
+| `projects` | `/projects`           | `/en/projects`           |
+| `news`     | `/news`               | `/en/news`               |
+| `careers`  | `/careers`            | `/en/careers`            |
+| `contact`  | `/contact`            | `/en/contact`            |
 
 ### Trang chủ
 
@@ -165,13 +165,13 @@ Menu và `ROUTES` đã trỏ tới các path này. Vào link sẽ 404 cho đến
 
 ### Giới thiệu
 
-`views/about` nhận `content: AboutContent` (type và mock ở `views/about/data.ts`). Page truyền `ABOUT_CONTENT`. Khi có backend, chỉ cần thay nguồn data trong `app/[locale]/(vi)/gioi-thieu/page.tsx`, view giữ nguyên. Nội dung hiện là tiếng Việt cho cả `/en/about`, giống trang lĩnh vực; chỉ nhãn UI nằm ở namespace `AboutPage`.
+`views/about` nhận `content: AboutContent` (type và mock ở `views/about/data.ts`). Page truyền `ABOUT_CONTENT`. Khi có backend, chỉ cần thay nguồn data trong `app/[locale]/(vi)/about/page.tsx`, view giữ nguyên. Nội dung hiện là tiếng Việt cho cả `/en/about`, giống trang lĩnh vực; chỉ nhãn UI nằm ở namespace `AboutPage`.
 
 Section theo thứ tự: `hero` (shared `Banner` với `animated`), `message`, `pillars`, `leadership` (card chủ tịch + marquee `InfiniteSlider`, dưới 5 người thì hiện hàng tĩnh), `history` (desktop: growth line tự chạy lặp từ mốc đầu tới mốc cuối, khung hiển thị 5 card và trượt theo line khi có hơn 5 mốc, card line đang tới có viền vàng, hover card thì nền tối; tự dừng khi section ra khỏi màn hình và chạy lại từ đầu khi vào giữa màn hình; reduced-motion hiện tĩnh 5 card đầu; mobile: list dọc, card ở giữa màn hình có viền vàng), `ecosystem` (đóng/mở danh sách công ty + sơ đồ orbit có xung tín hiệu trên spoke và viền hub quay, dừng khi ra khỏi màn hình).
 
 - Animation reveal dùng `views/about/components/reveal.tsx` (motion `whileInView`, chạy lại mỗi lần vào viewport). Phần tử có `data-reveal` / `data-reveal-path` được `globals.css` hiện ngay khi `prefers-reduced-motion: reduce`.
 - Hình học dùng chung (vị trí satellite, path và vị trí card của timeline) ở `views/about/lib/geometry.ts`, có test kèm. Số lượng item tùy data.
-- Ảnh ở `public/gioi-thieu/`; ảnh Tầm nhìn / Sứ mệnh / Giá trị ở `public/gioi-thieu/pillars/`.
+- Ảnh ở `public/about/`; ảnh Tầm nhìn / Sứ mệnh / Giá trị ở `public/about/pillars/`.
 
 ---
 
@@ -260,7 +260,7 @@ export const SOLID_HEADER_ROUTES = [ROUTES.business] as const
 
 Trang Giới thiệu dùng header trong suốt như trang chủ, nên không nằm trong danh sách này.
 
-Dùng pathname nội bộ (`/linh-vuc-kinh-doanh`), không viết URL tiếng Anh. `usePathname` của next-intl trả pathname nội bộ, nên `/en/business-sectors` vẫn khớp. Route con (`/linh-vuc-kinh-doanh/[slug]`) cũng được tính.
+Dùng pathname nội bộ (`/business-sectors`), không viết URL tiếng Anh. `usePathname` của next-intl trả pathname nội bộ, nên `/en/business-sectors` vẫn khớp. Route con (`/business-sectors/[slug]`) cũng được tính.
 
 ---
 
@@ -284,7 +284,7 @@ import ROUTES from '@/configs/routes'
 <Link href={ROUTES.business}>Lĩnh vực</Link>
 
 <Link
-  href={{ pathname: '/linh-vuc-kinh-doanh/[slug]', params: { slug: 'dich-vu-cong-nghiep' } }}
+  href={{ pathname: '/business-sectors/[slug]', params: { slug: 'industrial-services' } }}
 >
   Xem thêm
 </Link>

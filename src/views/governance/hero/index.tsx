@@ -1,5 +1,6 @@
 import Image from 'next/image'
 
+import BannerTopOverlay from '@/components/shared/banner-top-overlay'
 import CountUp from '@/components/shared/count-up'
 import { HERO_STATS } from '@/views/governance/data'
 
@@ -20,11 +21,8 @@ const GovernanceHero = () => {
           aria-hidden
           className='absolute inset-0 bg-[linear-gradient(90deg,#fff_0%,rgba(255,255,255,0.85)_22%,rgba(255,255,255,0)_60%)] xsm:bg-[linear-gradient(180deg,rgba(255,255,255,0.6)_0%,rgba(255,255,255,0)_35%,rgba(255,255,255,0.7)_75%,#fff_100%)]'
         />
-        <div
-          aria-hidden
-          className='absolute inset-x-0 top-0 h-[9rem] bg-[linear-gradient(180deg,#fff_0%,rgba(255,255,255,0)_100%)] xsm:hidden'
-        />
       </div>
+      <BannerTopOverlay />
 
       <span
         aria-hidden
@@ -33,7 +31,7 @@ const GovernanceHero = () => {
         Scroll to Bateco
       </span>
 
-      <div className='relative mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
+      <div className='relative z-[1] mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
         <div className='max-w-[34rem]'>
           <p
             className='business-hero-rise text-[0.875rem] font-bold tracking-[0.04em] text-[#1A2B48] uppercase xsm:text-[0.75rem]'

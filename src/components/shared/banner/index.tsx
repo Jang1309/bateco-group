@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import type { ComponentProps } from 'react'
 
+import BannerTopOverlay from '@/components/shared/banner-top-overlay'
 import { Link } from '@/i18n/navigation'
 
 type BannerLink = {
@@ -18,8 +19,7 @@ type BannerProps = {
   imageAlt?: string
   srTitle?: string
   eyebrow: string
-  titleLine1: string
-  titleLine2: string
+  titleHtml?: string
   description: string
   showButton?: boolean
   primary?: BannerLink
@@ -34,8 +34,7 @@ const Banner = ({
   imageAlt = '',
   srTitle,
   eyebrow,
-  titleLine1,
-  titleLine2,
+  titleHtml,
   description,
   showButton = false,
   primary,
@@ -57,10 +56,7 @@ const Banner = ({
         aria-hidden
         className='pointer-events-none absolute inset-x-0 bottom-0 hidden h-[68%] bg-[linear-gradient(180deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.88)_36%,#fff_100%)] xsm:block'
       />
-      <div
-        aria-hidden
-        className='pointer-events-none absolute inset-x-0 top-0 h-[12rem] bg-[linear-gradient(180deg,#fff_0%,rgba(255,255,255,0.85)_38%,rgba(255,255,255,0)_100%)] xsm:h-[8.5rem]'
-      />
+      <BannerTopOverlay />
 
       <div className='absolute inset-0 z-[1] flex items-center'>
         <div className='mx-auto w-full max-w-[95rem] px-[2.5rem] xsm:px-[1.5rem]'>
@@ -69,10 +65,12 @@ const Banner = ({
               {eyebrow}
             </p>
 
-            <h2 className='mt-[1.25rem] text-[3rem] leading-[1.35] font-bold uppercase xsm:mt-[1rem] xsm:text-[2.25rem]'>
-              <span className='block text-[#b5935e]'>{titleLine1}</span>
-              <span className='block text-[#1a2b48]'>{titleLine2}</span>
-            </h2>
+            {titleHtml ? (
+              <div
+                className='mt-[1.25rem] text-[3rem] leading-[1.35] font-bold text-[#1a2b48] uppercase [&_br]:block [&_p]:m-0 [&_strong]:font-bold [&_strong]:text-[#b5935e] xsm:mt-[1rem] xsm:text-[2.25rem]'
+                dangerouslySetInnerHTML={{ __html: titleHtml }}
+              />
+            ) : null}
 
             <p className='mt-[1.5rem] max-w-[28rem] text-[1.0625rem] leading-[1.55] font-medium text-[#1a2b48] xsm:mt-[1rem] xsm:text-[0.9375rem]'>
               {description}

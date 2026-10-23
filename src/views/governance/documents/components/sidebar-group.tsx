@@ -4,6 +4,7 @@ import { ChevronDown } from 'lucide-react'
 import { useId, useState } from 'react'
 
 import { cn } from '@/lib/utils'
+import type { GovernanceBasePath } from '@/views/governance/base-path'
 import type { GroupCategory } from '@/views/governance/data'
 
 import SidebarLink from './sidebar-link'
@@ -11,9 +12,10 @@ import SidebarLink from './sidebar-link'
 type SidebarGroupProps = {
   group: GroupCategory
   activeId: string
+  basePath?: GovernanceBasePath
 }
 
-const SidebarGroup = ({ group, activeId }: SidebarGroupProps) => {
+const SidebarGroup = ({ group, activeId, basePath }: SidebarGroupProps) => {
   const containsActive = group.children.some((child) => child.id === activeId)
   const [open, setOpen] = useState(containsActive)
   const panelId = useId()
@@ -67,6 +69,7 @@ const SidebarGroup = ({ group, activeId }: SidebarGroupProps) => {
                 category={child}
                 active={child.id === activeId}
                 nested
+                basePath={basePath}
               />
             </li>
           ))}

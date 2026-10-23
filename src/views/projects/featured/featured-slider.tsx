@@ -7,6 +7,7 @@ import type { Swiper as SwiperType } from 'swiper'
 import { Autoplay, EffectFade } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
+import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import { getSectorLabel, type Project } from '@/views/projects/data'
 
@@ -83,7 +84,12 @@ const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
                         : 'translate-y-[1.5rem] opacity-0',
                     )}
                   >
-                    {project.title}
+                    <Link
+                      href={{ pathname: '/du-an/[slug]', params: { slug: project.id } }}
+                      className='transition-colors duration-300 hover:text-[#DFBA73]'
+                    >
+                      {project.title}
+                    </Link>
                   </h3>
                 </div>
               </article>

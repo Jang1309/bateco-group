@@ -1,4 +1,10 @@
-import { type GovernanceCategory, getGovernanceGroup } from '@/views/governance/data'
+import type { GovernanceBasePath } from '@/views/governance/base-path'
+import {
+  type GovernanceCategory,
+  type GovernanceMenuItem,
+  getGovernanceGroup,
+  GOVERNANCE_MENU,
+} from '@/views/governance/data'
 
 import CompanyProfile from './components/company-profile'
 import DocumentList from './components/document-list'
@@ -8,9 +14,16 @@ import GovernanceSidebar from './components/sidebar'
 type GovernanceDocumentsProps = {
   category: GovernanceCategory
   page: number
+  menu?: GovernanceMenuItem[]
+  basePath?: GovernanceBasePath
 }
 
-const GovernanceDocuments = ({ category, page }: GovernanceDocumentsProps) => {
+const GovernanceDocuments = ({
+  category,
+  page,
+  menu = GOVERNANCE_MENU,
+  basePath = '/quan-he-nha-dau-tu',
+}: GovernanceDocumentsProps) => {
   return (
     <section
       id='van-ban'
@@ -22,7 +35,11 @@ const GovernanceDocuments = ({ category, page }: GovernanceDocumentsProps) => {
           data-aos-duration='800'
           className='self-stretch xsm:self-auto'
         >
-          <GovernanceSidebar active={category} />
+          <GovernanceSidebar
+            active={category}
+            menu={menu}
+            basePath={basePath}
+          />
         </div>
 
         <div
@@ -41,11 +58,13 @@ const GovernanceDocuments = ({ category, page }: GovernanceDocumentsProps) => {
               category={category}
               heading={getGovernanceGroup(category.id)?.title ?? category.title}
               page={page}
+              basePath={basePath}
             />
           ) : (
             <DocumentList
               category={category}
               page={page}
+              basePath={basePath}
             />
           )}
         </div>

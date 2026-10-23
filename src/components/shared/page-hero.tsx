@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import type { ReactNode } from 'react'
 
+import BannerTopOverlay from '@/components/shared/banner-top-overlay'
+
 type PageHeroProps = {
   eyebrow: string
   title: string
@@ -29,13 +31,10 @@ const PageHero = ({ eyebrow, title, highlight, description, image, children }: P
           aria-hidden
           className='absolute inset-0 bg-[linear-gradient(90deg,#fff_0%,rgba(255,255,255,0.85)_20%,rgba(255,255,255,0)_55%)] xsm:bg-[linear-gradient(180deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0)_30%,rgba(255,255,255,0.6)_75%,#fff_100%)]'
         />
-        <div
-          aria-hidden
-          className='absolute inset-x-0 top-0 h-[9rem] bg-[linear-gradient(180deg,#fff_0%,rgba(255,255,255,0)_100%)] xsm:hidden'
-        />
       </div>
+      <BannerTopOverlay />
 
-      <div className='relative mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
+      <div className='relative z-[1] mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
         <div className='max-w-[34rem]'>
           <p
             className='business-hero-rise flex items-center gap-[0.75rem] text-[0.75rem] font-bold tracking-[0.2em] text-[#B5935E] uppercase'

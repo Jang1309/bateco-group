@@ -1,7 +1,22 @@
+import homepageService from '@/services/homepage'
 import HomePageView from '@/views/homepage'
 
-const HomePage = () => {
-  return <HomePageView />
+const HomePage = async ({ params }: { params: Promise<{ locale: string }> }) => {
+  const { locale } = await params
+
+  const [homepageResponse, postListResponse, sectorsResponse] = await Promise.all([
+    homepageService.getHomepage(locale),
+    homepageService.getPostList(locale),
+    homepageService.getSectors(locale),
+  ])
+
+  return (
+    <HomePageView
+      homepage={homepageResponse?.acf}
+      postList={postListResponse?.data}
+      sectors={sectorsResponse?.data}
+    />
+  )
 }
 
 export default HomePage

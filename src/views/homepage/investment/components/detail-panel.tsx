@@ -51,7 +51,6 @@ const DetailPanel = ({ items, active, prev }: DetailPanelProps) => (
                 src={item.image}
                 alt={item.label}
                 fill
-                unoptimized
                 sizes='100vw'
                 className='object-cover'
               />

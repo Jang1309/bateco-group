@@ -49,7 +49,6 @@ export const LogoCell = ({ logo, className, imageClassName }: LogoCellProps) => 
       alt=''
       width={240}
       height={120}
-      unoptimized
       className={cn(
         'h-auto w-auto max-w-full object-contain mix-blend-multiply grayscale-[30%] transition-[filter,scale] duration-300 group-hover:scale-[1.05] group-hover:grayscale-0',
         imageClassName,

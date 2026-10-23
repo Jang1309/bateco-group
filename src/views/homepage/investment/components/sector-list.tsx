@@ -88,7 +88,6 @@ const SectorList = ({
                     src={item.image}
                     alt=''
                     fill
-                    unoptimized
                     sizes='10vw'
                     className='object-cover'
                   />

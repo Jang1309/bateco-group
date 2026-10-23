@@ -55,7 +55,6 @@ const VisionSlider = ({ slides }: VisionSliderProps) => {
                       src={slide.image}
                       alt={slide.title || ''}
                       fill
-                      unoptimized
                       priority={index === 0}
                       sizes='(max-width: 639px) 92vw, 42vw'
                       className={`object-cover transition-transform duration-[6000ms] ease-out ${active === index ? 'scale-[1.08]' : 'scale-100'}`}

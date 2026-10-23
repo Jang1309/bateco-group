@@ -119,7 +119,6 @@ const Banner = ({
         src={imageSrc}
         alt={imageAlt}
         fill
-        unoptimized
         priority
         sizes='100vw'
         className='object-cover object-[center_center] xsm:hidden'
@@ -132,7 +131,6 @@ const Banner = ({
           src={mobileSrc}
           alt={imageAlt}
           fill
-          unoptimized
           priority
           sizes='100vw'
           className='object-cover object-center'

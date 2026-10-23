@@ -31,7 +31,6 @@ const JourneyCenter = ({ active, logo }: JourneyCenterProps) => (
             alt='Bateco Group'
             width={320}
             height={96}
-            unoptimized
             className='h-[3.75rem] w-auto object-contain xsm:h-[2.75rem]'
             priority
           />

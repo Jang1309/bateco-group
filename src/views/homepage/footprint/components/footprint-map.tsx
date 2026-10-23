@@ -92,7 +92,6 @@ const FootprintMap = ({ map }: { map?: HomepageFootprint['map'] }) => {
         src='/vn.svg'
         alt='Bản đồ Việt Nam'
         fill
-        unoptimized
         className='object-contain drop-shadow-[0_1.5rem_2rem_rgba(153,110,39,0.18)]'
       />
 

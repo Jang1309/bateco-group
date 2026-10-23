@@ -12,25 +12,35 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig: NextConfig = {
   // Cho phép mở dev server từ điện thoại / máy khác qua IP LAN
   allowedDevOrigins: ['192.168.*.*', '10.*.*.*', '172.*.*.*'],
+
   images: {
     formats: ['image/webp'],
     minimumCacheTTL: 2678400,
-    // Dev CMS trên localhost — Next 16 chặn private IP mặc định (SSRF)
-    dangerouslyAllowLocalIP: process.env.NODE_ENV === 'development',
+    // Trên server IIS, cms.bateco-investment.vn trỏ về 127.0.0.1 (file hosts)
+    // → phải cho phép IP nội bộ cả ở production, nếu không ảnh WordPress bị chặn
+    dangerouslyAllowLocalIP: true,
+    // Giới hạn domain được tải ảnh (an toàn hơn '**')
     remotePatterns: [
-      { protocol: 'https', hostname: '**' },
-      { protocol: 'http', hostname: '**' },
+      { protocol: 'https', hostname: 'cms.bateco-investment.vn' },
+      { protocol: 'http', hostname: 'cms.bateco-investment.vn' },
+      // CMS chạy local lúc dev
+      { protocol: 'http', hostname: 'localhost' },
+      { protocol: 'http', hostname: '127.0.0.1' },
     ],
     deviceSizes: [430, 768, 1080, 1280, 1600, 1920],
   },
+
   reactStrictMode: false,
   output: 'standalone',
+
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+
   experimental: {
     webVitalsAttribution: ['CLS', 'LCP'],
   },
+
   typescript: {
     ignoreBuildErrors: true,
   },

@@ -1,4 +1,7 @@
+import type { ComponentProps } from 'react'
+
 import Banner from '@/components/shared/banner'
+import { Link } from '@/i18n/navigation'
 import type { HomepageBanner } from '@/interfaces/homepage.interface'
 
 const stripHtml = (value?: string) =>
@@ -7,12 +10,18 @@ const stripHtml = (value?: string) =>
     .replace(/\s+/g, ' ')
     .trim() || ''
 
+const FALLBACK = '/home/d-banner.png'
+
 const HomeBanner = ({ data }: { data?: HomepageBanner }) => {
   const plainTitle = stripHtml(data?.title) || 'Bateco Group'
-  const imageSrc = data?.background_pc || data?.background_mobile || '/home/d-banner.png'
+  const imageSrc = data?.background_pc || data?.background_mobile || FALLBACK
+  const imageSrcMobile = data?.background_mobile || data?.background_pc || FALLBACK
   const primary =
     data?.button_1?.url && data.button_1.title
-      ? { href: data.button_1.url, label: data.button_1.title }
+      ? {
+          href: data.button_1.url as ComponentProps<typeof Link>['href'],
+          label: data.button_1.title,
+        }
       : undefined
   const secondary =
     data?.button_2?.url && data.button_2.title
@@ -22,6 +31,7 @@ const HomeBanner = ({ data }: { data?: HomepageBanner }) => {
   return (
     <Banner
       imageSrc={imageSrc}
+      imageSrcMobile={imageSrcMobile}
       imageAlt={plainTitle}
       srTitle={plainTitle}
       eyebrow={data?.subtitle || ''}

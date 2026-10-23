@@ -71,7 +71,7 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
             {featured.title ? (
               <h2
                 data-aos='fade-up'
-                className='text-[2.5rem] leading-[3.25rem] font-bold text-[#525252] xsm:text-[1.5rem] xsm:leading-[1.85rem]'
+                className='text-pretty text-[2.5rem] leading-[3.25rem] font-bold text-[#525252] xsm:text-[1.25rem] xsm:leading-[1.55]'
               >
                 <Link
                   href={postHref(featured)}
@@ -85,14 +85,14 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
             <div
               data-aos='fade-up'
               data-aos-delay='100'
-              className='mt-[1.25rem] flex items-center pt-[0.25rem]'
+              className='mt-[1.25rem] flex flex-wrap items-center gap-y-[0.35rem] pt-[0.25rem] xsm:mt-[0.875rem]'
             >
-              <span className='text-[0.875rem] leading-[1.25rem] font-bold tracking-[0.04rem] text-[#b68d4c] uppercase'>
+              <span className='text-[0.875rem] leading-[1.25rem] font-bold tracking-[0.04rem] text-[#b68d4c] uppercase xsm:text-[0.75rem] xsm:leading-[1.1rem]'>
                 {featuredCategory || t('hot')}
               </span>
               {featuredDate ? (
                 <>
-                  <span className='pl-[0.75rem] text-[0.875rem] leading-[1.25rem] font-medium text-[#d4d4d4]'>
+                  <span className='pl-[0.75rem] text-[0.875rem] leading-[1.25rem] font-medium text-[#d4d4d4] xsm:text-[0.75rem]'>
                     |
                   </span>
                   <span className='flex items-center pl-[0.75rem]'>
@@ -101,9 +101,9 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
                       alt=''
                       width={16}
                       height={16}
-                      className='size-[1.25rem]'
+                      className='size-[1.25rem] xsm:size-[1rem]'
                     />
-                    <time className='pl-[0.375rem] text-[0.875rem] leading-[1.25rem] font-medium tracking-[0.02rem] text-[#737373]'>
+                    <time className='pl-[0.375rem] text-[0.875rem] leading-[1.25rem] font-medium tracking-[0.02rem] text-[#737373] xsm:text-[0.75rem]'>
                       {featuredDate}
                     </time>
                   </span>
@@ -115,7 +115,7 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
               <p
                 data-aos='fade-up'
                 data-aos-delay='200'
-                className='mt-[1.25rem] max-w-[36rem] pt-[0.25rem] pb-[0.75rem] text-[1rem] leading-[1.5rem] font-normal text-[#525252]'
+                className='mt-[1.25rem] max-w-[36rem] pt-[0.25rem] pb-[0.75rem] text-pretty text-[1rem] leading-[1.5rem] font-normal text-[#525252] xsm:mt-[0.875rem] xsm:pb-[0.5rem] xsm:text-[0.875rem] xsm:leading-[1.45]'
               >
                 {featuredExcerpt}
               </p>

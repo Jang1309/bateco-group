@@ -5,6 +5,7 @@ const siteSettingService = {
   getSiteSettings: async (locale: string) => {
     return await fetchData({
       api: ENDPOINTS.siteSettings.get(locale),
+      option: { next: { revalidate: 300 } },
     })
   },
 }

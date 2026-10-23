@@ -7,6 +7,7 @@ const ENDPOINTS = {
     en: 'wp/v2/pages/88?_fields=acf&acf_format=standard',
     getPostList: (locale: string) => `api/v1/get-all/post?limit=8&lang=${locale}`,
     getSectors: (locale: string) => `api/v1/taxonomies/sectors?lang=${locale}&parent=0&acf=true`,
+    getProjects: (locale: string) => `api/v1/get-all/projects?limit=8&lang=${locale}`,
   },
 }
 

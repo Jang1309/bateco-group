@@ -220,6 +220,14 @@ input[type='number'] {
   html {
     @apply font-sans;
   }
+  a,
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    @apply cursor-pointer;
+  }
+  button:disabled {
+    @apply cursor-not-allowed;
+  }
 }
 
 @keyframes business-hero-rise {

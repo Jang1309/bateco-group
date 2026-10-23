@@ -1,5 +1,6 @@
 import type { HomepageAcf } from '@/interfaces/homepage.interface'
 import type { PostListItem } from '@/interfaces/postList.interface'
+import type { ProjectsResponse } from '@/interfaces/projects.interface'
 import type { SectorsResponse } from '@/interfaces/sectors.interface'
 import Banner from '@/views/homepage/banner'
 import HomeBrand from '@/views/homepage/brand'
@@ -15,10 +16,12 @@ const HomePageView = ({
   homepage,
   postList,
   sectors,
+  projects,
 }: {
   homepage?: HomepageAcf
   postList?: PostListItem[]
   sectors?: SectorsResponse
+  projects?: ProjectsResponse
 }) => {
   return (
     <main>
@@ -30,8 +33,7 @@ const HomePageView = ({
       <Investment sectors={sectors} />
       <Footprint data={homepage?.footprint} />
       <Partners data={homepage?.partners} />
-      {/* shortcut: projects chưa có trong ACF, ghép sau */}
-      <Projects />
+      <Projects projects={projects} />
     </main>
   )
 }

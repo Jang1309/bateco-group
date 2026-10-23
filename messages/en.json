@@ -74,13 +74,17 @@
   "NotFoundPage": {
     "title": "Page not found",
     "description": "The page you are looking for does not exist or has been moved.",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "contact": "Contact us"
   },
   "ErrorPage": {
+    "code": "Error",
     "title": "Something went wrong",
-    "description": "An unexpected error occurred. Please try again.",
-    "retry": "Try again"
+    "description": "An unexpected error occurred while loading this page. Please try again or return home.",
+    "retry": "Try again",
+    "backHome": "Back to home"
   },
+
   "Header": {
     "logoAlt": "BATECO",
     "about": "About",

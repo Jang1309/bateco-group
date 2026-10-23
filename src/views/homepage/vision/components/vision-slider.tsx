@@ -114,7 +114,7 @@ const VisionSlider = ({ slides }: VisionSliderProps) => {
                 type='button'
                 aria-label='Ảnh trước'
                 onClick={() => swiper?.slidePrev()}
-                className='flex size-[2.6rem] items-center justify-center rounded-full border border-[#C6A15B]/80 bg-[#0B1A33]/40 text-[#E4C36A] backdrop-blur-sm transition-colors hover:bg-[#C6A15B] hover:text-[#0B1A33] xsm:size-[2.1rem]'
+                className='flex size-[2.6rem] cursor-pointer items-center justify-center rounded-full border border-[#C6A15B]/80 bg-[#0B1A33]/40 text-[#E4C36A] backdrop-blur-sm transition-colors hover:bg-[#C6A15B] hover:text-[#0B1A33] xsm:size-[2.1rem]'
               >
                 <ChevronLeft className='size-[1.1rem]' />
               </button>
@@ -122,7 +122,7 @@ const VisionSlider = ({ slides }: VisionSliderProps) => {
                 type='button'
                 aria-label='Ảnh tiếp theo'
                 onClick={() => swiper?.slideNext()}
-                className='flex size-[2.6rem] items-center justify-center rounded-full border border-[#C6A15B]/80 bg-[#0B1A33]/40 text-[#E4C36A] backdrop-blur-sm transition-colors hover:bg-[#C6A15B] hover:text-[#0B1A33] xsm:size-[2.1rem]'
+                className='flex size-[2.6rem] cursor-pointer items-center justify-center rounded-full border border-[#C6A15B]/80 bg-[#0B1A33]/40 text-[#E4C36A] backdrop-blur-sm transition-colors hover:bg-[#C6A15B] hover:text-[#0B1A33] xsm:size-[2.1rem]'
               >
                 <ChevronRight className='size-[1.1rem]' />
               </button>

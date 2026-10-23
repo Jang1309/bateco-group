@@ -16,7 +16,7 @@ const Partners = ({ data }: { data?: HomepagePartners }) => {
           {data?.title ? (
             <div
               data-aos='fade-up'
-              className='text-[2.75rem] leading-[1.2] font-light tracking-[0.02em] text-[#1A1A1A] uppercase xsm:text-[1.6rem] [&_br]:block [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-[#b5935e]'
+              className='text-pretty text-[2.75rem] leading-[1.2] font-light tracking-[0.02em] text-[#1A1A1A] uppercase xsm:text-[1.35rem] xsm:leading-[1.35] [&_br]:hidden xsm:[&_br]:hidden [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-[#b5935e]'
               dangerouslySetInnerHTML={{ __html: data.title }}
             />
           ) : null}
@@ -24,7 +24,7 @@ const Partners = ({ data }: { data?: HomepagePartners }) => {
             <div
               data-aos='fade-left'
               data-aos-delay='150'
-              className='mt-[0.5rem] max-w-[26rem] text-[0.9375rem] leading-[1.65] text-[#555] xsm:mt-0 [&_blockquote]:border-l [&_blockquote]:border-[#C6A15B] [&_blockquote]:pl-[1.25rem] [&_blockquote]:not-italic [&_blockquote_p]:m-0 [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-[#b5935e]'
+              className='mt-[0.5rem] max-w-[26rem] text-pretty text-[0.9375rem] leading-[1.65] text-[#555] xsm:mt-0 xsm:text-[0.875rem] xsm:leading-[1.55] [&_blockquote]:border-l [&_blockquote]:border-[#C6A15B] [&_blockquote]:pl-[1.25rem] [&_blockquote]:not-italic [&_blockquote_p]:m-0 [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-[#b5935e]'
               dangerouslySetInnerHTML={{ __html: data.desc }}
             />
           ) : null}

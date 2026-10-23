@@ -56,7 +56,7 @@ const SectorList = ({
             onFocus={() => onSelect(index)}
             onBlur={onBlur}
             onClick={() => onSelect(index)}
-            className={`relative flex h-[4rem] w-full -skew-x-[16deg] items-center overflow-hidden rounded-[0.3125rem] border text-left transition-all duration-500 ease-out ${isActive ? 'border-[#E5BE7D] shadow-[0_0_0_1px_rgba(197,154,82,0.40),0_10px_15px_-3px_rgba(0,0,0,0.10),0_4px_6px_-4px_rgba(0,0,0,0.10)]' : 'border-[rgba(39,43,48,0.50)] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.10)] hover:brightness-110'}`}
+            className={`relative flex h-[4rem] w-full -skew-x-[16deg] cursor-pointer items-center overflow-hidden rounded-[0.3125rem] border text-left transition-all duration-500 ease-out ${isActive ? 'border-[#E5BE7D] shadow-[0_0_0_1px_rgba(197,154,82,0.40),0_10px_15px_-3px_rgba(0,0,0,0.10),0_4px_6px_-4px_rgba(0,0,0,0.10)]' : 'border-[rgba(39,43,48,0.50)] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.10)] hover:brightness-110'}`}
           >
             <span
               aria-hidden

@@ -20,8 +20,10 @@ export const LogoRow = ({ title, reverse, children }: LogoRowProps) => (
     data-aos='fade-up'
     className='mt-[3.5rem] xsm:mt-[2.5rem]'
   >
-    <h3 className='text-[0.75rem] font-bold tracking-[0.2em] text-[#1A1A1A] uppercase'>{title}</h3>
-    <div className='mt-[1.25rem] border-y border-[#EEEEEE] [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]'>
+    <h3 className='text-[0.75rem] font-bold tracking-[0.2em] text-[#1A1A1A] uppercase xsm:text-[0.6875rem]'>
+      {title}
+    </h3>
+    <div className='mt-[1.25rem] border-y border-[#EEEEEE] [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)] xsm:[mask-image:none]'>
       <InfiniteSlider
         gap={0}
         speed={90}

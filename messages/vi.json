@@ -74,13 +74,17 @@
   "NotFoundPage": {
     "title": "Không tìm thấy trang",
     "description": "Trang bạn đang tìm không tồn tại hoặc đã được di chuyển.",
-    "backHome": "Về trang chủ"
+    "backHome": "Về trang chủ",
+    "contact": "Liên hệ với chúng tôi"
   },
   "ErrorPage": {
+    "code": "Lỗi",
     "title": "Đã xảy ra lỗi",
-    "description": "Có lỗi không mong muốn. Vui lòng thử lại.",
-    "retry": "Thử lại"
+    "description": "Có lỗi không mong muốn khi tải trang. Vui lòng thử lại hoặc quay về trang chủ.",
+    "retry": "Thử lại",
+    "backHome": "Về trang chủ"
   },
+
   "Header": {
     "logoAlt": "BATECO",
     "about": "Giới thiệu",

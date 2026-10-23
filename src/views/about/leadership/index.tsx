@@ -9,7 +9,10 @@ type AboutLeadershipProps = {
 
 const AboutLeadership = ({ leadership }: AboutLeadershipProps) => {
   return (
-    <section className='bg-[linear-gradient(180deg,#F6F3EC_0,#F6F3EC_24rem,#fff_24rem)] pt-[1.40625rem] pb-[1.875rem] xsm:bg-[linear-gradient(180deg,#F6F3EC_0,#F6F3EC_14rem,#fff_14rem)] xsm:pt-[2.5rem]'>
+    <section
+      id='lanh-dao'
+      className='scroll-mt-[6rem] bg-[linear-gradient(180deg,#F6F3EC_0,#F6F3EC_24rem,#fff_24rem)] pt-[1.40625rem] pb-[1.875rem] xsm:bg-[linear-gradient(180deg,#F6F3EC_0,#F6F3EC_14rem,#fff_14rem)] xsm:pt-[2.5rem]'
+    >
       <div className='flex flex-col items-center gap-[3.75rem] px-[1.875rem] xsm:gap-[2rem] xsm:px-[1.5rem]'>
         <div className='flex flex-col items-center gap-[0.625rem] pt-[0.7rem] text-center'>
           <Reveal

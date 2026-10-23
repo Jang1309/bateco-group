@@ -2,11 +2,13 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
+import type { GovernanceBasePath } from '@/views/governance/base-path'
 
 type PaginationProps = {
   categoryId: string
   currentPage: number
   totalPages: number
+  basePath?: GovernanceBasePath
 }
 
 export function paginate<T>(items: T[], page: number, perPage: number) {
@@ -23,11 +25,16 @@ export function paginate<T>(items: T[], page: number, perPage: number) {
 const baseItem =
   'inline-flex h-[2rem] min-w-[2rem] items-center justify-center gap-[0.25rem] rounded-[0.375rem] border px-[0.625rem] text-[0.8125rem] font-semibold transition-colors duration-300 xsm:h-[2.5rem] xsm:min-w-[2.5rem] xsm:px-[0.875rem] xsm:text-[0.875rem]'
 
-const GovernancePagination = ({ categoryId, currentPage, totalPages }: PaginationProps) => {
+const GovernancePagination = ({
+  categoryId,
+  currentPage,
+  totalPages,
+  basePath = '/quan-he-nha-dau-tu',
+}: PaginationProps) => {
   if (totalPages <= 1) return null
 
   const hrefFor = (page: number) => ({
-    pathname: '/gioi-thieu/van-ban-quan-tri' as const,
+    pathname: basePath,
     query: page === 1 ? { 'danh-muc': categoryId } : { 'danh-muc': categoryId, trang: page },
   })
 

@@ -7,7 +7,7 @@ export type ProjectQuery = {
   page?: number
 }
 
-/** Dựng query string cho /du-an, bỏ các giá trị mặc định để URL gọn */
+/** Dựng query string cho /projects, bỏ các giá trị mặc định để URL gọn */
 export function buildProjectQuery({ sector, q, sort, page }: ProjectQuery) {
   const query: Record<string, string> = {}
   if (sector) query['linh-vuc'] = sector

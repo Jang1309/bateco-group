@@ -1,54 +1,15 @@
 import Image from 'next/image'
-import { getTranslations } from 'next-intl/server'
 
+import type { HomepageBrand } from '@/interfaces/homepage.interface'
 import Logo from '@/layouts/header/components/logo'
+import BrandFrame, {
+  BRAND_FRAME,
+  BRAND_FRAME_FLIP,
+} from '@/views/homepage/brand/components/brand-frame'
 
-const FRAME = 'M0 226.5H331.717L445.5 82.8172L408.5 0H0V226.5Z'
-const FRAME_FLIP = 'M0 0H331.717L445.5 143.6828L408.5 226.5H0V0Z'
-
-function BrandFrame({ src, alt, id, d }: { src: string; alt: string; id: string; d: string }) {
-  const clipId = `${id}-clip`
-  const maskId = `${id}-stroke`
-
-  return (
-    <svg
-      xmlns='http://www.w3.org/2000/svg'
-      viewBox='0 0 446 227'
-      className='block h-auto w-full'
-      role='img'
-      aria-label={alt}
-    >
-      <defs>
-        <clipPath id={clipId}>
-          <path d={d} />
-        </clipPath>
-        <mask
-          id={maskId}
-          fill='white'
-        >
-          <path d={d} />
-        </mask>
-      </defs>
-      <image
-        href={src}
-        width='446'
-        height='227'
-        preserveAspectRatio='xMidYMid slice'
-        clipPath={`url(#${clipId})`}
-      />
-      <path
-        d={d}
-        fill='none'
-        stroke='#F4B700'
-        strokeWidth='2'
-        mask={`url(#${maskId})`}
-      />
-    </svg>
-  )
-}
-
-const HomeBrand = async () => {
-  const t = await getTranslations('HomeBrand')
+const HomeBrand = ({ data }: { data?: HomepageBrand }) => {
+  const image1 = data?.image_1 || '/home/brand/image-1.png'
+  const image2 = data?.image_2 || '/home/brand/image-2.png'
 
   return (
     <section className='bg-white'>
@@ -60,25 +21,31 @@ const HomeBrand = async () => {
           >
             <BrandFrame
               id='brand-field'
-              src='/home/brand/image-2.png'
-              alt={t('fieldAlt')}
-              d={FRAME}
+              src={image2}
+              alt={data?.content?.title || 'Bateco'}
+              d={BRAND_FRAME}
             />
-            <Logo className='mx-auto hidden py-[0.35rem] xsm:block' />
+            <Logo
+              logo={data?.logo}
+              className='mx-auto hidden py-[0.35rem] xsm:block'
+            />
             <BrandFrame
               id='brand-team'
-              src='/home/brand/image-1.png'
-              alt={t('teamAlt')}
-              d={FRAME_FLIP}
+              src={image1}
+              alt={data?.content?.title || 'Bateco'}
+              d={BRAND_FRAME_FLIP}
             />
           </div>
-          <Logo className='absolute top-1/2 right-0 -translate-y-1/2 xsm:hidden' />
+          <Logo
+            logo={data?.logo}
+            className='absolute top-1/2 right-0 -translate-y-1/2 xsm:hidden'
+          />
         </div>
 
         <div className='relative px-[0.25rem] py-[0.5rem]'>
           <Image
             src='/home/brand/bg.svg'
-            alt='pattern'
+            alt=''
             width={100}
             height={100}
             className='absolute inset-0 z-0 h-full w-full'
@@ -89,27 +56,19 @@ const HomeBrand = async () => {
             className='relative z-10'
           >
             <span className='block h-[0.14rem] w-[3.25rem] bg-[#F6A600]' />
-            <h2 className='mt-[0.85rem] text-[2.35rem] font-bold uppercase leading-[1.15] text-[#1a2b48] xsm:text-[1.75rem]'>
-              <span className='block'>
-                {t('titleLine1')} <span>{t('titleLine2')}</span>
-              </span>
-            </h2>
-            <p className='mt-[1.35rem] max-w-[36rem] text-[1rem] leading-[1.7] text-[#3a3a3a] xsm:text-[0.9375rem] text-justify'>
-              {t('meaning')}
-            </p>
-            <p className='mt-[1.5rem] text-justify max-w-[36rem] border-l-[0.18rem] border-[#D97706CC] bg-[#F59E0B0D] px-[1.15rem] py-[0.95rem] text-[1rem] leading-[1.7] text-[#3a3a3a] xsm:text-[0.9375rem]'>
-              {t('mark')}
-            </p>
-            <p className='mt-[1.5rem] text-justify max-w-[36rem] text-[1rem] leading-[1.7] text-[#2c2c2c] xsm:text-[0.9375rem]'>
-              {t('cultureLead')} <strong className='font-bold'>{t('cultureValues')}</strong>{' '}
-              {t('cultureRest')}
-            </p>
+            {data?.content?.title ? (
+              <h2 className='mt-[0.85rem] text-[2.35rem] leading-[1.15] font-bold text-[#1a2b48] uppercase xsm:text-[1.75rem]'>
+                {data.content.title}
+              </h2>
+            ) : null}
+            {data?.content?.desc ? (
+              <div
+                className='mt-[1.35rem] max-w-[36rem] text-justify text-[1rem] leading-[1.7] text-[#3a3a3a] xsm:text-[0.9375rem] [&_blockquote]:my-[1.5rem] [&_blockquote]:border-l-[0.18rem] [&_blockquote]:border-[#D97706CC] [&_blockquote]:bg-[#F59E0B0D] [&_blockquote]:px-[1.15rem] [&_blockquote]:py-[0.95rem] [&_blockquote]:not-italic [&_blockquote_p]:m-0 [&_p]:mt-[1.5rem] [&_p]:first:mt-0 [&_strong]:font-bold [&_strong]:text-[#b5935e]'
+                dangerouslySetInnerHTML={{ __html: data.content.desc }}
+              />
+            ) : null}
           </div>
         </div>
-      </div>
-
-      <div className='mx-auto w-full max-w-[95rem] px-[3.75rem] pb-[0.5rem] xsm:px-[1.5rem]'>
-        <span className='block h-[0.08rem] bg-[#c8a462]' />
       </div>
     </section>
   )

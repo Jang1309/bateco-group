@@ -11,14 +11,24 @@ export type RequestPostGuest = {
 }
 
 export default async function fetchData(request: RequestPostGuest) {
+  const method = request.method || 'GET'
+  const { next, ...restOption } = request.option ?? {}
+
   try {
     const res = await fetch(`${ENV.CMS}${ENV.API!}${request.api}`, {
-      method: request.method || 'GET',
+      method,
       headers: {
         ...(!request.notJson && { 'Content-Type': 'application/json' }),
         ...request.headers,
       },
-      ...request.option,
+      ...restOption,
+      // GET: ISR mặc định 60s; caller override qua option.next.revalidate
+      ...(method === 'GET' && {
+        next: {
+          revalidate: 60,
+          ...next,
+        },
+      }),
     })
 
     if (!res.ok) {

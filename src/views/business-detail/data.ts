@@ -48,7 +48,7 @@ export type SectorDetail = {
 // TODO: thay ảnh placeholder bằng ảnh thật của từng lĩnh vực / dự án
 export const SECTOR_DETAILS: SectorDetail[] = [
   {
-    slug: 'dich-vu-cong-nghiep',
+    slug: 'industrial-services',
     name: 'Dịch vụ công nghiệp',
     hero: {
       title: 'Vận hành hiệu quả cho nhà máy hiện đại',
@@ -101,7 +101,7 @@ export const SECTOR_DETAILS: SectorDetail[] = [
     ],
   },
   {
-    slug: 'bat-dong-san-ha-tang-cong-nghiep',
+    slug: 'industrial-real-estate',
     name: 'Bất động sản & hạ tầng công nghiệp',
     hero: {
       title: 'Kiến tạo giá trị bền vững từ quỹ đất và hạ tầng',
@@ -153,7 +153,7 @@ export const SECTOR_DETAILS: SectorDetail[] = [
     ],
   },
   {
-    slug: 'an-ninh-quoc-phong',
+    slug: 'defense-security',
     name: 'An ninh - Quốc phòng',
     hero: {
       title: 'Công nghệ tin cậy cho nhiệm vụ trọng yếu',
@@ -205,7 +205,7 @@ export const SECTOR_DETAILS: SectorDetail[] = [
     ],
   },
   {
-    slug: 'kinh-te-xanh-phat-trien-ben-vung',
+    slug: 'green-economy',
     name: 'Kinh tế xanh & Phát triển bền vững',
     hero: {
       title: 'Tiên phong chuyển đổi xanh hướng tới Net Zero',
@@ -257,7 +257,7 @@ export const SECTOR_DETAILS: SectorDetail[] = [
     ],
   },
   {
-    slug: 'san-xuat-vat-lieu-moi',
+    slug: 'advanced-materials',
     name: 'Sản xuất - Vật liệu mới',
     hero: {
       title: 'Vật liệu thế hệ mới cho công nghiệp tương lai',

@@ -1,53 +1,50 @@
+import type { ComponentProps } from 'react'
+
 import ROUTES from '@/configs/routes'
+import { Link } from '@/i18n/navigation'
+import type { SectorItem, SectorsResponse } from '@/interfaces/sectors.interface'
+
+/** Fallback khi acf.image trống */
+export const SECTOR_FALLBACK_IMAGES = [
+  '/home/investment/d-card-1.png',
+  '/home/investment/d-card-2.png',
+  '/home/investment/d-card-3.png',
+  '/home/investment/d-card-4.png',
+  '/home/investment/d-card-5.png',
+] as const
 
 export type InvestmentItem = {
   label: string
   title: [string, string]
   description: string
   image: string
-  href: (typeof ROUTES)[keyof typeof ROUTES]
+  href: ComponentProps<typeof Link>['href']
 }
 
-// TODO: thay ảnh placeholder bằng ảnh thật của từng lĩnh vực (public/home/investment/*)
-export const INVESTMENTS: InvestmentItem[] = [
-  {
-    label: 'Dịch vụ công nghiệp',
-    title: ['Dịch vụ', 'công nghiệp'],
-    description:
-      'Kết hợp nghiên cứu, ứng dụng công nghệ số tiên phong với giải pháp xây dựng thương hiệu chuyên nghiệp, cung cấp giải pháp chuyển đổi số toàn diện cho hoạt động vận hành doanh nghiệp.',
-    image: '/home/investment/d-card-1.png',
-    href: ROUTES.business,
-  },
-  {
-    label: 'BĐS - Hạ tầng công nghiệp',
-    title: ['Bất động sản', 'hạ tầng công nghiệp'],
-    description:
-      'Đầu tư, phát triển và vận hành hệ thống khu công nghiệp, nhà xưởng, kho bãi hiện đại, đáp ứng tiêu chuẩn quốc tế cho các nhà đầu tư trong và ngoài nước.',
-    image: '/home/investment/d-card-2.png',
-    href: ROUTES.business,
-  },
-  {
-    label: 'An ninh - Quốc phòng',
-    title: ['An ninh', 'quốc phòng'],
-    description:
-      'Nghiên cứu, sản xuất và cung cấp các giải pháp, thiết bị kỹ thuật phục vụ nhiệm vụ an ninh - quốc phòng, góp phần bảo vệ vững chắc chủ quyền quốc gia.',
-    image: '/home/investment/d-card-3.png',
-    href: ROUTES.business,
-  },
-  {
-    label: 'Kinh tế xanh',
-    title: ['Kinh tế', 'xanh'],
-    description:
-      'Phát triển các dự án năng lượng tái tạo, giải pháp tiết kiệm năng lượng và kinh tế tuần hoàn, hướng tới mục tiêu tăng trưởng bền vững.',
-    image: '/home/investment/d-card-4.png',
-    href: ROUTES.business,
-  },
-  {
-    label: 'Sản xuất - Vật liệu mới',
-    title: ['Sản xuất', 'vật liệu mới'],
-    description:
-      'Ứng dụng công nghệ tiên tiến trong sản xuất và nghiên cứu vật liệu mới, nâng cao giá trị gia tăng và năng lực cạnh tranh cho ngành công nghiệp Việt Nam.',
-    image: '/home/investment/d-card-5.png',
-    href: ROUTES.business,
-  },
-]
+const splitTitle = (name?: string): [string, string] => {
+  const words = (name || '').trim().split(/\s+/).filter(Boolean)
+  if (words.length <= 1) return [name || '', '']
+  const mid = Math.ceil(words.length / 2)
+  return [words.slice(0, mid).join(' '), words.slice(mid).join(' ')]
+}
+
+export const mapSectors = (sectors?: SectorsResponse): InvestmentItem[] => {
+  const items: InvestmentItem[] = []
+
+  ;(sectors || []).forEach((sector: SectorItem, index) => {
+    const slug = sector.slug
+    if (!sector.name && !slug) return
+
+    items.push({
+      label: sector.name || '',
+      title: splitTitle(sector.name),
+      description: sector.description || '',
+      image: sector.acf?.image || SECTOR_FALLBACK_IMAGES[index % SECTOR_FALLBACK_IMAGES.length],
+      href: slug
+        ? { pathname: '/linh-vuc-kinh-doanh/[slug]' as const, params: { slug } }
+        : ROUTES.business,
+    })
+  })
+
+  return items
+}

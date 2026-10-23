@@ -1,23 +1,45 @@
-import { getTranslations } from 'next-intl/server'
+import type { ComponentProps } from 'react'
 
 import Banner from '@/components/shared/banner'
-import ROUTES from '@/configs/routes'
+import { Link } from '@/i18n/navigation'
+import type { HomepageBanner } from '@/interfaces/homepage.interface'
 
-const HomeBanner = async () => {
-  const t = await getTranslations('Banner')
+const stripHtml = (value?: string) =>
+  value
+    ?.replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim() || ''
+
+const FALLBACK = '/home/d-banner.png'
+
+const HomeBanner = ({ data }: { data?: HomepageBanner }) => {
+  const plainTitle = stripHtml(data?.title) || 'Bateco Group'
+  const imageSrc = data?.background_pc || data?.background_mobile || FALLBACK
+  const imageSrcMobile = data?.background_mobile || data?.background_pc || FALLBACK
+  const primary =
+    data?.button_1?.url && data.button_1.title
+      ? {
+          href: data.button_1.url as ComponentProps<typeof Link>['href'],
+          label: data.button_1.title,
+        }
+      : undefined
+  const secondary =
+    data?.button_2?.url && data.button_2.title
+      ? { href: data.button_2.url, label: data.button_2.title }
+      : undefined
 
   return (
     <Banner
-      imageSrc='/home/d-banner.png'
-      imageAlt='banner'
-      srTitle='Bateco Group'
-      eyebrow={t('eyebrow')}
-      titleLine1={t('titleLine1')}
-      titleLine2={t('titleLine2')}
-      description={t('description')}
-      showButton
-      primary={{ href: ROUTES.about, label: t('ctaPrimary') }}
-      secondary={{ href: '#ecosystem', label: t('ctaSecondary') }}
+      imageSrc={imageSrc}
+      imageSrcMobile={imageSrcMobile}
+      imageAlt={plainTitle}
+      srTitle={plainTitle}
+      eyebrow={data?.subtitle || ''}
+      titleHtml={data?.title}
+      description={data?.desc || ''}
+      showButton={Boolean(primary || secondary)}
+      primary={primary}
+      secondary={secondary}
     />
   )
 }

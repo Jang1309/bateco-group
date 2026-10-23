@@ -10,7 +10,10 @@ type AboutEcosystemProps = {
 
 const AboutEcosystem = ({ ecosystem }: AboutEcosystemProps) => {
   return (
-    <section className='bg-[#FAFAF8] px-[4.375rem] py-[5.3rem] xsm:px-[1.5rem] xsm:py-[3rem]'>
+    <section
+      id='he-sinh-thai'
+      className='scroll-mt-[6rem] bg-[#FAFAF8] px-[4.375rem] py-[5.3rem] xsm:px-[1.5rem] xsm:py-[3rem]'
+    >
       <div className='mx-auto grid max-w-[91.4rem] grid-cols-12 items-center gap-[3.75rem] xsm:grid-cols-1 xsm:gap-[2.5rem]'>
         <div className='col-span-5 pr-[1.25rem] pl-[3.125rem] xsm:col-span-1 xsm:px-0'>
           <Reveal variant='left'>

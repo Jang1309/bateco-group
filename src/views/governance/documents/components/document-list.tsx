@@ -1,3 +1,4 @@
+import type { GovernanceBasePath } from '@/views/governance/base-path'
 import { DOCUMENTS_PER_PAGE, type DocumentsCategory } from '@/views/governance/data'
 
 import DocumentItem from './document-item'
@@ -6,9 +7,10 @@ import GovernancePagination, { paginate } from './pagination'
 type DocumentListProps = {
   category: DocumentsCategory
   page: number
+  basePath?: GovernanceBasePath
 }
 
-const DocumentList = ({ category, page }: DocumentListProps) => {
+const DocumentList = ({ category, page, basePath }: DocumentListProps) => {
   const {
     items: documents,
     currentPage,
@@ -40,6 +42,7 @@ const DocumentList = ({ category, page }: DocumentListProps) => {
         categoryId={category.id}
         currentPage={currentPage}
         totalPages={totalPages}
+        basePath={basePath}
       />
     </>
   )

@@ -1,18 +1,25 @@
 import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
+import type { GovernanceBasePath } from '@/views/governance/base-path'
 import type { GovernanceCategory } from '@/views/governance/data'
 
 type SidebarLinkProps = {
   category: GovernanceCategory
   active: boolean
   nested?: boolean
+  basePath?: GovernanceBasePath
 }
 
-const SidebarLink = ({ category, active, nested = false }: SidebarLinkProps) => {
+const SidebarLink = ({
+  category,
+  active,
+  nested = false,
+  basePath = '/quan-he-nha-dau-tu',
+}: SidebarLinkProps) => {
   return (
     <Link
       href={{
-        pathname: '/gioi-thieu/van-ban-quan-tri',
+        pathname: basePath,
         query: { 'danh-muc': category.id },
       }}
       scroll={false}

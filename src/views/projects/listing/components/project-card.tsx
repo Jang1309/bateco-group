@@ -1,5 +1,6 @@
 import Image from 'next/image'
 
+import { Link } from '@/i18n/navigation'
 import { getSectorLabel, type Project } from '@/views/projects/data'
 
 type ProjectCardProps = {
@@ -9,7 +10,10 @@ type ProjectCardProps = {
 
 const ProjectCard = ({ project, number }: ProjectCardProps) => {
   return (
-    <article className='group relative aspect-[3/4] overflow-hidden rounded-[0.75rem] bg-[#0F1C33] shadow-[0_0.75rem_2rem_rgba(15,28,51,0.12)] xsm:aspect-[4/5]'>
+    <Link
+      href={{ pathname: '/du-an/[slug]', params: { slug: project.id } }}
+      className='group relative block aspect-[3/4] overflow-hidden rounded-[0.75rem] bg-[#0F1C33] shadow-[0_0.75rem_2rem_rgba(15,28,51,0.12)] xsm:aspect-[4/5]'
+    >
       <Image
         src={project.image}
         alt={project.title}
@@ -44,7 +48,7 @@ const ProjectCard = ({ project, number }: ProjectCardProps) => {
           className='mt-[1rem] block h-[0.125rem] w-[2rem] bg-[#C6A15B] transition-[width] duration-500 ease-out group-hover:w-[4rem]'
         />
       </div>
-    </article>
+    </Link>
   )
 }
 

@@ -8,7 +8,10 @@ type AboutPillarsProps = {
 
 const AboutPillars = ({ pillars }: AboutPillarsProps) => {
   return (
-    <section className='bg-[#FDFDFD] pb-[2.8125rem] xsm:pb-[1rem]'>
+    <section
+      id='tam-nhin'
+      className='scroll-mt-[6rem] bg-[#FDFDFD] pb-[2.8125rem] xsm:pb-[1rem]'
+    >
       <BrandBar />
       <div className='mt-[0.78rem]'>
         {pillars.map((pillar, index) => (

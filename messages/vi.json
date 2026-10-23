@@ -41,14 +41,14 @@
     "requestTitle": "Luồng một request",
     "requestIntro": "Mỗi URL đi qua các lớp sau trước khi render page.",
     "flow": {
-      "proxy": "Resolve locale, rewrite pathname (/gioi-thieu ↔ /about).",
+      "proxy": "Resolve locale, rewrite pathname (/about ↔ /about).",
       "rootLayout": "Fonts, globals.css, QueryProvider, NuqsAdapter.",
       "localeLayout": "Validate locale, setRequestLocale, NextIntlClientProvider + messages.",
       "page": "Render page tương ứng (hoặc [...rest] → notFound)."
     },
     "i18nTitle": "i18n & routing",
     "i18n1": "Cấu hình nằm ở src/i18n/routing.ts — locales vi/en, defaultLocale vi.",
-    "i18n2": "File page nằm theo internal path: app/[locale]/gioi-thieu/. English public URL là /en/about nhờ pathnames.",
+    "i18n2": "File page nằm ở app/[locale]/(en)/… (tên folder tiếng Anh). URL tiếng Việt map qua pathnames (vd. /gioi-thieu ↔ /about).",
     "i18n3": "messages/vi.json và en.json được load trong src/i18n/request.ts.",
     "i18n4": "404: [locale]/not-found.tsx + catch-all [...rest]. Lỗi runtime: error.tsx / global-error.tsx.",
     "dataTitle": "Data layer",
@@ -74,13 +74,17 @@
   "NotFoundPage": {
     "title": "Không tìm thấy trang",
     "description": "Trang bạn đang tìm không tồn tại hoặc đã được di chuyển.",
-    "backHome": "Về trang chủ"
+    "backHome": "Về trang chủ",
+    "contact": "Liên hệ với chúng tôi"
   },
   "ErrorPage": {
+    "code": "Lỗi",
     "title": "Đã xảy ra lỗi",
-    "description": "Có lỗi không mong muốn. Vui lòng thử lại.",
-    "retry": "Thử lại"
+    "description": "Có lỗi không mong muốn khi tải trang. Vui lòng thử lại hoặc quay về trang chủ.",
+    "retry": "Thử lại",
+    "backHome": "Về trang chủ"
   },
+
   "Header": {
     "logoAlt": "BATECO",
     "about": "Giới thiệu",
@@ -94,7 +98,34 @@
     "localeVi": "VI",
     "localeEn": "EN",
     "openMenu": "Mở menu",
-    "closeMenu": "Đóng menu"
+    "closeMenu": "Đóng menu",
+    "megaIntro": "Giới thiệu",
+    "megaIntroGeneral": "Giới thiệu chung",
+    "megaIntroVision": "Tầm nhìn & Sứ mệnh",
+    "megaIntroHistory": "Lịch sử hình thành",
+    "megaIntroMembers": "Công ty thành viên",
+    "megaLeadership": "Lãnh đạo",
+    "megaLeadershipBoard": "Ban quản trị và bộ máy Lãnh đạo",
+    "megaLeadershipMembers": "Lãnh đạo các công ty thành viên",
+    "megaGovernance": "Văn bản quản trị",
+    "megaGovCharter": "Điều lệ Công ty",
+    "megaGovInternal": "Quy chế nội bộ về quản trị công ty",
+    "megaGovBod": "Quy chế hoạt động của HĐQT",
+    "megaGovSupervisory": "Quy chế hoạt động của UBKT",
+    "megaGovAudit": "Quy chế kiểm toán nội bộ",
+    "megaGovDisclosure": "Quy chế công bố thông tin",
+    "megaSectors": "Lĩnh vực hoạt động",
+    "megaExplore": "Khám phá",
+    "megaSectorsAll": "Tổng quan lĩnh vực",
+    "megaProjects": "Dự án tiêu biểu",
+    "megaShareholders": "Thông tin cổ đông",
+    "megaNewsCategories": "Danh mục tin tức",
+    "megaNewsAll": "Tất cả tin tức",
+    "megaViewAll": "Xem tất cả",
+    "megaDesc_about": "Tập đoàn đầu tư đa ngành, phát triển bằng năng lực thực thi và giá trị bền vững.",
+    "megaDesc_business": "Năm lĩnh vực trọng điểm kiến tạo hệ sinh thái công nghiệp hiện đại.",
+    "megaDesc_investor": "Thông tin minh bạch, kịp thời dành cho cổ đông và nhà đầu tư.",
+    "megaDesc_news": "Cập nhật hoạt động, dự án và câu chuyện mới nhất từ BATECO."
   },
   "Banner": {
     "eyebrow": "BATECO GROUP",
@@ -105,17 +136,10 @@
     "ctaSecondary": "HỆ SINH THÁI ĐẦU TƯ"
   },
   "HomeNews": {
-    "featuredTitle": "Tập đoàn Bateco kỉ niệm sinh nhật 14 Năm",
-    "featuredExcerpt": "Dấu mốc khẳng định hành trình xây dựng thương hiệu Việt có khát vọng vươn tầm quốc tế",
     "hot": "TIN NÓNG",
     "readMore": "XEM CHI TIẾT",
     "otherTitle": "TIN KHÁC",
-    "viewAll": "TẤT CẢ TIN TỨC",
-    "sky": "SKY AIR ĐỊNH HƯỚNG HỢP TÁC CÔNG NGHỆ QUỐC TẾ, XÂY DỰNG NỀN TẢNG TAXI BAY CHO...",
-    "legal": "VIỆT NAM TỪNG BƯỚC HOÀN THIỆN HÀNH LANG PHÁP LÝ CHO HÀNG KHÔNG TẦM THẤP VÀ CÔN...",
-    "accountant": "Tuyển dụng Kế toán tổng hợp",
-    "ceo": "Tuyển Dụng CEO - Tổng Giám đốc Tập đoàn",
-    "evtol": "DISCOVERY AIR TRIỂN KHAI DỊCH VỤ EVTOL TẠI..."
+    "viewAll": "TẤT CẢ TIN TỨC"
   },
   "HomeBrand": {
     "fieldAlt": "Kỹ sư Bateco vận hành hệ thống công nghiệp",

@@ -1,56 +1,99 @@
+'use client'
+
 import Image from 'next/image'
+import { useState } from 'react'
 
-import JourneyTimeline from '@/views/homepage/journey/timeline'
+import type { HomepageJourney } from '@/interfaces/homepage.interface'
+import JourneyCenter, { milestoneKey } from '@/views/homepage/journey/components/journey-center'
+import MilestoneCard from '@/views/homepage/journey/components/milestone-card'
+import { JOURNEY_GOLD } from '@/views/homepage/journey/constants'
 
-const journey = () => {
+const HomeJourney = ({ data }: { data?: HomepageJourney }) => {
+  const milestones = data?.milestones || []
+  const [hovered, setHovered] = useState<string | null>(null)
+  const active = milestones.find((item, index) => milestoneKey(item, index) === hovered) ?? null
+
   return (
-    <section className='relative overflow-hidden bg-[linear-gradient(180deg,#0B1A33_0%,#0A1730_60%,#050B18_100%)] pt-[5rem] pb-[5.5rem] xsm:pt-[3rem] xsm:pb-[3rem]'>
-      {/* Lưới mảnh + các quầng sáng vàng/xanh tạo chiều sâu cho nền tối */}
-      <span
-        aria-hidden
-        className='pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(198,161,91,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(198,161,91,0.06)_1px,transparent_1px)] bg-[length:4rem_4rem] [mask-image:radial-gradient(ellipse_75%_70%_at_50%_45%,#000_0%,transparent_100%)]'
-      />
-      <span
-        aria-hidden
-        className='pointer-events-none absolute top-[-12rem] left-1/2 size-[44rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(223,186,115,0.18)_0%,transparent_65%)]'
-      />
-      <span
-        aria-hidden
-        className='pointer-events-none absolute right-[-10rem] bottom-[-14rem] size-[46rem] rounded-full bg-[radial-gradient(circle,rgba(52,102,194,0.28)_0%,transparent_65%)]'
-      />
-
-      <div
-        data-aos='fade-up'
-        className='relative px-[1.5rem]'
-      >
-        <h2
-          className='mx-auto w-fit text-center text-[3.75rem] leading-[4.75rem] font-bold tracking-[0.23rem] uppercase xsm:text-[1.9rem] xsm:leading-[2.4rem] xsm:tracking-[0.08rem]'
-          style={{
-            background: 'linear-gradient(93deg, #F2D59A 0%, #DFBA73 40%, #BA8A38 100%)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Chặng đường phát triển
-        </h2>
+    <section className='relative overflow-hidden bg-white pt-[5rem] pb-[5.5rem] xsm:pt-[3rem] xsm:pb-[3rem]'>
+      <div className='absolute inset-0 overflow-hidden'>
         <Image
-          src='/home/journey/decor.svg'
+          src='/home/d-bg.png'
           alt=''
-          width={1000}
-          height={240}
-          className='mx-auto h-[1rem] w-auto'
+          fill
+          sizes='100vw'
+          unoptimized
+          className='scale-[1.12] object-cover object-[center_42%]'
+          priority={false}
         />
-        <p className='mt-4 text-center text-[1rem] leading-[1.5625rem] tracking-[0.23rem] text-white/55 uppercase xsm:text-[0.7rem] xsm:tracking-[0.1rem]'>
-          Bateco Group • Hành trình kiến tạo vị thế
-        </p>
       </div>
+      <div
+        aria-hidden
+        className='absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.88)_0%,rgba(255,255,255,0.55)_45%,rgba(255,255,255,0.2)_72%,transparent_100%)]'
+      />
 
-      <div className='relative'>
-        <JourneyTimeline />
+      <div className='relative mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
+        <header className='text-center'>
+          {data?.subtitle ? (
+            <p className='flex items-center justify-center gap-[0.75rem] text-[0.75rem] font-semibold tracking-[0.2em] text-[#1A2B48] uppercase'>
+              <span className='h-px w-[2.5rem] bg-[#C6A15B]/70' />
+              <span className='inline-flex items-center gap-[0.35rem]'>
+                <span className='size-[0.35rem] rotate-45 bg-[#C6A15B]' />
+                {data.subtitle}
+                <span className='size-[0.35rem] rotate-45 bg-[#C6A15B]' />
+              </span>
+              <span className='h-px w-[2.5rem] bg-[#C6A15B]/70' />
+            </p>
+          ) : null}
+          {data?.title ? (
+            <h2
+              className='mt-[0.875rem] text-[2.75rem] leading-[1.2] font-bold tracking-[0.04em] uppercase xsm:text-[1.625rem]'
+              style={{
+                background: JOURNEY_GOLD,
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              {data.title}
+            </h2>
+          ) : null}
+          {data?.desc ? (
+            <p className='mt-[0.625rem] text-[0.875rem] font-medium tracking-[0.18em] text-[#1A2B48]/70 uppercase xsm:text-[0.75rem]'>
+              {data.desc}
+            </p>
+          ) : null}
+        </header>
+
+        <div className='py-[3rem] xsm:py-[2rem]'>
+          <JourneyCenter
+            active={active}
+            logo={data?.logo}
+          />
+        </div>
+
+        {milestones.length ? (
+          <ul className='grid grid-cols-5 gap-[1rem] xlg:grid-cols-3 xsm:grid-cols-1 xsm:gap-[0.75rem]'>
+            {milestones.map((item, i) => {
+              const key = milestoneKey(item, i)
+
+              return (
+                <li key={key}>
+                  <MilestoneCard
+                    item={item}
+                    index={i}
+                    isActive={hovered === key}
+                    onActivate={() => setHovered(key)}
+                    onDeactivate={() => setHovered(null)}
+                    onToggle={() => setHovered((prev) => (prev === key ? null : key))}
+                  />
+                </li>
+              )
+            })}
+          </ul>
+        ) : null}
       </div>
     </section>
   )
 }
 
-export default journey
+export default HomeJourney

@@ -1,9 +1,9 @@
 'use client'
 
 import { ChevronDown } from 'lucide-react'
-import { type ReactNode, useId, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 
-import { cn } from '@/lib/utils'
+import DrawerProvider from '@/components/providers/drawer-provider'
 
 type SidebarShellProps = {
   title: string
@@ -11,10 +11,9 @@ type SidebarShellProps = {
   children: ReactNode
 }
 
-/** Desktop: luôn hiện danh mục. Mobile: thu gọn thành nút chọn, bấm để mở danh mục. */
+/** Desktop: danh mục luôn hiện. Mobile: nút mở DrawerProvider. */
 const SidebarShell = ({ title, activeTitle, children }: SidebarShellProps) => {
   const [open, setOpen] = useState(false)
-  const panelId = useId()
 
   return (
     <>
@@ -22,11 +21,13 @@ const SidebarShell = ({ title, activeTitle, children }: SidebarShellProps) => {
         <span className='border-l-[0.1875rem] border-[#B5935E] pl-[0.75rem]'>{title}</span>
       </h2>
 
+      <div className='mt-[1rem] xsm:hidden'>{children}</div>
+
       <button
         type='button'
+        aria-haspopup='dialog'
         aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => setOpen(true)}
         className='hidden w-full items-center gap-[0.75rem] text-left xsm:flex'
       >
         <span className='flex-1 border-l-[0.1875rem] border-[#B5935E] pl-[0.75rem]'>
@@ -38,24 +39,20 @@ const SidebarShell = ({ title, activeTitle, children }: SidebarShellProps) => {
           </span>
         </span>
         <span className='flex size-[2.25rem] shrink-0 items-center justify-center rounded-full bg-[#F1F5F9] text-[#1A2B48]'>
-          <ChevronDown
-            className={cn(
-              'size-[1.125rem] transition-transform duration-300',
-              open && 'rotate-180',
-            )}
-          />
+          <ChevronDown className='size-[1.125rem]' />
         </span>
       </button>
 
-      <div
-        id={panelId}
-        className={cn(
-          'mt-[1rem] xsm:mt-[0.75rem] xsm:border-t xsm:border-[#EEF1F5] xsm:pt-[0.75rem]',
-          !open && 'xsm:hidden',
-        )}
+      <DrawerProvider
+        open={open}
+        setOpen={setOpen}
+        className='pb-[max(1.5rem,env(safe-area-inset-bottom))]'
       >
-        {children}
-      </div>
+        <div className='px-[1.25rem] pt-[1rem]'>
+          <p className='text-[1.125rem] font-bold text-[#1A2B48]'>{title}</p>
+          <div className='mt-[0.75rem] max-h-[70vh] overflow-y-auto pb-[0.5rem]'>{children}</div>
+        </div>
+      </DrawerProvider>
     </>
   )
 }

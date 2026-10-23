@@ -54,14 +54,15 @@ const CompanyLists = ({ groups }: CompanyListsProps) => {
                 <h3 className='text-[0.9375rem] leading-[1.25rem] font-bold tracking-[0.047rem] text-[#B88E56] uppercase xsm:text-[0.75rem]'>
                   {group.title}
                 </h3>
-                <ol className='mt-[1.09rem] grid grid-cols-2'>
+                <ol className='mt-[1.09rem] grid grid-cols-2 xsm:grid-cols-1'>
                   {group.companies.map((company, index) => (
                     <li
                       key={`${company}-${index}`}
                       className={cn(
                         'flex items-center py-[0.625rem]',
                         index > 1 && 'border-t border-[#EFE7DC]',
-                        index % 2 === 0 ? 'pr-[0.625rem]' : 'pl-[0.625rem]',
+                        index > 0 && 'xsm:border-t xsm:border-[#EFE7DC]',
+                        index % 2 === 0 ? 'pr-[0.625rem] xsm:pr-0' : 'pl-[0.625rem] xsm:pl-0',
                       )}
                     >
                       <span className='w-[1.5625rem] shrink-0 text-[0.9375rem] leading-[1.25rem] font-bold text-[#B88E56] xsm:w-[1.5rem] xsm:text-[0.75rem]'>

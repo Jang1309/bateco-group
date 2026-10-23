@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 'use client'
 import { useMotionValue, animate, motion, useReducedMotion } from 'motion/react'
-import { useState, useEffect } from 'react'
+import { Children, cloneElement, isValidElement, useEffect, useState } from 'react'
 import useMeasure from 'react-use-measure'
 
 import { cn } from '@/lib/utils'
@@ -108,12 +108,16 @@ export function InfiniteSlider({
         ref={ref}
         {...hoverProps}
       >
-        {children}
+        {Children.map(children, (child, index) =>
+          isValidElement(child) ? cloneElement(child, { key: `a-${index}` }) : child,
+        )}
         <div
           inert
           className='contents motion-reduce:hidden'
         >
-          {children}
+          {Children.map(children, (child, index) =>
+            isValidElement(child) ? cloneElement(child, { key: `b-${index}` }) : child,
+          )}
         </div>
       </motion.div>
     </div>

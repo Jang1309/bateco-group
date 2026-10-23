@@ -12,7 +12,7 @@ import { HOVER_DELAY_MS } from '@/views/homepage/investment/constants'
 import { mapSectors } from '@/views/homepage/investment/data'
 
 const Investment = ({ sectors }: { sectors?: SectorsResponse }) => {
-  const items = mapSectors(sectors)
+  const items = mapSectors(sectors?.data)
   const center = items.length ? Math.floor(items.length / 2) : 0
 
   const [{ active, prev }, setView] = useState({ active: center, prev: center })

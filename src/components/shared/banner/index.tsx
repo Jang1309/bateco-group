@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import type { ComponentProps } from 'react'
+import type { ComponentProps, ReactNode } from 'react'
 
 import BannerTopOverlay from '@/components/shared/banner-top-overlay'
 import { Link } from '@/i18n/navigation'
@@ -28,6 +28,7 @@ type BannerProps = {
   className?: string
   imageClassName?: string
   animated?: boolean
+  children?: ReactNode
 }
 
 const BannerContent = ({
@@ -38,9 +39,17 @@ const BannerContent = ({
   primary,
   secondary,
   animated,
+  children,
 }: Pick<
   BannerProps,
-  'eyebrow' | 'titleHtml' | 'description' | 'showButton' | 'primary' | 'secondary' | 'animated'
+  | 'eyebrow'
+  | 'titleHtml'
+  | 'description'
+  | 'showButton'
+  | 'primary'
+  | 'secondary'
+  | 'animated'
+  | 'children'
 >) => (
   <div
     className={`relative max-w-[40rem] border-l-[0.1875rem] border-[#b5935e] pl-[3.125rem] xsm:max-w-full xsm:pl-[0.875rem] ${animated ? 'banner-reveal-line' : ''}`}
@@ -97,6 +106,8 @@ const BannerContent = ({
         ) : null}
       </div>
     ) : null}
+
+    {children}
   </div>
 )
 
@@ -112,6 +123,7 @@ const Banner = ({
   primary,
   secondary,
   animated = true,
+  children,
 }: BannerProps) => {
   const mobileSrc = imageSrcMobile || imageSrc
   const content = (
@@ -123,7 +135,9 @@ const Banner = ({
       primary={primary}
       secondary={secondary}
       animated={animated}
-    />
+    >
+      {children}
+    </BannerContent>
   )
 
   return (

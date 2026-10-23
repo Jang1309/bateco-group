@@ -1,24 +1,39 @@
-import { ABOUT_GOVERNANCE_MENU, getAboutGovernanceCategory } from '@/views/governance/data'
-import GovernanceDocuments from '@/views/governance/documents'
+import { Suspense } from 'react'
+
+import type {
+  AdministrativeDocumentCategoryItem,
+  AdministrativeDocumentResponse,
+} from '@/interfaces/administrativeDocument.interface'
+import AboutGovernanceDocuments from '@/views/about-governance/documents'
 import GovernanceHero from '@/views/governance/hero'
 
 type AboutGovernanceViewProps = {
-  categoryId?: string
-  page: number
+  locale: string
+  content?: AdministrativeDocumentResponse
+  categories: AdministrativeDocumentCategoryItem[]
 }
 
-const AboutGovernanceView = ({ categoryId, page }: AboutGovernanceViewProps) => {
-  const category = getAboutGovernanceCategory(categoryId)
+const DocumentsFallback = () => (
+  <section
+    id='van-ban'
+    className='bg-[#FAFBFC] pt-[1.5rem] pb-[6rem] xsm:pb-[3.5rem]'
+  >
+    <p className='mx-auto max-w-[95rem] px-[3.75rem] py-[3rem] text-center text-[0.9375rem] text-[#64748B] xsm:px-[1.25rem]'>
+      Đang tải…
+    </p>
+  </section>
+)
 
+const AboutGovernanceView = ({ locale, content, categories }: AboutGovernanceViewProps) => {
   return (
     <main>
-      <GovernanceHero />
-      <GovernanceDocuments
-        category={category}
-        page={page}
-        menu={ABOUT_GOVERNANCE_MENU}
-        basePath='/gioi-thieu/van-ban-quan-tri'
-      />
+      <GovernanceHero data={content?.banner} />
+      <Suspense fallback={<DocumentsFallback />}>
+        <AboutGovernanceDocuments
+          locale={locale}
+          categories={categories}
+        />
+      </Suspense>
     </main>
   )
 }

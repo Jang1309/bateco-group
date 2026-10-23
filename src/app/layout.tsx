@@ -5,7 +5,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 import { AosProvider } from '@/components/providers/aos-provider'
 import { LenisProvider } from '@/components/providers/lenis-provider'
-import { QueryProvider } from '@/components/providers/query-provider'
+import { SwrProvider } from '@/components/providers/swr-provider'
 import '@/styles/globals.css'
 
 // const geologica = Geologica({
@@ -46,13 +46,13 @@ export default function RootLayout({
           speed={220}
           shadow='0 0 10px #2563eb,0 0 5px #2563eb'
         />
-        <QueryProvider>
+        <SwrProvider>
           <NuqsAdapter>
             <LenisProvider>
               <AosProvider>{children}</AosProvider>
             </LenisProvider>
           </NuqsAdapter>
-        </QueryProvider>
+        </SwrProvider>
       </body>
     </html>
   )

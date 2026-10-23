@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react'
 
 import ROUTES from '@/configs/routes'
 import { Link } from '@/i18n/navigation'
-import type { SectorItem, SectorsResponse } from '@/interfaces/sectors.interface'
+import type { SectorItem } from '@/interfaces/sectors.interface'
 
 /** Fallback khi acf.image trống */
 export const SECTOR_FALLBACK_IMAGES = [
@@ -28,7 +28,7 @@ const splitTitle = (name?: string): [string, string] => {
   return [words.slice(0, mid).join(' '), words.slice(mid).join(' ')]
 }
 
-export const mapSectors = (sectors?: SectorsResponse): InvestmentItem[] => {
+export const mapSectors = (sectors?: SectorItem[]): InvestmentItem[] => {
   const items: InvestmentItem[] = []
 
   ;(sectors || []).forEach((sector: SectorItem, index) => {

@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import type { ComponentProps } from 'react'
 
 import Banner from '@/components/shared/banner'

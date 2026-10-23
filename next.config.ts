@@ -39,6 +39,9 @@ const nextConfig: NextConfig = {
 
   experimental: {
     webVitalsAttribution: ['CLS', 'LCP'],
+    // next-intl rewrite (/tin-tuc → /vi/tin-tuc) làm lệch hash header RSC
+    // → prefetch Link bị 307?_rsc=... lặp vô hạn. Tắt validate để cắt vòng đó.
+    validateRSCRequestHeaders: false,
   },
 
   typescript: {

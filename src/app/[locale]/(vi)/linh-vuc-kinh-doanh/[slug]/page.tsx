@@ -10,7 +10,8 @@ type Props = {
   params: Promise<{ locale: string; slug: string }>
 }
 
-export const dynamicParams = false
+// Slug sector từ CMS có thể lệch mock data — cho runtime notFound() thay vì 404 HTML.
+export const dynamicParams = true
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>

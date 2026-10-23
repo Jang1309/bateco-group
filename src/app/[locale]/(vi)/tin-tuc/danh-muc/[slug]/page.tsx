@@ -10,7 +10,7 @@ type Props = {
   params: Promise<{ locale: string; slug: string }>
 }
 
-export const dynamicParams = false
+export const dynamicParams = true
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>

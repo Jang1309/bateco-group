@@ -117,6 +117,7 @@ const DetailPanel = ({ items, active, prev }: DetailPanelProps) => (
             >
               <Link
                 href={item.href}
+                prefetch={false}
                 tabIndex={isShown ? undefined : -1}
                 className='group flex w-fit items-center gap-[0.5rem] text-[0.8125rem] font-semibold tracking-[0.04rem] text-[#b88e4f] uppercase'
               >

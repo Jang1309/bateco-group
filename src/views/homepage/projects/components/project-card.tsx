@@ -19,6 +19,7 @@ const ProjectCard = ({ title, date, image, href, aosDelay = 0 }: ProjectCardProp
   >
     <Link
       href={href}
+      prefetch={false}
       className='group flex h-full flex-col border border-[#EADFC8] bg-white transition-[border-color,box-shadow] duration-300 hover:border-[#C6A15B] hover:shadow-[0_1rem_2.5rem_rgba(153,110,39,0.14)]'
     >
       <div className='relative aspect-[4/3] overflow-hidden bg-[#F5F5F5]'>

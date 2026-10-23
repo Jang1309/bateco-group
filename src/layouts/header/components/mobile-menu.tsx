@@ -119,7 +119,8 @@ export default function MobileMenu({ header }: { header?: Header }) {
     const html = document.documentElement
     const prevOverflow = html.style.overflow
     html.style.overflow = 'hidden'
-    lenis?.stop()
+    // Chỉ stop Lenis trên desktop — stop() + touch làm mất scroll cảm ứng trên mobile
+    if (!isMobile) lenis?.stop()
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setOpen(false)
@@ -128,7 +129,6 @@ export default function MobileMenu({ header }: { header?: Header }) {
 
     return () => {
       html.style.overflow = prevOverflow
-      // mobile giữ Lenis tắt (LenisMobileOff)
       if (!isMobile) lenis?.start()
       window.removeEventListener('keydown', onKeyDown)
     }

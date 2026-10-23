@@ -10,7 +10,9 @@ type Props = {
   params: Promise<{ locale: string; slug: string }>
 }
 
-export const dynamicParams = false
+// CMS homepage link slug thật; mock data chỉ cover một phần → cho phép runtime notFound()
+// thay vì 404 HTML cứng (dynamicParams:false) làm prefetch RSC nổ InvariantError/500.
+export const dynamicParams = true
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) => ARTICLE_SLUGS.map((slug) => ({ locale, slug })))

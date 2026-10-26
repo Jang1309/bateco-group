@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 
 import endpoints from '@/configs/endpoints'
+import { localePathsFor } from '@/configs/routes'
 import getMetaDataRankMath from '@/fetches/getMetaDataRankMath'
 import { assertPageLocale } from '@/i18n/assert-locale'
 import administrativeDocumentService from '@/services/administrative-document'
@@ -27,7 +28,11 @@ export async function generateMetadata({
     ],
   )
   const t = await getTranslations({ locale, namespace: 'Meta' })
-  return metadataValues(res, { locale, description: t('governanceDesc') })
+  return metadataValues(res, {
+    locale,
+    description: t('governanceDesc'),
+    ...localePathsFor('aboutGovernance', locale),
+  })
 }
 
 const AboutGovernancePage = async ({ params }: Props) => {

@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import JsonLd from '@/components/shared/json-ld'
 import endpoints from '@/configs/endpoints'
 import ENV from '@/configs/env'
-import { hrefFor } from '@/configs/routes'
+import { hrefFor, localePathsFor } from '@/configs/routes'
 import getMetaDataRankMath from '@/fetches/getMetaDataRankMath'
 import { assertPageLocale } from '@/i18n/assert-locale'
 import { breadcrumbSchema, schemaGraph, webPageSchema } from '@/lib/schema'
@@ -29,7 +29,11 @@ export async function generateMetadata({
     endpoints.introduction.rank_math[locale as keyof typeof endpoints.introduction.rank_math],
   )
   const t = await getTranslations({ locale, namespace: 'Meta' })
-  return metadataValues(res, { locale, description: t('homeDesc') })
+  return metadataValues(res, {
+    locale,
+    description: t('homeDesc'),
+    ...localePathsFor('about', locale),
+  })
 }
 
 const AboutPage = async ({ params }: Props) => {

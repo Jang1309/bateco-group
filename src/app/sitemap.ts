@@ -23,7 +23,6 @@ const STATIC_ROUTES: RouteKey[] = [
   'investor',
   'projects',
   'news',
-  'newsCategory',
   'careers',
   'contact',
 ]

@@ -13,4 +13,7 @@ export const routing = defineRouting({
   defaultLocale: 'vi',
   localePrefix: 'as-needed',
   localeDetection: false,
+  // Without `pathnames`, next-intl invents wrong EN alternates (e.g. /en/gioi-thieu → 404)
+  // and uses http://. HTML hreflang comes from metadataValues instead.
+  alternateLinks: false,
 })

@@ -34,6 +34,7 @@ const nextConfig: NextConfig = {
 
   reactStrictMode: false,
   output: 'standalone',
+  poweredByHeader: false,
 
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',

@@ -4,7 +4,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 
 import DetailHero from '@/components/shared/detail-hero'
 import SectionHeading from '@/components/shared/section-heading'
-import { pathFor } from '@/configs/routes'
+import { contactHrefFor, pathFor } from '@/configs/routes'
 import { Link, toAppHref } from '@/i18n/navigation'
 import type { Contact } from '@/interfaces/siteSetting.interface'
 import { resolveCategoryTitle, type NewsArticle, type NewsArticleDetail } from '@/views/news/data'
@@ -31,7 +31,7 @@ const NewsDetailView = async ({ article, related = [], contact }: NewsDetailView
   )
 
   const contacts = contact?.contacts?.filter((item) => item.link?.title) ?? []
-  const buttonHref = toAppHref(contact?.button?.url || pathFor('contact', locale))
+  const buttonHref = toAppHref(contactHrefFor(locale, contact?.button?.url))
   const others = related.filter((item) => item.id !== article.id).slice(0, 6)
 
   return (

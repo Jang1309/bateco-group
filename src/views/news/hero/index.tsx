@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 import BannerTopOverlay from '@/components/shared/banner-top-overlay'
 import type { NewsPageBanner } from '@/interfaces/postList.interface'
 import { cn } from '@/lib/utils'
+import { stripHtml } from '@/views/news/map-post'
 
 const FALLBACK_IMAGE = '/home/vision/d-img-1.jpg'
 
@@ -75,9 +76,11 @@ const NewsHero = ({ data }: NewsHeroProps) => {
   const banner = data?.title || data?.subtitle ? data : fallbackBanner
   const desktop = banner.desktop || FALLBACK_IMAGE
   const mobile = typeof banner.mobile === 'string' && banner.mobile ? banner.mobile : desktop
+  const srTitle = stripHtml(banner.title) || banner.subtitle || t('heroTitle')
 
   return (
     <section className='relative overflow-hidden bg-white'>
+      <h1 className='sr-only'>{srTitle}</h1>
       {/* Desktop: chữ trái + ảnh phải */}
       <div className='relative overflow-hidden pt-[9.5rem] pb-[6rem] xsm:hidden'>
         <div className='absolute inset-y-0 right-0 w-[70%]'>

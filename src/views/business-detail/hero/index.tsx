@@ -9,9 +9,11 @@ const FALLBACK = '/home/investment/d-card-1.png'
 
 const SectorHero = ({ sector }: { sector: SectorItem }) => {
   const image = sector.acf?.banner?.image || sector.acf?.image || FALLBACK
+  const srTitle = sector.acf?.banner?.title || sector.name || 'Bateco Group'
 
   return (
     <section className='relative overflow-hidden bg-white'>
+      <h1 className='sr-only'>{srTitle}</h1>
       {/* Desktop: ảnh phải + chữ trái */}
       <div className='relative overflow-hidden pt-[9.5rem] pb-[5.5rem] xsm:hidden'>
         <div className='absolute inset-y-0 right-0 w-[68%]'>

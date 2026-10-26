@@ -1,10 +1,9 @@
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
-import { useTranslations } from 'next-intl'
-import type { ComponentProps } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
 
-import ROUTES from '@/configs/routes'
-import { Link } from '@/i18n/navigation'
+import { contactHrefFor } from '@/configs/routes'
+import { Link, toAppHref } from '@/i18n/navigation'
 import type { Contact } from '@/interfaces/siteSetting.interface'
 
 import ContactItem from './components/contact-item'
@@ -16,12 +15,13 @@ type SectorCtaProps = {
 }
 
 const SectorCta = ({ data }: SectorCtaProps) => {
+  const locale = useLocale()
   const t = useTranslations('BusinessDetail')
 
   if (!data) return null
 
   const image = typeof data.image === 'string' && data.image ? data.image : FALLBACK_IMAGE
-  const buttonHref = (data.button?.url || ROUTES.contact) as ComponentProps<typeof Link>['href']
+  const buttonHref = toAppHref(contactHrefFor(locale, data.button?.url))
   const buttonLabel = data.button?.title || t('connect')
   const contacts = data.contacts?.filter((item) => item.link?.title || item.link?.url) ?? []
 

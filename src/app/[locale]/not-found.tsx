@@ -1,17 +1,18 @@
 import Image from 'next/image'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
-import ROUTES from '@/configs/routes'
-import { Link } from '@/i18n/navigation'
+import { contactHrefFor, hrefFor } from '@/configs/routes'
+import { Link, toAppHref } from '@/i18n/navigation'
 
 export default function NotFoundPage() {
+  const locale = useLocale()
   const t = useTranslations('NotFoundPage')
 
   return (
     <main className='flex min-h-dvh flex-col bg-white text-[#1a2b48]'>
       <div className='mx-auto flex w-full max-w-[95rem] flex-1 flex-col px-[2.5rem] py-[2.5rem] xsm:px-[1.5rem] xsm:py-[1.5rem]'>
         <Link
-          href={ROUTES.home}
+          href={toAppHref(hrefFor('home', locale))}
           aria-label='Bateco Group'
           className='w-fit cursor-pointer'
         >
@@ -38,13 +39,13 @@ export default function NotFoundPage() {
             </p>
             <div className='mt-[2.25rem] flex flex-wrap items-center gap-[1.75rem] xsm:mt-[1.5rem] xsm:gap-[1.25rem]'>
               <Link
-                href={ROUTES.home}
+                href={toAppHref(hrefFor('home', locale))}
                 className='inline-flex cursor-pointer items-center justify-center bg-[#b5935e] px-[1.5rem] py-[0.875rem] text-[0.875rem] font-bold tracking-[0.04rem] text-white uppercase shadow-[0_0.25rem_0.75rem_rgba(181,147,94,0.35)] transition-colors duration-300 hover:bg-[#a4834f]'
               >
                 {t('backHome')}
               </Link>
               <Link
-                href={ROUTES.contact}
+                href={toAppHref(contactHrefFor(locale))}
                 className='inline-flex cursor-pointer items-center gap-[0.35rem] text-[0.875rem] font-bold tracking-[0.04rem] text-[#b5935e] uppercase transition-opacity duration-300 hover:opacity-80'
               >
                 {t('contact')}

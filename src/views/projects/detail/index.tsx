@@ -1,11 +1,10 @@
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
-import { useTranslations } from 'next-intl'
-import type { ComponentProps } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
 
 import SectionHeading from '@/components/shared/section-heading'
-import ROUTES from '@/configs/routes'
-import { Link } from '@/i18n/navigation'
+import { contactHrefFor } from '@/configs/routes'
+import { Link, toAppHref } from '@/i18n/navigation'
 import type { ProjectListItem } from '@/interfaces/projects.interface'
 import type { Contact } from '@/interfaces/siteSetting.interface'
 import ShareActions from '@/views/news/detail/share-actions'
@@ -24,10 +23,11 @@ type ProjectDetailViewProps = {
 }
 
 const ProjectDetailView = ({ project, related = [], contact }: ProjectDetailViewProps) => {
+  const locale = useLocale()
   const t = useTranslations('Projects')
   const tc = useTranslations('Common')
   const contacts = contact?.contacts?.filter((item) => item.link?.title) ?? []
-  const buttonHref = (contact?.button?.url || ROUTES.contact) as ComponentProps<typeof Link>['href']
+  const buttonHref = toAppHref(contactHrefFor(locale, contact?.button?.url))
   const others = related
     .map(mapProjectListItem)
     .filter((item): item is NonNullable<typeof item> => item !== null)

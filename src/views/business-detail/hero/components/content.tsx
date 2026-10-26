@@ -4,9 +4,9 @@ import { useLenis } from 'lenis/react'
 import { useLocale, useTranslations } from 'next-intl'
 import type { MouseEvent } from 'react'
 
-import ROUTES from '@/configs/routes'
+import { contactHrefFor } from '@/configs/routes'
 import { sectionId } from '@/configs/section-ids'
-import { Link } from '@/i18n/navigation'
+import { Link, toAppHref } from '@/i18n/navigation'
 import type { SectorItem } from '@/interfaces/sectors.interface'
 import { cn } from '@/lib/utils'
 import { scrollToSection } from '@/utils/scrollToSection'
@@ -58,7 +58,7 @@ const SectorHeroContent = ({ sector, stacked }: SectorHeroContentProps) => {
       ) : null}
 
       {title ? (
-        <h1
+        <div
           className={cn(
             'business-hero-rise font-bold text-[#1A2B48] text-pretty',
             stacked
@@ -68,7 +68,7 @@ const SectorHeroContent = ({ sector, stacked }: SectorHeroContentProps) => {
           style={{ animationDelay: '140ms' }}
         >
           {title}
-        </h1>
+        </div>
       ) : null}
 
       {description ? (
@@ -106,7 +106,7 @@ const SectorHeroContent = ({ sector, stacked }: SectorHeroContentProps) => {
           <span aria-hidden>→</span>
         </a>
         <Link
-          href={ROUTES.contact}
+          href={toAppHref(contactHrefFor(locale))}
           className={cn(
             'inline-flex items-center justify-center border border-[#1A2B48]/35 px-[1.5rem] py-[0.875rem] text-[0.8125rem] font-bold tracking-[0.06em] text-[#1A2B48] uppercase transition-colors duration-300 hover:border-[#1A2B48] hover:bg-[#1A2B48] hover:text-white',
             stacked && 'w-full py-[0.95rem]',

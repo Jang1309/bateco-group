@@ -72,9 +72,11 @@ const ContactView = ({ content }: ContactViewProps) => {
   const mobile = typeof banner?.mobile === 'string' && banner.mobile ? banner.mobile : desktop
   const offices = (content?.connect ?? []).filter((item) => item.title)
   const [hq, ...branches] = offices
+  const srTitle = banner?.title || banner?.subtitle || 'Bateco Group'
 
   return (
     <main>
+      <h1 className='sr-only'>{srTitle}</h1>
       {/* Desktop: ảnh banner CMS full-width (đã có vùng trắng trái), không crop / không đè gradient thêm */}
       <section className='relative isolate overflow-hidden bg-white xsm:hidden'>
         <div className='relative w-full'>
@@ -98,12 +100,12 @@ const ContactView = ({ content }: ContactViewProps) => {
                   </p>
                 ) : null}
                 {banner?.title ? (
-                  <h1
+                  <div
                     className='business-hero-fade mt-[1.125rem] text-[3rem] leading-[1.15] font-bold tracking-[-0.02em] text-[#1A2B48]'
                     style={{ animationDelay: '100ms' }}
                   >
                     {banner.title}
-                  </h1>
+                  </div>
                 ) : null}
               </div>
             </div>
@@ -145,12 +147,12 @@ const ContactView = ({ content }: ContactViewProps) => {
             </p>
           ) : null}
           {banner?.title ? (
-            <h1
+            <div
               className='business-hero-fade mt-[0.875rem] text-[2rem] leading-[1.2] font-bold tracking-[-0.02em] text-[#1A2B48]'
               style={{ animationDelay: '100ms' }}
             >
               {banner.title}
-            </h1>
+            </div>
           ) : null}
         </div>
       </section>

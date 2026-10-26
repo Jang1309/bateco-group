@@ -5,6 +5,7 @@ import {
   type BusinessFieldBanner,
   resolveBusinessFieldImage,
 } from '@/interfaces/businessField.interface'
+import { stripHtml } from '@/views/news/map-post'
 
 import HeroContent from './components/content'
 
@@ -17,9 +18,11 @@ type BusinessHeroProps = {
 const BusinessHero = ({ data }: BusinessHeroProps) => {
   const desktop = resolveBusinessFieldImage(data?.desktop) || FALLBACK
   const mobile = resolveBusinessFieldImage(data?.mobile) || desktop
+  const srTitle = stripHtml(data?.title) || data?.subtitle || 'Bateco Group'
 
   return (
     <section className='relative overflow-hidden bg-white xsm:flex xsm:flex-col'>
+      <h1 className='sr-only'>{srTitle}</h1>
       {/* Desktop: chữ overlay trên ảnh */}
       <div className='relative overflow-hidden pt-[9.5rem] pb-[6rem] xsm:hidden'>
         <div className='absolute inset-0 overflow-hidden'>

@@ -12,6 +12,7 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { HONEYPOT_FIELD } from '@/lib/form-guard'
 import { cn } from '@/lib/utils'
 
 type ApplyFormProps = {
@@ -52,6 +53,8 @@ const createApplySchema = (t: (key: SchemaMessageKey) => string) =>
     position: z.string().min(1),
     pageUrl: z.string(),
     submittedAt: z.string(),
+    /** Honeypot — must stay empty */
+    [HONEYPOT_FIELD]: z.string().optional(),
   })
 
 type ApplyValues = z.infer<ReturnType<typeof createApplySchema>>
@@ -72,6 +75,7 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
       position: jobTitle,
       pageUrl: '',
       submittedAt: '',
+      [HONEYPOT_FIELD]: '',
     },
   })
 
@@ -101,6 +105,8 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
       body.set('position', values.position || jobTitle)
       body.set('pageUrl', window.location.href)
       body.set('submittedAt', format(new Date(), 'dd/MM/yyyy HH:mm:ss'))
+      // Honeypot — leave empty; bots that autofill get silently dropped server-side
+      body.set(HONEYPOT_FIELD, values[HONEYPOT_FIELD] ?? '')
 
       // API trả ngay; CF7 gửi mail chạy nền → không chờ SMTP
       const response = await fetch('/api/careers/apply', {
@@ -111,6 +117,11 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
         ok?: boolean
         message?: string
       } | null
+
+      if (response.status === 429) {
+        toast.error(result?.message || t('error'))
+        return
+      }
 
       if (!response.ok || !result?.ok) {
         toast.error(result?.message || t('error'))
@@ -125,6 +136,7 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
         position: jobTitle,
         pageUrl: '',
         submittedAt: '',
+        [HONEYPOT_FIELD]: '',
         cvFile: undefined,
       })
       if (fileInputRef.current) fileInputRef.current.value = ''
@@ -137,6 +149,7 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
   return (
     <form
       className={cn(
+        'relative',
         isDrawer
           ? 'bg-transparent p-0'
           : 'rounded-[1rem] bg-white p-[1.75rem] shadow-[0_1rem_2.5rem_-1.25rem_rgba(26,43,72,0.2)] ring-1 ring-[#1A2B48]/[0.06]',
@@ -165,6 +178,20 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
         type='hidden'
         {...register('submittedAt')}
       />
+      {/* Honeypot: visually hidden, not tabbable; bots that autofill get dropped */}
+      <div
+        aria-hidden
+        className='pointer-events-none absolute -left-[9999px] h-0 w-0 overflow-hidden opacity-0'
+      >
+        <label htmlFor={HONEYPOT_FIELD}>Company website</label>
+        <input
+          id={HONEYPOT_FIELD}
+          type='text'
+          tabIndex={-1}
+          autoComplete='off'
+          {...register(HONEYPOT_FIELD)}
+        />
+      </div>
 
       <FieldGroup
         className={cn('gap-[1rem]', !isDrawer && 'mt-[1.5rem]')}

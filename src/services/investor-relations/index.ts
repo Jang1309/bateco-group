@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cacheOption } from '@/configs/cache'
 import ENDPOINTS from '@/configs/endpoints'
 import fetchData from '@/fetches/fetchData'
 import type {
@@ -16,18 +17,19 @@ const investorRelationsService = {
   getInvestorRelations: async (locale: string) => {
     return await fetchData({
       api: ENDPOINTS.investorRelations[locale as 'vi' | 'en'],
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.investor),
     })
   },
   getDocuments: async (params: GetDocumentsParams): Promise<InvestorRelationsListResponse> => {
     return await fetchData({
       api: ENDPOINTS.investorRelations.getDocuments(params),
+      option: cacheOption(CACHE_TAGS.investor),
     })
   },
   getCategories: async (locale: string): Promise<InvestorRelationsCategoriesResponse> => {
     return await fetchData({
       api: ENDPOINTS.investorRelations.getCategories(locale),
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.investor),
     })
   },
 }

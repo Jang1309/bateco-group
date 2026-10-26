@@ -1,3 +1,4 @@
+import { sectionId } from '@/configs/section-ids'
 import type { GovernanceBasePath } from '@/views/governance/base-path'
 import {
   type GovernanceCategory,
@@ -16,6 +17,7 @@ type GovernanceDocumentsProps = {
   page: number
   menu?: GovernanceMenuItem[]
   basePath?: GovernanceBasePath
+  locale?: string
 }
 
 const GovernanceDocuments = ({
@@ -23,10 +25,11 @@ const GovernanceDocuments = ({
   page,
   menu = GOVERNANCE_MENU,
   basePath = '/quan-he-nha-dau-tu',
+  locale = 'vi',
 }: GovernanceDocumentsProps) => {
   return (
     <section
-      id='van-ban'
+      id={sectionId('documents', locale)}
       className='bg-[#FAFBFC] pt-[1.5rem] pb-[6rem] xsm:pb-[3.5rem]'
     >
       <div className='mx-auto grid max-w-[95rem] grid-cols-[20rem_1fr] items-start gap-[2rem] px-[3.75rem] xsm:grid-cols-1 xsm:gap-[1rem] xsm:px-[1.25rem]'>

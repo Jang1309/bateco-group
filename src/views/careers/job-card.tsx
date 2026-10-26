@@ -1,6 +1,10 @@
-import { ArrowRight, Building2, MapPin, Wallet } from 'lucide-react'
+'use client'
 
-import { Link } from '@/i18n/navigation'
+import { ArrowRight, Building2, MapPin, Wallet } from 'lucide-react'
+import { useLocale, useTranslations } from 'next-intl'
+
+import { hrefFor } from '@/configs/routes'
+import { Link, toAppHref } from '@/i18n/navigation'
 import type { CareerCardModel } from '@/views/careers/map-career'
 
 type JobCardProps = {
@@ -9,6 +13,9 @@ type JobCardProps = {
 }
 
 const JobCard = ({ job, index = 0 }: JobCardProps) => {
+  const locale = useLocale()
+  const t = useTranslations('Careers')
+
   return (
     <div
       data-aos='business-rise'
@@ -61,10 +68,10 @@ const JobCard = ({ job, index = 0 }: JobCardProps) => {
         </div>
 
         <Link
-          href={{ pathname: '/co-hoi-nghe-nghiep/[slug]', params: { slug: job.slug } }}
+          href={toAppHref(hrefFor('careerDetail', locale, { slug: job.slug }))}
           className='inline-flex shrink-0 items-center gap-[0.75rem] rounded-full bg-[#1A2B48] py-[0.5rem] pr-[0.5rem] pl-[1.25rem] text-[0.8125rem] font-bold text-white transition-colors duration-300 hover:bg-[#243656] focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-offset-2 focus-visible:outline-none xsm:w-full xsm:justify-between'
         >
-          Xem chi tiết
+          {t('viewDetail')}
           <span
             aria-hidden
             className='flex size-[2rem] items-center justify-center rounded-full bg-white/10 transition-[transform,background-color] duration-300 group-hover:translate-x-[0.125rem] group-hover:bg-[#B5935E] xsm:transition-none xsm:group-hover:translate-x-0'

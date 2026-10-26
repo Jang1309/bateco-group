@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import { Suspense } from 'react'
 
 import type { CareersPageResponse, CareersTaxonomyItem } from '@/interfaces/careers.interface'
@@ -13,13 +14,17 @@ type CareersViewProps = {
   locations?: CareersTaxonomyItem[]
 }
 
-const JobsFallback = () => (
-  <section className='bg-[#FAFBFC] py-[5rem] xsm:py-[3rem]'>
-    <p className='mx-auto max-w-[95rem] px-[3.75rem] text-center text-[0.9375rem] text-[#64748B] xsm:px-[1.25rem]'>
-      Đang tải vị trí tuyển dụng…
-    </p>
-  </section>
-)
+const JobsFallback = () => {
+  const t = useTranslations('Careers')
+
+  return (
+    <section className='bg-[#FAFBFC] py-[5rem] xsm:py-[3rem]'>
+      <p className='mx-auto max-w-[95rem] px-[3.75rem] text-center text-[0.9375rem] text-[#64748B] xsm:px-[1.25rem]'>
+        {t('loading')}
+      </p>
+    </section>
+  )
+}
 
 const CareersView = ({ locale, content, departments = [], locations = [] }: CareersViewProps) => {
   return (

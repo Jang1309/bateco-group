@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 import type { InvestorRelationsListItem } from '@/interfaces/investorRelations.interface'
 
 const formatDate = (value?: string) => {
@@ -26,6 +28,7 @@ const itemClassName =
   'group grid grid-cols-[8.5rem_1fr] items-center gap-[1.5rem] px-[0.5rem] py-[1.5rem] transition-colors duration-300 xsm:grid-cols-1 xsm:gap-[0.5rem] xsm:px-0 xsm:py-[1.25rem]'
 
 const DocumentItem = ({ document }: DocumentItemProps) => {
+  const t = useTranslations('Investor')
   const fileUrl = getFileUrl(document)
   const description = stripHtml(document.post_excerpt || document.excerpt)
 
@@ -65,7 +68,7 @@ const DocumentItem = ({ document }: DocumentItemProps) => {
       ) : (
         <div
           className={`${itemClassName} cursor-not-allowed opacity-60`}
-          title='Chưa có file đính kèm'
+          title={t('noAttachment')}
         >
           {content}
         </div>

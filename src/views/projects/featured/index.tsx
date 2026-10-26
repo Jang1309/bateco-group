@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 import SectionHeading from '@/components/shared/section-heading'
 import type { ProjectListItem } from '@/interfaces/projects.interface'
 import { mapProjectListItem } from '@/views/projects/map-project'
@@ -9,6 +11,7 @@ type FeaturedProjectsProps = {
 }
 
 const FeaturedProjects = ({ projects = [] }: FeaturedProjectsProps) => {
+  const t = useTranslations('Projects')
   const featured = projects
     .map(mapProjectListItem)
     .filter((item): item is NonNullable<typeof item> => item !== null)
@@ -18,7 +21,7 @@ const FeaturedProjects = ({ projects = [] }: FeaturedProjectsProps) => {
   return (
     <section className='bg-white pt-[2rem] pb-[5rem] xsm:pt-[0.5rem] xsm:pb-[2.5rem]'>
       <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
-        <SectionHeading title='Dự án nổi bật' />
+        <SectionHeading title={t('featured')} />
         <div
           data-aos='business-rise'
           data-aos-duration='800'

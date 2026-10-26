@@ -1,3 +1,5 @@
+import { getLocale } from 'next-intl/server'
+
 import type { NewsPageResponse } from '@/interfaces/postList.interface'
 import NewsCategories from '@/views/news/categories'
 import type { CategoryBlock } from '@/views/news/data'
@@ -10,8 +12,9 @@ type NewsViewProps = {
   categoryBlocks?: CategoryBlock[]
 }
 
-const NewsView = ({ content, categoryBlocks = [] }: NewsViewProps) => {
-  const featuredArticles = mapFeaturedPosts(content?.featured_news?.posts)
+const NewsView = async ({ content, categoryBlocks = [] }: NewsViewProps) => {
+  const locale = await getLocale()
+  const featuredArticles = mapFeaturedPosts(content?.featured_news?.posts, locale)
 
   return (
     <main>

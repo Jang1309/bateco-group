@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 import { cn } from '@/lib/utils'
 import type { NewsCategory } from '@/views/news/data'
 
@@ -8,11 +10,12 @@ type FilterTabsProps = {
 }
 
 const FilterTabs = ({ categories, current, onSelect }: FilterTabsProps) => {
-  const tabs = [{ id: undefined as string | undefined, title: 'Tất cả' }, ...categories]
+  const t = useTranslations('News')
+  const tabs = [{ id: undefined as string | undefined, title: t('all') }, ...categories]
 
   return (
     <nav
-      aria-label='Lọc theo chuyên mục'
+      aria-label={t('filterAria')}
       className='-mx-[1.25rem] overflow-x-auto overscroll-x-contain px-[1.25rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0'
     >
       <ul className='flex w-max gap-[0.625rem] pr-[1.25rem]'>

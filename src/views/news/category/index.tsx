@@ -4,6 +4,7 @@ import { useLenis } from 'lenis/react'
 import { useQueryStates } from 'nuqs'
 import { Suspense } from 'react'
 
+import { sectionId } from '@/configs/section-ids'
 import { useNewsPosts } from '@/hooks/use-news-posts'
 import type { NewsPageBanner } from '@/interfaces/postList.interface'
 import { scrollToSection } from '@/utils/scrollToSection'
@@ -19,7 +20,6 @@ import EmptyState from './components/empty-state'
 import FilterTabs from './components/filter-tabs'
 
 const LIMIT = 9
-const LISTING_ID = 'tin-tuc-danh-sach'
 
 type NewsCategoryViewProps = {
   locale: string
@@ -44,15 +44,16 @@ const NewsCategoryListing = ({ locale, categories, banner }: NewsCategoryViewPro
     category,
   })
 
-  const articles = mapPostListItems(data?.data)
+  const articles = mapPostListItems(data?.data, locale)
   const showSkeleton = isLoading || (isValidating && articles.length === 0)
   const totalPages = Math.max(1, data?.totalPages ?? 1)
+  const listingId = sectionId('newsListing', locale)
 
   const scrollToListing = () => {
-    const el = document.getElementById(LISTING_ID)
+    const el = document.getElementById(listingId)
     if (!el) return
     if (lenis) lenis.scrollTo(el, { offset: -96, duration: 0.8 })
-    else scrollToSection(LISTING_ID, 0.6, 6)
+    else scrollToSection(listingId, 0.6, 6)
   }
 
   const selectCategory = (next?: string) => {
@@ -70,7 +71,7 @@ const NewsCategoryListing = ({ locale, categories, banner }: NewsCategoryViewPro
       <NewsHero data={banner} />
 
       <section
-        id={LISTING_ID}
+        id={listingId}
         className='scroll-mt-[6rem] border-t border-[#EEF1F5] bg-[#FAFBFC] pt-[3.5rem] pb-[6rem] xsm:pt-[2rem] xsm:pb-[3.5rem]'
       >
         <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>

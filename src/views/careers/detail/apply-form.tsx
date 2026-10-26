@@ -3,7 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import { CloudUpload, Send } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -29,33 +30,35 @@ const INPUT_CLASS =
 
 const LABEL_CLASS = 'mb-[0.375rem] text-[0.8125rem] font-semibold text-[#1A2B48]'
 
-const applySchema = z.object({
-  fullName: z
-    .string()
-    .trim()
-    .min(1, 'Vui lòng nhập họ và tên.')
-    .min(2, 'Họ và tên phải có ít nhất 2 ký tự.'),
-  email: z.email('Email không hợp lệ.'),
-  phone: z
-    .string()
-    .trim()
-    .min(1, 'Vui lòng nhập số điện thoại.')
-    .regex(/^[0-9+\s()-]{8,20}$/, 'Số điện thoại không hợp lệ.'),
-  cvFile: z
-    .instanceof(File, { message: 'Vui lòng tải lên hồ sơ ứng tuyển.' })
-    .refine((file) => file.size <= MAX_BYTES, 'CV không được vượt quá 25MB.')
-    .refine((file) => {
-      const ext = file.name.split('.').pop()?.toLowerCase() ?? ''
-      return ALLOWED_EXT.has(ext)
-    }, 'CV phải là PDF, DOC hoặc DOCX.'),
-  position: z.string().min(1),
-  pageUrl: z.string(),
-  submittedAt: z.string(),
-})
+type SchemaMessageKey =
+  'required' | 'invalidEmail' | 'invalidPhone' | 'cvRequired' | 'cvTooLarge' | 'cvInvalidType'
 
-type ApplyValues = z.infer<typeof applySchema>
+const createApplySchema = (t: (key: SchemaMessageKey) => string) =>
+  z.object({
+    fullName: z.string().trim().min(1, t('required')).min(2, t('required')),
+    email: z.email(t('invalidEmail')),
+    phone: z
+      .string()
+      .trim()
+      .min(1, t('required'))
+      .regex(/^[0-9+\s()-]{8,20}$/, t('invalidPhone')),
+    cvFile: z
+      .instanceof(File, { message: t('cvRequired') })
+      .refine((file) => file.size <= MAX_BYTES, t('cvTooLarge'))
+      .refine((file) => {
+        const ext = file.name.split('.').pop()?.toLowerCase() ?? ''
+        return ALLOWED_EXT.has(ext)
+      }, t('cvInvalidType')),
+    position: z.string().min(1),
+    pageUrl: z.string(),
+    submittedAt: z.string(),
+  })
+
+type ApplyValues = z.infer<ReturnType<typeof createApplySchema>>
 
 const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) => {
+  const t = useTranslations('Careers')
+  const applySchema = useMemo(() => createApplySchema(t), [t])
   const isDrawer = variant === 'drawer'
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = useState(false)
@@ -110,11 +113,11 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
       } | null
 
       if (!response.ok || !result?.ok) {
-        toast.error(result?.message || 'Không gửi được hồ sơ. Vui lòng thử lại.')
+        toast.error(result?.message || t('error'))
         return
       }
 
-      toast.success(result.message || 'Gửi hồ sơ thành công. Chúng tôi sẽ liên hệ sớm.')
+      toast.success(result.message || t('success'))
       reset({
         fullName: '',
         email: '',
@@ -127,7 +130,7 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
       if (fileInputRef.current) fileInputRef.current.value = ''
       onSuccess?.()
     } catch {
-      toast.error('Không gửi được hồ sơ. Vui lòng thử lại.')
+      toast.error(t('error'))
     }
   })
 
@@ -143,7 +146,7 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
     >
       {!isDrawer ? (
         <>
-          <h2 className='text-[1.25rem] font-bold text-[#1A2B48]'>Ứng tuyển ngay</h2>
+          <h2 className='text-[1.25rem] font-bold text-[#1A2B48]'>{t('applyNow')}</h2>
           <p className='mt-[0.375rem] line-clamp-2 text-[0.8125rem] leading-[1.5] text-[#64748B]'>
             {jobTitle}
           </p>
@@ -175,12 +178,12 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
             htmlFor='fullName'
             className={LABEL_CLASS}
           >
-            Họ và tên
+            {t('fullName')}
           </FieldLabel>
           <Input
             id='fullName'
             autoComplete='name'
-            placeholder='Nguyễn Văn A'
+            placeholder={t('namePlaceholder')}
             disabled={isSubmitting}
             aria-invalid={!!errors.fullName}
             className={INPUT_CLASS}
@@ -198,7 +201,7 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
               htmlFor='email'
               className={LABEL_CLASS}
             >
-              Email
+              {t('email')}
             </FieldLabel>
             <Input
               id='email'
@@ -221,7 +224,7 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
               htmlFor='phone'
               className={LABEL_CLASS}
             >
-              Số điện thoại
+              {t('phone')}
             </FieldLabel>
             <Input
               id='phone'
@@ -241,7 +244,7 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
           data-invalid={!!errors.cvFile || undefined}
           data-disabled={isSubmitting || undefined}
         >
-          <FieldLabel className={LABEL_CLASS}>Hồ sơ ứng tuyển</FieldLabel>
+          <FieldLabel className={LABEL_CLASS}>{t('cv')}</FieldLabel>
           <Controller
             name='cvFile'
             control={control}
@@ -275,11 +278,9 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
                     strokeWidth={1.5}
                   />
                   <span className='text-[0.875rem] font-semibold text-[#1A2B48]'>
-                    {cvFile?.name || 'Kéo thả hoặc tải CV lên'}
+                    {cvFile?.name || t('cvDrop')}
                   </span>
-                  <span className='text-[0.75rem] text-[#94A3B8]'>
-                    PDF, DOC, DOCX · tối đa 25MB
-                  </span>
+                  <span className='text-[0.75rem] text-[#94A3B8]'>{t('cvHint')}</span>
                 </button>
                 <input
                   ref={fileInputRef}
@@ -307,7 +308,7 @@ const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) =>
             className='size-[1rem]'
             strokeWidth={1.75}
           />
-          {isSubmitting ? 'Đang gửi…' : 'Gửi hồ sơ ứng tuyển'}
+          {isSubmitting ? t('submitting') : t('submit')}
         </Button>
       </FieldGroup>
     </form>

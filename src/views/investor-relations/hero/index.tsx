@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 import Banner from '@/components/shared/banner'
 import type {
   InvestorRelationsBanner,
@@ -6,18 +8,6 @@ import type {
 import HeroStats from '@/views/governance/hero/components/hero-stats'
 
 const FALLBACK_IMAGE = '/home/d-banner.png'
-
-const FALLBACK_BANNER: InvestorRelationsBanner = {
-  subtitle: 'Bateco Group',
-  title: '<p><strong>Khám phá</strong><br />\nĐể dẫn đầu</p>',
-  desc: 'Tập đoàn đầu tư đa ngành, phát triển bằng năng lực thực thi và giá trị bền vững.',
-  stats: [
-    { value: '14+', label: 'Năm Kinh Nghiệm' },
-    { value: '50+', label: 'Đối tác chiến lược' },
-    { value: '05', label: 'Công ty thành viên' },
-    { value: '400+', label: 'Nhân sự tâm huyết' },
-  ],
-}
 
 const stripHtml = (value?: string) =>
   value
@@ -33,7 +23,20 @@ type InvestorHeroProps = {
 }
 
 const InvestorHero = ({ data }: InvestorHeroProps) => {
-  const banner = data?.title || data?.subtitle ? data : FALLBACK_BANNER
+  const t = useTranslations('Investor')
+  const fallbackStats: InvestorRelationsBannerStat[] = [
+    { value: '14+', label: t('statExperience') },
+    { value: '50+', label: t('statPartners') },
+    { value: '05', label: t('statMembers') },
+    { value: '400+', label: t('statStaff') },
+  ]
+  const fallbackBanner: InvestorRelationsBanner = {
+    subtitle: t('heroEyebrow'),
+    title: `<p>${t('heroTitle')}</p>`,
+    desc: t('heroDesc'),
+    stats: fallbackStats,
+  }
+  const banner = data?.title || data?.subtitle ? data : fallbackBanner
   const stats: InvestorRelationsBannerStat[] = banner.stats ?? []
   const imageSrc = banner.desktop || resolveMobile(banner.mobile) || FALLBACK_IMAGE
   const imageSrcMobile = resolveMobile(banner.mobile) || banner.desktop || FALLBACK_IMAGE

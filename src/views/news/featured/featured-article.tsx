@@ -1,5 +1,7 @@
 import { ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+import type { ComponentProps } from 'react'
 
 import { Link } from '@/i18n/navigation'
 import { resolveCategoryTitle, type NewsArticle } from '@/views/news/data'
@@ -9,6 +11,7 @@ type FeaturedArticleProps = {
 }
 
 const FeaturedArticle = ({ article }: FeaturedArticleProps) => {
+  const t = useTranslations('News')
   const categoryTitle = resolveCategoryTitle(article)
 
   return (
@@ -33,7 +36,7 @@ const FeaturedArticle = ({ article }: FeaturedArticleProps) => {
           className='absolute inset-0 bg-[linear-gradient(200deg,transparent_55%,rgba(15,28,51,0.55)_100%)]'
         />
         <span className='absolute bottom-[1.5rem] left-[1.5rem] rounded-[0.25rem] bg-[#B5935E] px-[0.75rem] py-[0.375rem] text-[0.6875rem] font-bold tracking-[0.14em] text-white uppercase xsm:bottom-[1rem] xsm:left-[1rem]'>
-          Tiêu điểm
+          {t('spotlight')}
         </span>
       </div>
 
@@ -56,7 +59,7 @@ const FeaturedArticle = ({ article }: FeaturedArticleProps) => {
 
         <h3 className='mt-[1.25rem] text-[1.75rem] leading-[1.3] font-bold tracking-[-0.015em] text-balance text-[#1A2B48] xsm:mt-[0.875rem] xsm:text-[1.25rem]'>
           <Link
-            href={{ pathname: '/tin-tuc/[slug]', params: { slug: article.id } }}
+            href={article.href as ComponentProps<typeof Link>['href']}
             className='rounded-[0.25rem] outline-none transition-colors duration-300 after:absolute after:inset-0 hover:text-[#B5935E] focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-offset-4'
           >
             {article.title}
@@ -70,7 +73,7 @@ const FeaturedArticle = ({ article }: FeaturedArticleProps) => {
         ) : null}
 
         <div className='mt-auto flex items-center justify-between gap-[1rem] border-t border-[#EEF1F5] pt-[1.5rem] xsm:mt-[1.5rem] xsm:pt-[1rem]'>
-          <span className='text-[0.8125rem] font-semibold text-[#1A2B48]'>Xem chi tiết</span>
+          <span className='text-[0.8125rem] font-semibold text-[#1A2B48]'>{t('readMore')}</span>
           <span
             aria-hidden
             className='flex size-[2.75rem] items-center justify-center rounded-full bg-[#1A2B48] text-white shadow-[0_0.75rem_1.5rem_-0.75rem_rgba(26,43,72,0.6)] transition-[background-color,rotate] duration-300 group-hover:rotate-45 group-hover:bg-[#B5935E]'

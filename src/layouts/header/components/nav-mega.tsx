@@ -4,7 +4,7 @@ import { ChevronDown } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 
-import { Link, usePathname } from '@/i18n/navigation'
+import { Link, toAppHref, usePathname } from '@/i18n/navigation'
 import type { HeaderMenuItem } from '@/interfaces/siteSetting.interface'
 import MegaMenuPanel from '@/layouts/header/components/mega-menu-panel'
 import { cn } from '@/lib/utils'
@@ -81,7 +81,7 @@ type MegaTriggerProps = {
 
 export const MegaTrigger = ({ item, open, panelId, onShow, onHide }: MegaTriggerProps) => {
   const pathname = usePathname()
-  const href = item.link?.url || '/'
+  const href = toAppHref(item.link?.url || '/')
   const active = pathname === href || pathname.startsWith(`${href}/`)
 
   return (

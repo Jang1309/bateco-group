@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import type { Swiper as SwiperType } from 'swiper'
 import { Autoplay, EffectFade } from 'swiper/modules'
@@ -18,6 +19,7 @@ type VisionSliderProps = {
 }
 
 const VisionSlider = ({ slides }: VisionSliderProps) => {
+  const t = useTranslations('HomeVision')
   const [swiper, setSwiper] = useState<SwiperType | null>(null)
   const [active, setActive] = useState(0)
 
@@ -90,7 +92,7 @@ const VisionSlider = ({ slides }: VisionSliderProps) => {
                   <button
                     key={index}
                     type='button'
-                    aria-label={`Ảnh ${index + 1}`}
+                    aria-label={t('imageN', { n: index + 1 })}
                     onClick={() => swiper?.slideToLoop(index)}
                     className={`relative h-[0.2rem] overflow-hidden rounded-full transition-all duration-500 ${active === index ? 'w-[2.75rem] bg-[#C6A15B]/45' : 'w-[1rem] bg-white/35 hover:bg-white/70'}`}
                   >
@@ -111,7 +113,7 @@ const VisionSlider = ({ slides }: VisionSliderProps) => {
             <div className='flex shrink-0 gap-[0.5rem]'>
               <button
                 type='button'
-                aria-label='Ảnh trước'
+                aria-label={t('prev')}
                 onClick={() => swiper?.slidePrev()}
                 className='flex size-[2.6rem] cursor-pointer items-center justify-center rounded-full border border-[#C6A15B]/80 bg-[#0B1A33]/40 text-[#E4C36A] backdrop-blur-sm transition-colors hover:bg-[#C6A15B] hover:text-[#0B1A33] xsm:size-[2.1rem]'
               >
@@ -119,7 +121,7 @@ const VisionSlider = ({ slides }: VisionSliderProps) => {
               </button>
               <button
                 type='button'
-                aria-label='Ảnh tiếp theo'
+                aria-label={t('next')}
                 onClick={() => swiper?.slideNext()}
                 className='flex size-[2.6rem] cursor-pointer items-center justify-center rounded-full border border-[#C6A15B]/80 bg-[#0B1A33]/40 text-[#E4C36A] backdrop-blur-sm transition-colors hover:bg-[#C6A15B] hover:text-[#0B1A33] xsm:size-[2.1rem]'
               >

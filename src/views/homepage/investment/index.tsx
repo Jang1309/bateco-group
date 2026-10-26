@@ -1,10 +1,11 @@
 'use client'
 
 import Image from 'next/image'
+import { useLocale, useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 
-import ROUTES from '@/configs/routes'
-import { Link } from '@/i18n/navigation'
+import { pathFor } from '@/configs/routes'
+import { Link, toAppHref } from '@/i18n/navigation'
 import type { SectorItem } from '@/interfaces/sectors.interface'
 import DetailPanel from '@/views/homepage/investment/components/detail-panel'
 import SectorList from '@/views/homepage/investment/components/sector-list'
@@ -12,7 +13,9 @@ import { HOVER_DELAY_MS } from '@/views/homepage/investment/constants'
 import { mapSectors } from '@/views/homepage/investment/data'
 
 const Investment = ({ sectors }: { sectors?: SectorItem[] }) => {
-  const items = mapSectors(sectors)
+  const locale = useLocale()
+  const t = useTranslations('HomeInvestment')
+  const items = mapSectors(sectors, locale)
   const center = items.length ? Math.floor(items.length / 2) : 0
 
   const [{ active, prev }, setView] = useState({ active: center, prev: center })
@@ -50,15 +53,15 @@ const Investment = ({ sectors }: { sectors?: SectorItem[] }) => {
         >
           <div>
             <h2 className='text-[2.75rem] leading-[1.2] font-light tracking-[0.06em] text-[#333] uppercase xsm:text-[1.5rem]'>
-              Hệ sinh thái đầu tư
+              {t('title')}
             </h2>
             <span className='mt-[1.25rem] block h-[0.125rem] w-[4.25rem] bg-[#C6A15B] xsm:mt-[0.75rem]' />
           </div>
           <Link
-            href={ROUTES.business}
+            href={toAppHref(pathFor('business', locale))}
             className='mt-[1rem] flex shrink-0 items-center gap-[0.5rem] text-[0.8125rem] font-semibold tracking-[0.04rem] text-[#b88e4f] uppercase transition-opacity hover:opacity-80 xsm:mt-[0.35rem] xsm:text-[0.7rem]'
           >
-            Xem tất cả
+            {t('viewAll')}
             <Image
               src='/home/news/arrow.svg'
               alt=''

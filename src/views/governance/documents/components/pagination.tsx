@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
@@ -31,6 +32,8 @@ const GovernancePagination = ({
   totalPages,
   basePath = '/quan-he-nha-dau-tu',
 }: PaginationProps) => {
+  const t = useTranslations('Common.pagination')
+
   if (totalPages <= 1) return null
 
   const hrefFor = (page: number) => ({
@@ -43,7 +46,7 @@ const GovernancePagination = ({
 
   return (
     <nav
-      aria-label='Phân trang'
+      aria-label={t('label')}
       className='mt-[2rem] flex items-center justify-end gap-[0.5rem] xsm:justify-center'
     >
       {hasPrev ? (
@@ -56,12 +59,12 @@ const GovernancePagination = ({
           )}
         >
           <ChevronLeft className='size-[0.875rem]' />
-          Trước
+          {t('prev')}
         </Link>
       ) : (
         <span className={cn(baseItem, 'cursor-not-allowed border-[#EEF1F5] text-[#B8C0CC]')}>
           <ChevronLeft className='size-[0.875rem]' />
-          Trước
+          {t('prev')}
         </span>
       )}
 
@@ -91,12 +94,12 @@ const GovernancePagination = ({
             'border-[#E2E8F0] text-[#1A2B48] hover:border-[#0F5A3C] hover:text-[#0F5A3C]',
           )}
         >
-          Tiếp
+          {t('nextAlt')}
           <ChevronRight className='size-[0.875rem]' />
         </Link>
       ) : (
         <span className={cn(baseItem, 'cursor-not-allowed border-[#EEF1F5] text-[#B8C0CC]')}>
-          Tiếp
+          {t('nextAlt')}
           <ChevronRight className='size-[0.875rem]' />
         </span>
       )}

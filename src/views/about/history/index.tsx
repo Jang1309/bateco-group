@@ -1,20 +1,22 @@
 import Image from 'next/image'
 
+import { sectionId } from '@/configs/section-ids'
 import type { IntroductionHistory } from '@/interfaces/introduction.interface'
 import Reveal from '@/views/about/components/reveal'
 import GrowthTimeline from '@/views/about/history/components/growth-timeline'
 import MilestoneList from '@/views/about/history/components/milestone-list'
 
 type AboutHistoryProps = {
+  locale?: string
   data?: IntroductionHistory
 }
 
-const AboutHistory = ({ data }: AboutHistoryProps) => {
+const AboutHistory = ({ locale = 'vi', data }: AboutHistoryProps) => {
   const milestones = data?.milestones ?? []
 
   return (
     <section
-      id='lich-su'
+      id={sectionId('aboutHistory', locale)}
       className='relative h-[67.27rem] scroll-mt-[6rem] overflow-hidden border-t border-b-[0.234rem] border-t-[rgba(232,223,208,0.6)] border-b-[#E5E7EB] bg-[#FDFBF7] bg-[radial-gradient(ellipse_26.8rem_24.77rem_at_10%_20%,rgba(197,155,39,0.04),transparent),radial-gradient(ellipse_37.6rem_34.6rem_at_90%_80%,rgba(11,27,43,0.03),transparent),linear-gradient(90deg,rgba(232,223,208,0.3)_1px,transparent_1px),linear-gradient(180deg,rgba(232,223,208,0.3)_1px,transparent_1px)] bg-[size:auto,auto,4.6875rem_4.6875rem,4.6875rem_4.6875rem] xsm:h-auto xsm:pb-[3rem]'
     >
       <div

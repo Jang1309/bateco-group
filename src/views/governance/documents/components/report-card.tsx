@@ -1,4 +1,5 @@
 import { CalendarDays, Download, Eye } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import type { InvestorReport, ReportsCategory } from '@/views/governance/data'
 
@@ -13,10 +14,12 @@ type ReportCardProps = {
  * Desktop: [bìa | thông tin + nút]. Mobile: [bìa nhỏ | thông tin], nút full width bên dưới.
  */
 const ReportCard = ({ report, category }: ReportCardProps) => {
+  const t = useTranslations('Governance')
+
   return (
     <li className='group grid grid-cols-[11rem_minmax(0,1fr)] gap-x-[2.5rem] gap-y-[1.5rem] rounded-[1rem] border border-[#EEF1F5] bg-white p-[1.75rem] transition-[box-shadow,border-color] duration-300 hover:border-[#E5D6B8] hover:shadow-[0_1rem_2.5rem_rgba(15,28,51,0.08)] xsm:grid-cols-[6.5rem_minmax(0,1fr)] xsm:gap-x-[1rem] xsm:gap-y-[1rem] xsm:rounded-[0.75rem] xsm:p-[1rem]'>
       <DocumentCover
-        label='Báo cáo'
+        label={t('report')}
         title={category.coverTitle}
         year={report.period}
         image={report.cover}
@@ -39,12 +42,12 @@ const ReportCard = ({ report, category }: ReportCardProps) => {
         </h3>
         {report.theme ? (
           <p className='mt-[0.5rem] text-[0.8125rem] leading-[1.5] font-semibold tracking-[0.06em] text-[#B5935E] uppercase xsm:mt-[0.375rem] xsm:text-[0.6875rem] xsm:tracking-[0.03em]'>
-            Chủ đề: “{report.theme}”
+            {t('topic')} “{report.theme}”
           </p>
         ) : null}
         <p className='mt-[0.75rem] flex flex-wrap items-center gap-x-[0.5rem] gap-y-[0.125rem] text-[0.8125rem] text-[#64748B] xsm:mt-[0.5rem] xsm:text-[0.75rem]'>
           <CalendarDays className='size-[0.9375rem] text-[#94A3B8] xsm:size-[0.8125rem]' />
-          Ngày phát hành:
+          {t('published')}
           <time className='font-bold text-[#1A2B48]'>{report.publishedAt}</time>
         </p>
       </div>
@@ -56,7 +59,7 @@ const ReportCard = ({ report, category }: ReportCardProps) => {
           className='group/btn inline-flex items-center justify-center gap-[0.5rem] rounded-[0.5rem] bg-[linear-gradient(93deg,#C9A468_0%,#B5935E_55%,#9E7C48_100%)] px-[1.25rem] py-[0.75rem] text-[0.8125rem] font-bold text-white shadow-[0_0.5rem_1.25rem_rgba(181,147,94,0.3)] transition-[transform,box-shadow] duration-300 hover:-translate-y-[0.125rem] hover:shadow-[0_0.75rem_1.5rem_rgba(181,147,94,0.4)] xsm:text-[0.875rem]'
         >
           <Download className='size-[0.9375rem] transition-transform duration-300 group-hover/btn:translate-y-[0.125rem]' />
-          Tải về PDF ({report.fileSize})
+          {t('download')} ({report.fileSize})
         </a>
         <a
           href={report.viewUrl}
@@ -65,7 +68,7 @@ const ReportCard = ({ report, category }: ReportCardProps) => {
           className='inline-flex items-center justify-center gap-[0.5rem] rounded-[0.5rem] border border-[#D7DEE8] bg-white px-[1.25rem] py-[0.75rem] text-[0.8125rem] font-bold text-[#1A2B48] transition-colors duration-300 hover:border-[#0F5A3C] hover:text-[#0F5A3C] xsm:text-[0.875rem]'
         >
           <Eye className='size-[0.9375rem]' />
-          Xem trực tuyến
+          {t('view')}
         </a>
       </div>
     </li>

@@ -2,7 +2,6 @@
 
 import { ChevronDown } from 'lucide-react'
 import Image from 'next/image'
-import { useParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 
 import {
@@ -11,6 +10,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import type { AppLocale } from '@/configs/routes'
+import { switchLocalePath } from '@/i18n/locale-path'
 import { usePathname, useRouter } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
@@ -38,16 +39,12 @@ export function useSwitchLocale() {
   const locale = useLocale() as Locale
   const router = useRouter()
   const pathname = usePathname()
-  const params = useParams()
 
   const switchLocale = (next: Locale) => {
     if (next === locale) return
-    // Route động (vd. /business-sectors/[slug]) cần truyền kèm params để dựng lại URL
-    router.replace(
-      // @ts-expect-error -- params luôn khớp với pathname hiện tại
-      { pathname, params },
-      { locale: next },
-    )
+    // Dual trees: map /gioi-thieu ↔ /introduction (và slug tương ứng) rồi đổi locale
+    const nextPath = switchLocalePath(pathname, next as AppLocale)
+    router.replace(nextPath, { locale: next })
   }
 
   return { locale, switchLocale }

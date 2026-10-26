@@ -1,18 +1,20 @@
+import { sectionId } from '@/configs/section-ids'
 import type { IntroductionLeadership } from '@/interfaces/introduction.interface'
 import Reveal from '@/views/about/components/reveal'
 import ChairmanCard from '@/views/about/leadership/components/chairman-card'
 import TeamMarquee from '@/views/about/leadership/components/team-marquee'
 
 type AboutLeadershipProps = {
+  locale?: string
   data?: IntroductionLeadership
 }
 
-const AboutLeadership = ({ data }: AboutLeadershipProps) => {
+const AboutLeadership = ({ locale = 'vi', data }: AboutLeadershipProps) => {
   const team = data?.team ?? []
 
   return (
     <section
-      id='lanh-dao'
+      id={sectionId('aboutLeadership', locale)}
       className='scroll-mt-[6rem] bg-[linear-gradient(180deg,#F6F3EC_0,#F6F3EC_24rem,#fff_24rem)] pt-[1.40625rem] pb-[1.875rem] xsm:bg-[linear-gradient(180deg,#F6F3EC_0,#F6F3EC_14rem,#fff_14rem)] xsm:pt-[2.5rem]'
     >
       <div className='flex flex-col items-center gap-[3.75rem] px-[1.875rem] xsm:gap-[2rem] xsm:px-[1.5rem]'>

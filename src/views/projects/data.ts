@@ -16,7 +16,7 @@ export type Project = {
 
 export const PROJECTS_PER_PAGE = 6
 
-// Cùng id với lĩnh vực ở trang /business-sectors
+// Cùng id với lĩnh vực ở trang /linh-vuc-kinh-doanh (EN: /business-field)
 export const PROJECT_SECTORS: ProjectSector[] = [
   { id: 'industrial-services', label: 'Dịch vụ công nghiệp' },
   { id: 'industrial-real-estate', label: 'BĐS hạ tầng công nghiệp' },

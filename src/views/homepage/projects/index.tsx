@@ -2,11 +2,12 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
+import { useLocale, useTranslations } from 'next-intl'
 import { useState, type ComponentProps } from 'react'
 import type { Swiper as SwiperType } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
-import ROUTES from '@/configs/routes'
+import { hrefFor } from '@/configs/routes'
 import { Link } from '@/i18n/navigation'
 import type { ProjectListItem, ProjectsResponse } from '@/interfaces/projects.interface'
 import { cn } from '@/lib/utils'
@@ -28,13 +29,18 @@ const formatProjectDate = (value?: string) => {
   return `${day}.${month}.${date.getFullYear()}`
 }
 
-const projectHref = (project: ProjectListItem): ComponentProps<typeof Link>['href'] => {
+const projectHref = (
+  project: ProjectListItem,
+  locale: string,
+): ComponentProps<typeof Link>['href'] => {
   const slug = project.slug || (project.id != null ? String(project.id) : '')
-  if (!slug) return ROUTES.projects
-  return { pathname: '/du-an/[slug]' as const, params: { slug } }
+  if (!slug) return hrefFor('projects', locale) as ComponentProps<typeof Link>['href']
+  return hrefFor('projectDetail', locale, { slug }) as ComponentProps<typeof Link>['href']
 }
 
 const Projects = ({ projects }: { projects?: ProjectsResponse }) => {
+  const locale = useLocale()
+  const t = useTranslations('HomeProjects')
   const items =
     projects
       ?.map((project) => {
@@ -43,7 +49,7 @@ const Projects = ({ projects }: { projects?: ProjectsResponse }) => {
           title: project.title || '',
           date: formatProjectDate(project.published),
           image: project.thumbnail?.url || FALLBACK_IMAGE,
-          href: projectHref(project),
+          href: projectHref(project, locale),
         }
       })
       .filter((item): item is NonNullable<typeof item> => Boolean(item)) || []
@@ -64,14 +70,14 @@ const Projects = ({ projects }: { projects?: ProjectsResponse }) => {
           className='flex items-center justify-between gap-[0.75rem] border-b border-[#EEEEEE] pb-[1rem]'
         >
           <h2 className='min-w-0 text-pretty text-[2.75rem] leading-[1.2] font-light tracking-[0.04em] text-[#1F2A37] uppercase xsm:text-[1.25rem] xsm:leading-[1.3] xsm:tracking-[0.02em]'>
-            Dự án tiêu biểu
+            {t('title')}
           </h2>
 
           <Link
-            href={ROUTES.projects}
+            href={hrefFor('projects', locale) as ComponentProps<typeof Link>['href']}
             className='flex shrink-0 items-center gap-[0.5rem] text-[0.8125rem] font-semibold tracking-[0.12em] text-[#B88E4F] uppercase transition-opacity hover:opacity-80 xsm:gap-[0.25rem] xsm:text-[0.625rem] xsm:tracking-[0.06em]'
           >
-            Xem tất cả
+            {t('viewAll')}
             <Image
               src='/home/news/arrow.svg'
               alt=''
@@ -85,7 +91,7 @@ const Projects = ({ projects }: { projects?: ProjectsResponse }) => {
         <div className='relative mt-[2.5rem] xsm:mt-[1.5rem]'>
           <button
             type='button'
-            aria-label='Dự án trước'
+            aria-label={t('prev')}
             disabled={edge.start}
             onClick={() => swiper?.slidePrev()}
             className={cn(NAV_BUTTON, 'left-0 -translate-x-1/2')}
@@ -94,7 +100,7 @@ const Projects = ({ projects }: { projects?: ProjectsResponse }) => {
           </button>
           <button
             type='button'
-            aria-label='Dự án tiếp theo'
+            aria-label={t('next')}
             disabled={edge.end}
             onClick={() => swiper?.slideNext()}
             className={cn(NAV_BUTTON, 'right-0 translate-x-1/2')}

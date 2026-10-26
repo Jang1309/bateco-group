@@ -1,10 +1,14 @@
+import { hrefFor } from '@/configs/routes'
 import type { NewsFeaturedPost } from '@/interfaces/postList.interface'
 import type { NewsArticle } from '@/views/news/data'
 import { decodeHtmlEntities, stripHtml } from '@/views/news/map-post'
 
 const FALLBACK_IMAGE = '/home/news/card-1.jpg'
 
-export const mapFeaturedPost = (post?: NewsFeaturedPost | null): NewsArticle | null => {
+export const mapFeaturedPost = (
+  post?: NewsFeaturedPost | null,
+  locale: string = 'vi',
+): NewsArticle | null => {
   if (!post?.slug && !post?.id) return null
 
   const category = post.taxonomies?.category?.[0]
@@ -23,12 +27,17 @@ export const mapFeaturedPost = (post?: NewsFeaturedPost | null): NewsArticle | n
     categoryTitle: decodeHtmlEntities(category?.name),
     date: '',
     image,
-    href: `/tin-tuc/${slug}`,
+    href: hrefFor('newsDetail', locale, { slug }),
   }
 }
 
-export const mapFeaturedPosts = (posts?: NewsFeaturedPost[] | null): NewsArticle[] => {
+export const mapFeaturedPosts = (
+  posts?: NewsFeaturedPost[] | string | false | null,
+  locale: string = 'vi',
+): NewsArticle[] => {
   // CMS có thể trả `posts: ""` khi chưa chọn bài nổi bật
   if (!Array.isArray(posts)) return []
-  return posts.map(mapFeaturedPost).filter((item): item is NewsArticle => item !== null)
+  return posts
+    .map((post) => mapFeaturedPost(post, locale))
+    .filter((item): item is NewsArticle => item !== null)
 }

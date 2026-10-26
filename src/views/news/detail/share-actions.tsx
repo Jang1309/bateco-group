@@ -1,6 +1,7 @@
 'use client'
 
 import { Check, Facebook, Link2, Linkedin, Twitter } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 const SHARE_TARGETS = [
@@ -17,6 +18,7 @@ const buttonClass =
   'inline-flex size-[2.5rem] items-center justify-center rounded-full border border-[#E2E8F0] text-[#1A2B48] transition-colors duration-300 hover:border-[#B5935E] hover:bg-[#B5935E] hover:text-white outline-none focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-offset-2'
 
 const ShareActions = () => {
+  const t = useTranslations('News')
   const [copied, setCopied] = useState(false)
 
   const copyLink = async () => {
@@ -32,13 +34,13 @@ const ShareActions = () => {
   return (
     <div className='flex items-center gap-[0.625rem]'>
       <span className='mr-[0.25rem] text-[0.8125rem] font-semibold text-[#64748B] xsm:hidden'>
-        Chia sẻ
+        {t('share')}
       </span>
       {SHARE_TARGETS.map(({ label, icon: Icon, url }) => (
         <button
           key={label}
           type='button'
-          aria-label={`Chia sẻ lên ${label}`}
+          aria-label={`${t('share')} ${label}`}
           onClick={() =>
             window.open(
               url + encodeURIComponent(window.location.href),
@@ -54,7 +56,7 @@ const ShareActions = () => {
       <button
         type='button'
         onClick={copyLink}
-        aria-label='Sao chép liên kết'
+        aria-label={t('copyLink')}
         className={buttonClass}
       >
         {copied ? <Check className='size-[1rem]' /> : <Link2 className='size-[1rem]' />}
@@ -63,7 +65,7 @@ const ShareActions = () => {
         aria-live='polite'
         className='sr-only'
       >
-        {copied ? 'Đã sao chép liên kết' : ''}
+        {copied ? t('copied') : ''}
       </span>
     </div>
   )

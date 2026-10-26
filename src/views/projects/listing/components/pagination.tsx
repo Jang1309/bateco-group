@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import type { ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
@@ -14,6 +15,8 @@ const PILL =
 
 /** Desktop: hiện đủ số trang. Mobile: chỉ Trước / trang hiện tại / Sau để tránh tràn. */
 const ProjectPagination = ({ currentPage, totalPages, onPageChange }: ProjectPaginationProps) => {
+  const t = useTranslations('Common.pagination')
+
   if (totalPages <= 1) return null
 
   const edge = (page: number, label: ReactNode, disabled: boolean, ariaLabel: string) =>
@@ -40,7 +43,7 @@ const ProjectPagination = ({ currentPage, totalPages, onPageChange }: ProjectPag
 
   return (
     <nav
-      aria-label='Phân trang'
+      aria-label={t('label')}
       className='mt-[3.5rem] flex items-center justify-center gap-[0.5rem] xsm:mt-[2rem] xsm:justify-between'
     >
       {edge(
@@ -50,10 +53,10 @@ const ProjectPagination = ({ currentPage, totalPages, onPageChange }: ProjectPag
             aria-hidden
             className='hidden size-[1rem] xsm:block'
           />
-          <span className='xsm:hidden'>Trước</span>
+          <span className='xsm:hidden'>{t('prev')}</span>
         </>,
         currentPage <= 1,
-        'Trang trước',
+        t('prevPage'),
       )}
 
       {/* Desktop page numbers */}
@@ -87,14 +90,14 @@ const ProjectPagination = ({ currentPage, totalPages, onPageChange }: ProjectPag
       {edge(
         currentPage + 1,
         <>
-          <span className='xsm:hidden'>Sau</span>
+          <span className='xsm:hidden'>{t('next')}</span>
           <ChevronRight
             aria-hidden
             className='hidden size-[1rem] xsm:block'
           />
         </>,
         currentPage >= totalPages,
-        'Trang sau',
+        t('nextPage'),
       )}
     </nav>
   )

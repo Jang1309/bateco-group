@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 import type { GovernanceBasePath } from '@/views/governance/base-path'
 import {
   GOVERNANCE_MENU,
@@ -20,16 +22,19 @@ const GovernanceSidebar = ({
   active,
   menu = GOVERNANCE_MENU,
   basePath = '/quan-he-nha-dau-tu',
-  title = 'Văn bản quản trị',
+  title,
 }: SidebarProps) => {
+  const t = useTranslations('Governance')
+  const sidebarTitle = title ?? t('sidebarTitle')
+
   return (
     <aside className='sticky top-[7.5rem] rounded-[0.75rem] border border-[#EEF1F5] bg-white p-[1.5rem] shadow-[0_0.5rem_1.5rem_rgba(15,28,51,0.05)] xsm:static xsm:p-[1rem]'>
       <SidebarShell
         key={active.id}
-        title={title}
+        title={sidebarTitle}
         activeTitle={active.title}
       >
-        <nav aria-label={title}>
+        <nav aria-label={sidebarTitle}>
           <ul className='flex flex-col gap-[0.25rem]'>
             {menu.map((item) => (
               <li key={item.id}>

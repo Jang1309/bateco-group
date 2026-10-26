@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 import { useEffect, useId, useState } from 'react'
 
 import { useIsMobile } from '@/hooks/use-mobile'
-import { Link, usePathname } from '@/i18n/navigation'
+import { Link, toAppHref, usePathname } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
 import type { Header, HeaderMenuItem, HeaderNavGroup } from '@/interfaces/siteSetting.interface'
 import { MEGA_ACCENTS } from '@/layouts/header/mega-menu-data'
@@ -48,7 +48,7 @@ const MobileMegaList = ({ columns, onNavigate }: MobileMegaListProps) => {
             ) : null}
             <ul>
               {column.menu?.map((entry, index) => {
-                const href = entry.link?.url || '/'
+                const href = toAppHref(entry.link?.url || '/')
                 const label = entry.link?.title
                 if (!label) return null
 
@@ -189,7 +189,7 @@ export default function MobileMenu({ header }: { header?: Header }) {
           >
             {items.map((item, index) => {
               const key = itemKey(item, index)
-              const href = item.link?.url || '/'
+              const href = toAppHref(item.link?.url || '/')
               const active = pathname === href || pathname.startsWith(`${href}/`)
               const columns = hasMega(item) ? item.submenu?.navigation : undefined
               const megaColumns = Array.isArray(columns) ? columns : undefined

@@ -1,4 +1,8 @@
-import { Link } from '@/i18n/navigation'
+import { getLocale, getTranslations } from 'next-intl/server'
+import type { ComponentProps } from 'react'
+
+import { hrefFor, pathFor } from '@/configs/routes'
+import { Link, toAppHref } from '@/i18n/navigation'
 import BlockHeader from '@/views/news/components/block-header'
 import type { CategoryBlock as CategoryBlockData } from '@/views/news/data'
 
@@ -8,17 +12,17 @@ type CategoryBlockProps = {
   block: CategoryBlockData
 }
 
-const CategoryBlock = ({ block }: CategoryBlockProps) => {
+const CategoryBlock = async ({ block }: CategoryBlockProps) => {
+  const locale = await getLocale()
+  const t = await getTranslations('News')
   const title = block.categoryTitle || block.category
+  const categoryHref = `${pathFor('newsCategory', locale)}?danh-muc=${encodeURIComponent(block.category)}`
 
   return (
     <div className='flex w-full flex-col'>
       <BlockHeader
         title={title}
-        href={{
-          pathname: '/tin-tuc/danh-muc',
-          query: { 'danh-muc': block.category },
-        }}
+        href={toAppHref(categoryHref)}
       />
 
       {block.cards.length > 0 ? (
@@ -32,7 +36,7 @@ const CategoryBlock = ({ block }: CategoryBlockProps) => {
         </div>
       ) : (
         <p className='mt-[1.75rem] text-[0.875rem] text-[#94A3B8] xsm:mt-[1.25rem]'>
-          Chưa có bài viết trong chuyên mục này.
+          {t('categoryEmpty')}
         </p>
       )}
 
@@ -44,7 +48,11 @@ const CategoryBlock = ({ block }: CategoryBlockProps) => {
               className='border-b border-[#E2E8F0]'
             >
               <Link
-                href={{ pathname: '/tin-tuc/[slug]', params: { slug: item.id } }}
+                href={
+                  (item.href || hrefFor('newsDetail', locale, { slug: item.id })) as ComponentProps<
+                    typeof Link
+                  >['href']
+                }
                 className='group flex gap-[1.25rem] rounded-[0.25rem] py-[1rem] outline-none focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-offset-2 xsm:gap-[0.875rem]'
               >
                 {item.date ? (

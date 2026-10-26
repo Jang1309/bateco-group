@@ -1,4 +1,5 @@
 import { MapPin } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import DetailHero from '@/components/shared/detail-hero'
 
@@ -27,10 +28,12 @@ const ProjectDetailHero = ({
   location,
   summary,
 }: ProjectDetailHeroProps) => {
+  const t = useTranslations('Projects')
+
   return (
     <DetailHero
       image={image}
-      eyebrow={sectorLabel || 'Dự án'}
+      eyebrow={sectorLabel || t('eyebrow')}
       title={title}
       // Tên dự án thường viết hoa toàn bộ → cỡ nhỏ hơn mặc định để không bị nặng
       titleClassName='business-hero-rise mt-[1rem] text-[2.125rem] leading-[1.25] font-bold tracking-[-0.01em] text-balance text-[#1A2B48] xsm:text-[1.5rem] xsm:leading-[1.3]'

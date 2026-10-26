@@ -1,17 +1,11 @@
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 import BannerTopOverlay from '@/components/shared/banner-top-overlay'
 import type { CareersPageBanner } from '@/interfaces/careers.interface'
 import { cn } from '@/lib/utils'
 
 const FALLBACK_IMAGE = '/home/vision/d-img-2.jpg'
-
-const FALLBACK_BANNER: CareersPageBanner = {
-  subtitle: 'Cơ hội nghề nghiệp',
-  title: '<p>Khám phá<br />\n<strong>Để dẫn đầu</strong></p>',
-  desc: 'Tư duy kiến tạo - Năng lực thực thi',
-  desktop: FALLBACK_IMAGE,
-}
 
 type CareersHeroProps = {
   data?: CareersPageBanner
@@ -71,7 +65,14 @@ const HeroCopy = ({ banner, stacked }: HeroCopyProps) => (
 )
 
 const CareersHero = ({ data }: CareersHeroProps) => {
-  const banner = data?.title || data?.subtitle ? data : FALLBACK_BANNER
+  const t = useTranslations('Careers')
+  const fallbackBanner: CareersPageBanner = {
+    subtitle: t('heroSubtitle'),
+    title: `<p>${t('heroTitle')}</p>`,
+    desc: t('heroDesc'),
+    desktop: FALLBACK_IMAGE,
+  }
+  const banner = data?.title || data?.subtitle ? data : fallbackBanner
   const desktop = banner.desktop || FALLBACK_IMAGE
   const mobile = typeof banner.mobile === 'string' && banner.mobile ? banner.mobile : desktop
 

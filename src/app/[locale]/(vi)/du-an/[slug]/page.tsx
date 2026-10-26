@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 
+import { assertPageLocale } from '@/i18n/assert-locale'
 import { routing } from '@/i18n/routing'
 import projectsService from '@/services/projects'
 import siteSettingService from '@/services/site-setting'
@@ -23,12 +24,10 @@ export async function generateStaticParams() {
     })
     const projects = response?.data ?? []
 
-    return routing.locales.flatMap((locale) =>
-      projects
-        .map((item) => item.slug)
-        .filter((slug): slug is string => Boolean(slug))
-        .map((slug) => ({ locale, slug })),
-    )
+    return projects
+      .map((item) => item.slug)
+      .filter((slug): slug is string => Boolean(slug))
+      .map((slug) => ({ locale: 'vi' as const, slug }))
   } catch {
     return []
   }
@@ -54,6 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 const ProjectDetailPage = async ({ params }: Props) => {
   const { locale, slug } = await params
+  assertPageLocale(locale, 'vi')
   setRequestLocale(locale)
 
   const [detailResult, siteSetting] = await Promise.all([

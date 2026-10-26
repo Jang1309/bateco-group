@@ -1,6 +1,10 @@
-import Image from 'next/image'
+'use client'
 
-import { Link } from '@/i18n/navigation'
+import Image from 'next/image'
+import { useLocale, useTranslations } from 'next-intl'
+
+import { hrefFor } from '@/configs/routes'
+import { Link, toAppHref } from '@/i18n/navigation'
 import type { SectorItem } from '@/interfaces/sectors.interface'
 import { cn } from '@/lib/utils'
 import { SECTOR_FALLBACK_IMAGES } from '@/views/homepage/investment/data'
@@ -11,6 +15,8 @@ type SectorRowProps = {
 }
 
 const SectorRow = ({ sector, index }: SectorRowProps) => {
+  const locale = useLocale()
+  const t = useTranslations('Business')
   const reversed = index % 2 === 1
   const title = sector.name || ''
   const slug = sector.slug
@@ -56,10 +62,10 @@ const SectorRow = ({ sector, index }: SectorRowProps) => {
         ) : null}
         {slug ? (
           <Link
-            href={{ pathname: '/linh-vuc-kinh-doanh/[slug]', params: { slug } }}
+            href={toAppHref(hrefFor('businessDetail', locale, { slug }))}
             className='mt-[2rem] inline-flex w-fit items-center rounded-full bg-[#C39A5A] px-[1.5rem] py-[0.7rem] text-[0.75rem] font-bold tracking-[0.06em] text-white uppercase transition-[background-color,box-shadow] duration-300 hover:bg-[#B08447] hover:shadow-[0_0.5rem_1.25rem_rgba(184,142,79,0.35)]'
           >
-            Xem thêm
+            {t('seeMore')}
           </Link>
         ) : null}
       </div>

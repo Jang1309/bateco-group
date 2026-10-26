@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 
+import { assertPageLocale } from '@/i18n/assert-locale'
 import { routing } from '@/i18n/routing'
 import newsService from '@/services/news'
 import siteSettingService from '@/services/site-setting'
@@ -24,12 +25,10 @@ export async function generateStaticParams() {
     })
     const posts = response?.data ?? []
 
-    return routing.locales.flatMap((locale) =>
-      posts
-        .map((item) => item.slug)
-        .filter((slug): slug is string => Boolean(slug))
-        .map((slug) => ({ locale, slug })),
-    )
+    return posts
+      .map((item) => item.slug)
+      .filter((slug): slug is string => Boolean(slug))
+      .map((slug) => ({ locale: 'vi' as const, slug }))
   } catch {
     return []
   }
@@ -40,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   try {
     const response = await newsService.getDetail(slug, locale)
-    const article = mapPostDetail(response?.data)
+    const article = mapPostDetail(response?.data, locale)
     if (!article) return {}
 
     return {
@@ -55,6 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 const NewsDetailPage = async ({ params }: Props) => {
   const { locale, slug } = await params
+  assertPageLocale(locale, 'vi')
   setRequestLocale(locale)
 
   const [detailResult, siteSetting] = await Promise.all([
@@ -62,7 +62,7 @@ const NewsDetailPage = async ({ params }: Props) => {
     siteSettingService.getSiteSettings(locale).catch(() => null),
   ])
 
-  const article = mapPostDetail(detailResult?.data)
+  const article = mapPostDetail(detailResult?.data, locale)
   if (!article) notFound()
 
   let related = mapPostListItems(
@@ -76,11 +76,13 @@ const NewsDetailPage = async ({ params }: Props) => {
         })
         .catch(() => null)
     )?.data,
+    locale,
   ).filter((item) => item.id !== article.id)
 
   if (related.length < 3) {
     related = mapPostListItems(
       (await newsService.getPosts({ lang: locale, limit: 7, paged: 1 }).catch(() => null))?.data,
+      locale,
     ).filter((item) => item.id !== article.id)
   }
 

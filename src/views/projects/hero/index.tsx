@@ -3,22 +3,16 @@
 import { useLenis } from 'lenis/react'
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
+import { useLocale, useTranslations } from 'next-intl'
 import type { MouseEvent } from 'react'
 
 import BannerTopOverlay from '@/components/shared/banner-top-overlay'
+import { sectionId } from '@/configs/section-ids'
 import type { ProjectsPageBanner } from '@/interfaces/projects.interface'
 import { cn } from '@/lib/utils'
 import { scrollToSection } from '@/utils/scrollToSection'
 
-const LISTING_SECTION_ID = 'du-an-khac'
 const FALLBACK_IMAGE = '/home/investment/d-card-2.png'
-
-const FALLBACK_BANNER: ProjectsPageBanner = {
-  subtitle: 'Dự án',
-  title: '<p>Định hình phong cách<br />\n<strong>Sống tương lai</strong></p>',
-  desc: 'Ứng dụng công nghệ hiện đại và năng lượng xanh để kiến tạo những giá trị sống chuẩn mực, cùng cơ hội đầu tư bền vững lâu dài cho cộng đồng.',
-  desktop: FALLBACK_IMAGE,
-}
 
 type ProjectsHeroProps = {
   data?: ProjectsPageBanner
@@ -26,11 +20,19 @@ type ProjectsHeroProps = {
 
 type HeroCopyProps = {
   banner: ProjectsPageBanner
+  listingSectionId: string
+  exploreLabel: string
   stacked?: boolean
   onExplore: (event: MouseEvent<HTMLAnchorElement>) => void
 }
 
-const HeroCopy = ({ banner, stacked, onExplore }: HeroCopyProps) => (
+const HeroCopy = ({
+  banner,
+  listingSectionId,
+  exploreLabel,
+  stacked,
+  onExplore,
+}: HeroCopyProps) => (
   <div
     className={cn(stacked ? 'px-[1.25rem]' : 'relative z-[1] mx-auto max-w-[95rem] px-[3.75rem]')}
   >
@@ -80,14 +82,14 @@ const HeroCopy = ({ banner, stacked, onExplore }: HeroCopyProps) => (
         style={{ animationDelay: '340ms' }}
       >
         <a
-          href={`#${LISTING_SECTION_ID}`}
+          href={`#${listingSectionId}`}
           onClick={onExplore}
           className={cn(
             'group inline-flex items-center justify-center gap-[0.625rem] rounded-full bg-[linear-gradient(93deg,#C9A468_0%,#B5935E_55%,#9E7C48_100%)] text-[0.8125rem] font-bold tracking-[0.06em] text-white uppercase shadow-[0_0.5rem_1.25rem_rgba(181,147,94,0.35)] transition-[transform,box-shadow] duration-300 hover:-translate-y-[0.125rem] hover:shadow-[0_0.75rem_1.5rem_rgba(181,147,94,0.45)]',
             stacked ? 'w-full px-[1.5rem] py-[0.95rem]' : 'px-[1.75rem] py-[0.875rem]',
           )}
         >
-          Khám phá dự án
+          {exploreLabel}
           <ArrowRight className='size-[1rem] transition-transform duration-300 group-hover:translate-x-[0.25rem]' />
         </a>
       </div>
@@ -96,14 +98,23 @@ const HeroCopy = ({ banner, stacked, onExplore }: HeroCopyProps) => (
 )
 
 const ProjectsHero = ({ data }: ProjectsHeroProps) => {
+  const locale = useLocale()
+  const t = useTranslations('Projects')
+  const listingSectionId = sectionId('projectsListing', locale)
   const lenis = useLenis()
-  const banner = data?.title || data?.subtitle ? data : FALLBACK_BANNER
+  const fallbackBanner: ProjectsPageBanner = {
+    subtitle: t('eyebrow'),
+    title: `<p>${t('heroTitle')}</p>`,
+    desc: t('heroDesc'),
+    desktop: FALLBACK_IMAGE,
+  }
+  const banner = data?.title || data?.subtitle ? data : fallbackBanner
   const desktop = banner.desktop || FALLBACK_IMAGE
   const mobile = typeof banner.mobile === 'string' && banner.mobile ? banner.mobile : desktop
 
   const handleExplore = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault()
-    const el = document.getElementById(LISTING_SECTION_ID)
+    const el = document.getElementById(listingSectionId)
     if (!el) return
 
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
@@ -111,7 +122,7 @@ const ProjectsHero = ({ data }: ProjectsHeroProps) => {
     const top = el.getBoundingClientRect().top + (lenis?.scroll ?? window.scrollY) - headerPx
 
     if (lenis) lenis.scrollTo(top, { duration: 1.2 })
-    else scrollToSection(LISTING_SECTION_ID, 0.9, window.innerWidth <= 639 ? 4.5 : 5.5)
+    else scrollToSection(listingSectionId, 0.9, window.innerWidth <= 639 ? 4.5 : 5.5)
   }
 
   return (
@@ -136,6 +147,8 @@ const ProjectsHero = ({ data }: ProjectsHeroProps) => {
         <BannerTopOverlay />
         <HeroCopy
           banner={banner}
+          listingSectionId={listingSectionId}
+          exploreLabel={t('explore')}
           onExplore={handleExplore}
         />
       </div>
@@ -161,6 +174,8 @@ const ProjectsHero = ({ data }: ProjectsHeroProps) => {
         <div className='pt-[0.25rem] pb-[2.5rem]'>
           <HeroCopy
             banner={banner}
+            listingSectionId={listingSectionId}
+            exploreLabel={t('explore')}
             stacked
             onExplore={handleExplore}
           />

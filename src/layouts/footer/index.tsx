@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
 
 import ROUTES from '@/configs/routes'
-import { Link } from '@/i18n/navigation'
+import { Link, toAppHref } from '@/i18n/navigation'
 import type { ILink } from '@/interfaces/link.interface'
 import { Footer as FooterData, FooterOffice } from '@/interfaces/siteSetting.interface'
 
@@ -14,6 +14,7 @@ const HEADING =
 
 const Footer = async ({ footer }: { footer?: FooterData }) => {
   const t = await getTranslations('Header')
+  const tf = await getTranslations('Footer')
   const logo = footer?.logo || '/header/d-logo.png'
   const background = footer?.background || '/footer/bg.svg'
   const offices = footer?.office
@@ -75,7 +76,7 @@ const Footer = async ({ footer }: { footer?: FooterData }) => {
         >
           {nav?.length ? (
             <div className='flex-1'>
-              <h2 className={HEADING}>Điều hướng</h2>
+              <h2 className={HEADING}>{tf('navHeading')}</h2>
               <nav className='mt-[0.875rem] flex flex-wrap items-center gap-y-[0.5rem] text-[0.875rem] text-[#374151]'>
                 {nav.map((item, index) => {
                   const href = item.link?.url
@@ -85,7 +86,7 @@ const Footer = async ({ footer }: { footer?: FooterData }) => {
                   return (
                     <Link
                       key={`${href}-${index}`}
-                      href={href}
+                      href={toAppHref(href)}
                       target={item.link?.target}
                       className='border-l border-[#D9C08A] px-[0.875rem] leading-none transition-colors first:border-l-0 first:pl-0 hover:text-[#B88E4F]'
                     >
@@ -108,8 +109,8 @@ const Footer = async ({ footer }: { footer?: FooterData }) => {
             </div>
             <div className='flex flex-1 justify-end'>
               <NewsletterForm
-                placeholder={newsletter?.placeholder}
-                submitAriaLabel={newsletter?.submit_aria_label}
+                placeholder={newsletter?.placeholder || tf('emailPlaceholder')}
+                submitAriaLabel={newsletter?.submit_aria_label || tf('subscribeAria')}
               />
             </div>
           </div>
@@ -153,9 +154,10 @@ const contactFromLink = (
 
 type OfficeBlockProps = { office: FooterOffice; className: string; delay: number }
 
-const OfficeBlock = ({ office, className, delay }: OfficeBlockProps) => {
+const OfficeBlock = async ({ office, className, delay }: OfficeBlockProps) => {
+  const tf = await getTranslations('Footer')
   const contacts = [
-    contactFromLink(office.phone, Phone, 'Điện thoại'),
+    contactFromLink(office.phone, Phone, tf('phoneLabel')),
     contactFromLink(office.hotline, Headset, 'Hotline'),
     contactFromLink(office.mail, Mail, 'Email'),
   ].filter((row): row is ContactRow => Boolean(row))

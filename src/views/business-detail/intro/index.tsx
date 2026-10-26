@@ -1,9 +1,12 @@
+import { useTranslations } from 'next-intl'
+
 import type { SectorItem } from '@/interfaces/sectors.interface'
 import SectionHeading from '@/views/business-detail/components/section-heading'
 
 import Feature from './components/feature'
 
 const SectorIntro = ({ sector }: { sector: SectorItem }) => {
+  const t = useTranslations('BusinessDetail')
   const intro = sector.acf?.intro
   if (!intro) return null
 
@@ -14,7 +17,7 @@ const SectorIntro = ({ sector }: { sector: SectorItem }) => {
       <div className='mx-auto grid max-w-[95rem] grid-cols-[minmax(0,5fr)_minmax(0,7fr)] items-center gap-[4rem] xsm:grid-cols-1 xsm:gap-[2rem]'>
         <div>
           <SectionHeading
-            eyebrow={intro.subtitle || 'Định hướng phát triển'}
+            eyebrow={intro.subtitle || t('introEyebrow')}
             title={intro.title || ''}
           />
 

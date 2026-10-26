@@ -1,6 +1,10 @@
-import Image from 'next/image'
+'use client'
 
-import { Link } from '@/i18n/navigation'
+import Image from 'next/image'
+import { useLocale } from 'next-intl'
+
+import { hrefFor } from '@/configs/routes'
+import { Link, toAppHref } from '@/i18n/navigation'
 import type { ProjectCardModel } from '@/views/projects/map-project'
 
 type ProjectCardProps = {
@@ -9,9 +13,11 @@ type ProjectCardProps = {
 }
 
 const ProjectCard = ({ project, number }: ProjectCardProps) => {
+  const locale = useLocale()
+
   return (
     <Link
-      href={{ pathname: '/du-an/[slug]', params: { slug: project.slug } }}
+      href={toAppHref(hrefFor('projectDetail', locale, { slug: project.slug }))}
       className='group relative block aspect-[3/4] overflow-hidden rounded-[0.75rem] bg-[#0F1C33] shadow-[0_0.75rem_2rem_rgba(15,28,51,0.12)] xsm:aspect-[4/5] xsm:rounded-[0.5rem]'
     >
       <Image

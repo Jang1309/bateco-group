@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 type MapEmbedProps = {
   /** URL iframe Google Maps (output=embed) */
   embedUrl: string
@@ -9,6 +11,8 @@ type MapEmbedProps = {
 }
 
 const MapEmbed = ({ embedUrl, mapsUrl, city, fill = false }: MapEmbedProps) => {
+  const t = useTranslations('Contact')
+
   if (!embedUrl) return null
 
   return (
@@ -21,7 +25,7 @@ const MapEmbed = ({ embedUrl, mapsUrl, city, fill = false }: MapEmbedProps) => {
     >
       <div className={fill ? 'relative min-h-0 flex-1' : 'relative h-[10.5rem]'}>
         <iframe
-          title={`Bản đồ ${city}`}
+          title={t('mapTitle', { city })}
           src={embedUrl}
           loading='lazy'
           referrerPolicy='no-referrer-when-downgrade'
@@ -38,7 +42,7 @@ const MapEmbed = ({ embedUrl, mapsUrl, city, fill = false }: MapEmbedProps) => {
             rel='noopener noreferrer'
             className='text-[0.8125rem] font-bold text-[#E07A3D] transition-colors duration-300 hover:text-[#1A2B48]'
           >
-            Xem bản đồ →
+            {t('viewMap')}
           </a>
         ) : null}
       </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { Link, usePathname } from '@/i18n/navigation'
+import { Link, toAppHref, usePathname } from '@/i18n/navigation'
 import type { ILink } from '@/interfaces/link.interface'
 import { cn } from '@/lib/utils'
 
@@ -20,7 +20,7 @@ export default function NavLink({
   onClick,
 }: NavLinkProps) {
   const pathname = usePathname()
-  const href = link?.url || '/'
+  const href = toAppHref(link?.url || '/')
   const active = pathname === href || pathname.startsWith(`${href}/`)
 
   return (

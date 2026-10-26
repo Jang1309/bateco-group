@@ -1,3 +1,4 @@
+import { hrefFor } from '@/configs/routes'
 import type { PostListItem } from '@/interfaces/postList.interface'
 import type { NewsArticle } from '@/views/news/data'
 
@@ -29,7 +30,10 @@ export const formatNewsDate = (value?: string) => {
   return `${day}/${month}/${date.getFullYear()}`
 }
 
-export const mapPostListItem = (item?: PostListItem | null): NewsArticle | null => {
+export const mapPostListItem = (
+  item?: PostListItem | null,
+  locale: string = 'vi',
+): NewsArticle | null => {
   if (!item?.slug && !item?.id) return null
 
   const category = item.taxonomies?.category?.[0]
@@ -43,9 +47,14 @@ export const mapPostListItem = (item?: PostListItem | null): NewsArticle | null 
     categoryTitle: decodeHtmlEntities(category?.name),
     date: formatNewsDate(item.published),
     image: item.thumbnail?.url || FALLBACK_IMAGE,
-    href: `/tin-tuc/${slug}`,
+    href: hrefFor('newsDetail', locale, { slug }),
   }
 }
 
-export const mapPostListItems = (items?: PostListItem[] | null): NewsArticle[] =>
-  (items ?? []).map(mapPostListItem).filter((item): item is NewsArticle => item !== null)
+export const mapPostListItems = (
+  items?: PostListItem[] | null,
+  locale: string = 'vi',
+): NewsArticle[] =>
+  (items ?? [])
+    .map((item) => mapPostListItem(item, locale))
+    .filter((item): item is NewsArticle => item !== null)

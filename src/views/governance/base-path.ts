@@ -1,2 +1,8 @@
-/** Internal pathname của trang dùng sidebar/pagination văn bản quản trị */
-export type GovernanceBasePath = '/quan-he-nha-dau-tu' | '/gioi-thieu/van-ban-quan-tri'
+import { PATHS } from '@/configs/routes'
+
+/** Internal pathname of pages that reuse governance sidebar/pagination */
+export type GovernanceBasePath =
+  | (typeof PATHS.investor)['vi']
+  | (typeof PATHS.investor)['en']
+  | (typeof PATHS.aboutGovernance)['vi']
+  | (typeof PATHS.aboutGovernance)['en']

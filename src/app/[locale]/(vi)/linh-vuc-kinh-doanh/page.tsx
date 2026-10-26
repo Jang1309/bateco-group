@@ -1,21 +1,30 @@
 import type { Metadata } from 'next'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
+import { assertPageLocale } from '@/i18n/assert-locale'
 import businessFieldService from '@/services/business-field'
 import BusinessView from '@/views/business'
 
-export const metadata: Metadata = {
-  title: 'Lĩnh vực kinh doanh | Bateco Group',
-  description:
-    'Hệ sinh thái đa ngành của Bateco Group: Dịch vụ công nghiệp, Bất động sản - Hạ tầng công nghiệp, An ninh - Quốc phòng, Kinh tế xanh và Sản xuất - Vật liệu mới.',
+export function generateStaticParams() {
+  return [{ locale: 'vi' as const }]
 }
-
 type Props = {
   params: Promise<{ locale: string }>
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Meta' })
+
+  return {
+    title: t('businessTitle'),
+    description: t('businessDesc'),
+  }
+}
+
 const BusinessPage = async ({ params }: Props) => {
   const { locale } = await params
+  assertPageLocale(locale, 'vi')
   setRequestLocale(locale)
 
   const [pageResponse, sectorsResponse] = await Promise.all([

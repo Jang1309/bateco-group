@@ -1,5 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import type { ComponentProps } from 'react'
 
 import ROUTES from '@/configs/routes'
@@ -15,11 +16,13 @@ type SectorCtaProps = {
 }
 
 const SectorCta = ({ data }: SectorCtaProps) => {
+  const t = useTranslations('BusinessDetail')
+
   if (!data) return null
 
   const image = typeof data.image === 'string' && data.image ? data.image : FALLBACK_IMAGE
   const buttonHref = (data.button?.url || ROUTES.contact) as ComponentProps<typeof Link>['href']
-  const buttonLabel = data.button?.title || 'Kết nối với chúng tôi'
+  const buttonLabel = data.button?.title || t('connect')
   const contacts = data.contacts?.filter((item) => item.link?.title || item.link?.url) ?? []
 
   return (

@@ -1,3 +1,4 @@
+import { sectionId } from '@/configs/section-ids'
 import type { IntroductionEcosystem } from '@/interfaces/introduction.interface'
 import { cn } from '@/lib/utils'
 import Reveal from '@/views/about/components/reveal'
@@ -5,17 +6,18 @@ import CompanyLists from '@/views/about/ecosystem/components/company-lists'
 import OrbitDiagram from '@/views/about/ecosystem/components/orbit-diagram'
 
 type AboutEcosystemProps = {
+  locale?: string
   data?: IntroductionEcosystem
 }
 
-const AboutEcosystem = ({ data }: AboutEcosystemProps) => {
+const AboutEcosystem = ({ locale = 'vi', data }: AboutEcosystemProps) => {
   const stats = data?.stats ?? []
   const groups = data?.groups ?? []
   const gallery = data?.gallery ?? []
 
   return (
     <section
-      id='he-sinh-thai'
+      id={sectionId('aboutEcosystem', locale)}
       className='scroll-mt-[6rem] bg-[#FAFAF8] px-[4.375rem] py-[5.3rem] xsm:px-[1.5rem] xsm:py-[3rem]'
     >
       <div className='mx-auto grid max-w-[91.4rem] grid-cols-12 items-center gap-[3.75rem] xsm:grid-cols-1 xsm:gap-[2.5rem]'>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 
+import { assertPageLocale } from '@/i18n/assert-locale'
 import { routing } from '@/i18n/routing'
 import careersService from '@/services/careers'
 import CareersDetailView from '@/views/careers/detail'
@@ -22,12 +23,10 @@ export async function generateStaticParams() {
     })
     const careers = response?.data ?? []
 
-    return routing.locales.flatMap((locale) =>
-      careers
-        .map((item) => item.slug)
-        .filter((slug): slug is string => Boolean(slug))
-        .map((slug) => ({ locale, slug })),
-    )
+    return careers
+      .map((item) => item.slug)
+      .filter((slug): slug is string => Boolean(slug))
+      .map((slug) => ({ locale: 'vi' as const, slug }))
   } catch {
     return []
   }
@@ -57,6 +56,7 @@ const FALLBACK_BANNER = '/home/vision/d-img-2.jpg'
 
 const CareersDetailPage = async ({ params }: Props) => {
   const { locale, slug } = await params
+  assertPageLocale(locale, 'vi')
   setRequestLocale(locale)
 
   const [detailResult, pageResult] = await Promise.all([

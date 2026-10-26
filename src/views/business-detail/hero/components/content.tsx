@@ -1,15 +1,15 @@
 'use client'
 
 import { useLenis } from 'lenis/react'
+import { useLocale, useTranslations } from 'next-intl'
 import type { MouseEvent } from 'react'
 
 import ROUTES from '@/configs/routes'
+import { sectionId } from '@/configs/section-ids'
 import { Link } from '@/i18n/navigation'
 import type { SectorItem } from '@/interfaces/sectors.interface'
 import { cn } from '@/lib/utils'
 import { scrollToSection } from '@/utils/scrollToSection'
-
-const PROJECTS_SECTION_ID = 'du-an'
 
 type SectorHeroContentProps = {
   sector: SectorItem
@@ -17,13 +17,16 @@ type SectorHeroContentProps = {
 }
 
 const SectorHeroContent = ({ sector, stacked }: SectorHeroContentProps) => {
+  const locale = useLocale()
+  const t = useTranslations('BusinessDetail')
+  const projectsSectionId = sectionId('businessProjects', locale)
   const lenis = useLenis()
   const title = sector.acf?.banner?.title || sector.name || ''
   const description = sector.acf?.banner?.desc || sector.description || ''
 
   const handleExploreProjects = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault()
-    const el = document.getElementById(PROJECTS_SECTION_ID)
+    const el = document.getElementById(projectsSectionId)
     if (!el) return
 
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
@@ -31,7 +34,7 @@ const SectorHeroContent = ({ sector, stacked }: SectorHeroContentProps) => {
     const top = el.getBoundingClientRect().top + (lenis?.scroll ?? window.scrollY) - headerPx
 
     if (lenis) lenis.scrollTo(top, { duration: 1.2 })
-    else scrollToSection(PROJECTS_SECTION_ID, 0.9, window.innerWidth <= 639 ? 4.5 : 5.5)
+    else scrollToSection(projectsSectionId, 0.9, window.innerWidth <= 639 ? 4.5 : 5.5)
   }
 
   return (
@@ -92,14 +95,14 @@ const SectorHeroContent = ({ sector, stacked }: SectorHeroContentProps) => {
         style={{ animationDelay: '340ms' }}
       >
         <a
-          href={`#${PROJECTS_SECTION_ID}`}
+          href={`#${projectsSectionId}`}
           onClick={handleExploreProjects}
           className={cn(
             'inline-flex items-center justify-center gap-[0.5rem] bg-[#C39A5A] px-[1.5rem] py-[0.875rem] text-[0.8125rem] font-bold tracking-[0.06em] text-white uppercase transition-[background-color,box-shadow] duration-300 hover:bg-[#B08447] hover:shadow-[0_0.5rem_1.25rem_rgba(184,142,79,0.35)]',
             stacked && 'w-full py-[0.95rem]',
           )}
         >
-          Khám phá dự án
+          {t('exploreProjects')}
           <span aria-hidden>→</span>
         </a>
         <Link
@@ -109,7 +112,7 @@ const SectorHeroContent = ({ sector, stacked }: SectorHeroContentProps) => {
             stacked && 'w-full py-[0.95rem]',
           )}
         >
-          Liên hệ hợp tác
+          {t('contactCta')}
         </Link>
       </div>
     </div>

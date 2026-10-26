@@ -2,7 +2,8 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { useState, type ComponentProps } from 'react'
 import type { Swiper as SwiperType } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
@@ -20,6 +21,7 @@ type HighlightSliderProps = {
 }
 
 const HighlightSlider = ({ articles }: HighlightSliderProps) => {
+  const t = useTranslations('News')
   const [swiper, setSwiper] = useState<SwiperType | null>(null)
   const [edge, setEdge] = useState({ start: true, end: false })
 
@@ -30,7 +32,7 @@ const HighlightSlider = ({ articles }: HighlightSliderProps) => {
     <div className='relative'>
       <button
         type='button'
-        aria-label='Tin trước'
+        aria-label={t('prev')}
         disabled={edge.start}
         onClick={() => swiper?.slidePrev()}
         className={cn(NAV_BUTTON, 'left-0 -translate-x-1/2')}
@@ -39,7 +41,7 @@ const HighlightSlider = ({ articles }: HighlightSliderProps) => {
       </button>
       <button
         type='button'
-        aria-label='Tin tiếp theo'
+        aria-label={t('next')}
         disabled={edge.end}
         onClick={() => swiper?.slideNext()}
         className={cn(NAV_BUTTON, 'right-0 translate-x-1/2')}
@@ -68,7 +70,7 @@ const HighlightSlider = ({ articles }: HighlightSliderProps) => {
               className='!h-auto'
             >
               <Link
-                href={{ pathname: '/tin-tuc/[slug]', params: { slug: article.id } }}
+                href={article.href as ComponentProps<typeof Link>['href']}
                 className='group flex h-full gap-[1.25rem] rounded-[0.875rem] border border-[#1A2B48]/[0.07] bg-white p-[1rem] outline-none transition-[border-color] duration-300 hover:border-[#B5935E]/40 focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-inset xsm:gap-[0.875rem] xsm:p-[0.75rem]'
               >
                 <div className='relative aspect-[4/3] w-[11rem] shrink-0 overflow-hidden rounded-[0.5rem] xsm:w-[7.5rem]'>

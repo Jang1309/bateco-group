@@ -1,11 +1,11 @@
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
-import type { ComponentProps } from 'react'
+import { getLocale, getTranslations } from 'next-intl/server'
 
 import DetailHero from '@/components/shared/detail-hero'
 import SectionHeading from '@/components/shared/section-heading'
-import ROUTES from '@/configs/routes'
-import { Link } from '@/i18n/navigation'
+import { pathFor } from '@/configs/routes'
+import { Link, toAppHref } from '@/i18n/navigation'
 import type { Contact } from '@/interfaces/siteSetting.interface'
 import { resolveCategoryTitle, type NewsArticle, type NewsArticleDetail } from '@/views/news/data'
 import RelatedSlider from '@/views/news/detail/related-slider'
@@ -19,24 +19,26 @@ type NewsDetailViewProps = {
   contact?: Contact
 }
 
-const NewsDetailView = ({ article, related = [], contact }: NewsDetailViewProps) => {
+const NewsDetailView = async ({ article, related = [], contact }: NewsDetailViewProps) => {
+  const locale = await getLocale()
+  const t = await getTranslations('News')
+  const tc = await getTranslations('Common')
   const categoryTitle = resolveCategoryTitle(article)
-  const categoryHref = article.category
-    ? {
-        pathname: '/tin-tuc/danh-muc' as const,
-        query: { 'danh-muc': article.category },
-      }
-    : ('/tin-tuc/danh-muc' as const)
+  const categoryHref = toAppHref(
+    article.category
+      ? `${pathFor('newsCategory', locale)}?danh-muc=${encodeURIComponent(article.category)}`
+      : pathFor('newsCategory', locale),
+  )
 
   const contacts = contact?.contacts?.filter((item) => item.link?.title) ?? []
-  const buttonHref = (contact?.button?.url || ROUTES.contact) as ComponentProps<typeof Link>['href']
+  const buttonHref = toAppHref(contact?.button?.url || pathFor('contact', locale))
   const others = related.filter((item) => item.id !== article.id).slice(0, 6)
 
   return (
     <main>
       <DetailHero
         image={article.image}
-        eyebrow={categoryTitle || 'Tin tức'}
+        eyebrow={categoryTitle || t('eyebrow')}
         title={article.title}
         description={article.excerpt || undefined}
         meta={
@@ -57,7 +59,7 @@ const NewsDetailView = ({ article, related = [], contact }: NewsDetailViewProps)
                   dangerouslySetInnerHTML={{ __html: article.content }}
                 />
               ) : (
-                <p className='text-[0.9375rem] text-[#64748B]'>Nội dung đang được cập nhật.</p>
+                <p className='text-[0.9375rem] text-[#64748B]'>{tc('contentUpdating')}</p>
               )}
 
               <div className='mt-[3.5rem] flex items-center justify-between gap-[1rem] border-t border-[#E2E8F0] pt-[1.5rem] xsm:flex-col xsm:items-start xsm:gap-[1.25rem]'>
@@ -66,7 +68,7 @@ const NewsDetailView = ({ article, related = [], contact }: NewsDetailViewProps)
                   className='group inline-flex items-center gap-[0.5rem] text-[0.875rem] font-bold text-[#1A2B48] transition-colors duration-300 hover:text-[#B5935E]'
                 >
                   <ArrowLeft className='size-[1rem] transition-transform duration-300 group-hover:-translate-x-[0.1875rem]' />
-                  {categoryTitle ? `Quay lại ${categoryTitle}` : 'Quay lại tin tức'}
+                  {categoryTitle ? `${tc('back')} ${categoryTitle}` : t('backToList')}
                 </Link>
                 <ShareActions />
               </div>
@@ -143,7 +145,7 @@ const NewsDetailView = ({ article, related = [], contact }: NewsDetailViewProps)
                   target={contact?.button?.target || undefined}
                   className='group mt-[1.5rem] flex items-center justify-between rounded-[0.5rem] bg-white py-[0.375rem] pr-[0.375rem] pl-[1.25rem] text-[0.875rem] font-semibold text-[#1A2B48] transition-colors duration-300 hover:bg-[#DFBA73]'
                 >
-                  {contact?.button?.title || 'Gửi yêu cầu tư vấn'}
+                  {contact?.button?.title || t('contactCta')}
                   <span className='flex size-[2.25rem] items-center justify-center rounded-[0.375rem] bg-[#1A2B48] text-white'>
                     <ArrowRight className='size-[1rem] transition-transform duration-300 group-hover:translate-x-[0.125rem]' />
                   </span>
@@ -157,7 +159,7 @@ const NewsDetailView = ({ article, related = [], contact }: NewsDetailViewProps)
       {others.length > 0 ? (
         <section className='border-t border-[#EEF1F5] bg-[#FAFBFC] py-[5rem] xsm:py-[3rem]'>
           <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
-            <SectionHeading title='Tin liên quan' />
+            <SectionHeading title={t('related')} />
             <RelatedSlider articles={others} />
           </div>
         </section>

@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 import SectionHeading from '@/components/shared/section-heading'
 import type { NewsArticle } from '@/views/news/data'
 
@@ -9,6 +11,7 @@ type FeaturedNewsProps = {
 }
 
 const FeaturedNews = ({ articles = [] }: FeaturedNewsProps) => {
+  const t = useTranslations('News')
   const [featured, ...highlights] = articles
 
   if (!featured) return null
@@ -16,7 +19,7 @@ const FeaturedNews = ({ articles = [] }: FeaturedNewsProps) => {
   return (
     <section className='bg-white pt-[2rem] pb-[5rem] xsm:pt-[1rem] xsm:pb-[3rem]'>
       <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
-        <SectionHeading title='Tin tức nổi bật' />
+        <SectionHeading title={t('featured')} />
         <div
           data-aos='business-rise'
           data-aos-duration='800'

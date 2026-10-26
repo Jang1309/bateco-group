@@ -1,6 +1,7 @@
 'use client'
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import ReactPaginate from 'react-paginate'
 
 import { cn } from '@/lib/utils'
@@ -15,6 +16,8 @@ const item =
   'inline-flex h-[2rem] min-w-[2rem] items-center justify-center gap-[0.25rem] rounded-[0.375rem] border px-[0.625rem] text-[0.8125rem] font-semibold transition-colors duration-300 xsm:h-[2.5rem] xsm:min-w-[2.5rem] xsm:px-[0.875rem] xsm:text-[0.875rem]'
 
 const DocumentsPagination = ({ page, totalPages, onPageChange }: DocumentsPaginationProps) => {
+  const t = useTranslations('Common.pagination')
+
   if (totalPages <= 1) return null
 
   return (
@@ -27,12 +30,12 @@ const DocumentsPagination = ({ page, totalPages, onPageChange }: DocumentsPagina
       previousLabel={
         <>
           <ChevronLeft className='size-[0.875rem]' />
-          Trước
+          {t('prev')}
         </>
       }
       nextLabel={
         <>
-          Tiếp
+          {t('nextAlt')}
           <ChevronRight className='size-[0.875rem]' />
         </>
       }

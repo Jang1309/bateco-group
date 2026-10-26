@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 import type { SectorItem } from '@/interfaces/projects.interface'
 import { cn } from '@/lib/utils'
 
@@ -8,11 +10,12 @@ type FilterTabsProps = {
 }
 
 const FilterTabs = ({ sectors, current, onSelect }: FilterTabsProps) => {
-  const tabs = [{ slug: undefined as string | undefined, name: 'Tất cả dự án' }, ...sectors]
+  const t = useTranslations('Projects')
+  const tabs = [{ slug: undefined as string | undefined, name: t('all') }, ...sectors]
 
   return (
     <nav
-      aria-label='Lọc theo lĩnh vực'
+      aria-label={t('filterAria')}
       className='-mx-[1.25rem] overflow-x-auto overscroll-x-contain px-[1.25rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
     >
       <ul className='flex w-max gap-[0.5rem] pr-[1.25rem] xsm:gap-[0.375rem]'>

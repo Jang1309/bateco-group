@@ -1,5 +1,6 @@
 import { Mail, MapPin, Phone } from 'lucide-react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 import BannerTopOverlay from '@/components/shared/banner-top-overlay'
 import type { ContactConnectItem, ContactPageResponse } from '@/interfaces/contact.interface'
@@ -65,6 +66,7 @@ type ContactViewProps = {
 }
 
 const ContactView = ({ content }: ContactViewProps) => {
+  const t = useTranslations('Contact')
   const banner = content?.banner
   const desktop = banner?.desktop || FALLBACK_BANNER
   const mobile = typeof banner?.mobile === 'string' && banner.mobile ? banner.mobile : desktop
@@ -157,7 +159,7 @@ const ContactView = ({ content }: ContactViewProps) => {
         <section className='bg-white pt-[4.5rem] pb-[6rem] xsm:pt-[3rem] xsm:pb-[3.5rem]'>
           <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
             <h2 className='max-w-[28rem] text-[2rem] leading-[1.25] font-bold tracking-[-0.015em] text-[#1A2B48] xsm:text-[1.5rem]'>
-              Kết nối với đội ngũ Bateco
+              {t('connectHeading')}
             </h2>
 
             <div className='mt-[2.5rem] grid grid-cols-[1.35fr_1fr] items-stretch gap-[1.5rem] xlg:grid-cols-1 xsm:mt-[1.75rem] xsm:gap-[1.125rem]'>

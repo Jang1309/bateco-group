@@ -1,5 +1,7 @@
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+import type { ComponentProps } from 'react'
 
 import { Link } from '@/i18n/navigation'
 import { resolveCategoryTitle, type NewsArticle } from '@/views/news/data'
@@ -9,9 +11,11 @@ type ArticleCardProps = {
 }
 
 const ArticleCard = ({ article }: ArticleCardProps) => {
+  const t = useTranslations('News')
+
   return (
     <Link
-      href={{ pathname: '/tin-tuc/[slug]', params: { slug: article.id } }}
+      href={article.href as ComponentProps<typeof Link>['href']}
       className='group flex w-full flex-col overflow-hidden rounded-[1rem] bg-white ring-1 ring-[#1A2B48]/[0.06] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] outline-none hover:-translate-y-[0.375rem] hover:shadow-[0_2rem_3rem_-1.75rem_rgba(26,43,72,0.35)] focus-visible:ring-2 focus-visible:ring-[#B5935E]'
     >
       <div className='relative aspect-[16/10] overflow-hidden'>
@@ -39,7 +43,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
           {article.excerpt}
         </p>
         <span className='mt-auto flex items-center justify-between border-t border-[#EEF1F5] pt-[1.125rem] text-[0.8125rem] font-semibold text-[#1A2B48]'>
-          Xem chi tiết
+          {t('readMore')}
           <span
             aria-hidden
             className='flex size-[2.25rem] items-center justify-center rounded-full bg-[#F1F4F8] text-[#1A2B48] transition-colors duration-300 group-hover:bg-[#B5935E] group-hover:text-white'

@@ -2,12 +2,14 @@
 
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
+import { useLocale, useTranslations } from 'next-intl'
 import { useRef, useState } from 'react'
 import type { Swiper as SwiperType } from 'swiper'
 import { Autoplay, EffectFade } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
-import { Link } from '@/i18n/navigation'
+import { hrefFor } from '@/configs/routes'
+import { Link, toAppHref } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import type { ProjectCardModel } from '@/views/projects/map-project'
 
@@ -24,6 +26,8 @@ type FeaturedSliderProps = {
 const pad = (n: number) => String(n).padStart(2, '0')
 
 const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
+  const locale = useLocale()
+  const t = useTranslations('Projects')
   const [swiper, setSwiper] = useState<SwiperType | null>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const progressRef = useRef<HTMLSpanElement>(null)
@@ -94,7 +98,7 @@ const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
                       )}
                     >
                       <Link
-                        href={{ pathname: '/du-an/[slug]', params: { slug: project.slug } }}
+                        href={toAppHref(hrefFor('projectDetail', locale, { slug: project.slug }))}
                         className='line-clamp-3 transition-colors duration-300 hover:text-[#DFBA73] xsm:line-clamp-4'
                       >
                         {project.title}
@@ -102,7 +106,7 @@ const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
                     </h3>
 
                     <Link
-                      href={{ pathname: '/du-an/[slug]', params: { slug: project.slug } }}
+                      href={toAppHref(hrefFor('projectDetail', locale, { slug: project.slug }))}
                       className={cn(
                         'group mt-[1rem] inline-flex items-center gap-[0.5rem] text-[0.75rem] font-bold tracking-[0.08em] text-white/75 uppercase transition-[opacity,transform,color] duration-700 ease-out hover:text-[#DFBA73] xsm:mt-[0.75rem] xsm:text-[0.6875rem]',
                         isActive
@@ -110,7 +114,7 @@ const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
                           : 'translate-y-[0.75rem] opacity-0',
                       )}
                     >
-                      Xem dự án
+                      {t('viewProject')}
                       <ArrowRight className='size-[0.875rem] transition-transform duration-300 group-hover:translate-x-[0.2rem]' />
                     </Link>
                   </div>
@@ -127,7 +131,7 @@ const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
             <button
               key={project.id}
               type='button'
-              aria-label={`Chuyển tới dự án ${index + 1}`}
+              aria-label={t('goto', { n: index + 1 })}
               aria-current={index === activeIndex}
               onClick={() => swiper?.slideToLoop(index)}
               className='group/bar shrink-0 py-[0.5rem]'
@@ -160,7 +164,7 @@ const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
             <div className='flex gap-[0.375rem]'>
               <button
                 type='button'
-                aria-label='Dự án trước'
+                aria-label={t('prev')}
                 onClick={() => swiper?.slidePrev()}
                 className={NAV_BUTTON}
               >
@@ -168,7 +172,7 @@ const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
               </button>
               <button
                 type='button'
-                aria-label='Dự án tiếp theo'
+                aria-label={t('next')}
                 onClick={() => swiper?.slideNext()}
                 className={NAV_BUTTON}
               >

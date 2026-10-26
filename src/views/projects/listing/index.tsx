@@ -1,9 +1,11 @@
 'use client'
 
 import { useLenis } from 'lenis/react'
+import { useTranslations } from 'next-intl'
 import { useQueryStates } from 'nuqs'
 
 import SectionHeading from '@/components/shared/section-heading'
+import { sectionId } from '@/configs/section-ids'
 import { useProjects } from '@/hooks/use-projects'
 import type { SectorItem } from '@/interfaces/projects.interface'
 import { scrollToSection } from '@/utils/scrollToSection'
@@ -29,6 +31,7 @@ const normalizeSectors = (sectors: SectorItem[]): Sector[] =>
   sectors.filter((item): item is Sector => Boolean(item.slug && item.name))
 
 const ProjectListing = ({ locale, sectors }: ProjectListingProps) => {
+  const t = useTranslations('Projects')
   const lenis = useLenis()
   const list = normalizeSectors(sectors)
   const [{ 'linh-vuc': sector, q, 'sap-xep': sort, trang: page }, setQuery] = useQueryStates(
@@ -54,12 +57,13 @@ const ProjectListing = ({ locale, sectors }: ProjectListingProps) => {
   const showSkeleton = isLoading || (isValidating && projects.length === 0)
   const totalPages = Math.max(1, data?.totalPages ?? 1)
   const offset = (Math.max(1, page) - 1) * LIMIT
+  const listingSectionId = sectionId('projectsListing', locale)
 
   const scrollToListing = () => {
-    const el = document.getElementById('du-an-khac')
+    const el = document.getElementById(listingSectionId)
     if (!el) return
     if (lenis) lenis.scrollTo(el, { offset: -96, duration: 0.8 })
-    else scrollToSection('du-an-khac', 0.6, 6)
+    else scrollToSection(listingSectionId, 0.6, 6)
   }
 
   const selectSector = (next?: string) => {
@@ -83,11 +87,11 @@ const ProjectListing = ({ locale, sectors }: ProjectListingProps) => {
 
   return (
     <section
-      id='du-an-khac'
+      id={listingSectionId}
       className='scroll-mt-[6rem] border-t border-[#EEF1F5] bg-[#FAFBFC] pt-[5rem] pb-[6rem] xsm:pt-[3rem] xsm:pb-[3.5rem]'
     >
       <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
-        <SectionHeading title='Dự án khác' />
+        <SectionHeading title={t('other')} />
 
         <div
           data-aos='business-rise'
@@ -126,7 +130,7 @@ const ProjectListing = ({ locale, sectors }: ProjectListingProps) => {
           </ul>
         ) : (
           <p className='mt-[2.5rem] rounded-[0.75rem] border border-dashed border-[#E2E8F0] bg-white py-[4rem] text-center text-[0.9375rem] text-[#64748B]'>
-            Không tìm thấy dự án phù hợp.
+            {t('empty')}
           </p>
         )}
 

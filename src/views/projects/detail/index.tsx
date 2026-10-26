@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import type { ComponentProps } from 'react'
 
 import SectionHeading from '@/components/shared/section-heading'
@@ -23,6 +24,8 @@ type ProjectDetailViewProps = {
 }
 
 const ProjectDetailView = ({ project, related = [], contact }: ProjectDetailViewProps) => {
+  const t = useTranslations('Projects')
+  const tc = useTranslations('Common')
   const contacts = contact?.contacts?.filter((item) => item.link?.title) ?? []
   const buttonHref = (contact?.button?.url || ROUTES.contact) as ComponentProps<typeof Link>['href']
   const others = related
@@ -53,7 +56,7 @@ const ProjectDetailView = ({ project, related = [], contact }: ProjectDetailView
                   dangerouslySetInnerHTML={{ __html: project.content }}
                 />
               ) : (
-                <p className='text-[0.9375rem] text-[#64748B]'>Nội dung đang được cập nhật.</p>
+                <p className='text-[0.9375rem] text-[#64748B]'>{tc('contentUpdating')}</p>
               )}
 
               <div className='mt-[3.5rem] flex items-center justify-between gap-[1rem] border-t border-[#E2E8F0] pt-[1.5rem] xsm:flex-col xsm:items-start xsm:gap-[1.25rem]'>
@@ -62,7 +65,7 @@ const ProjectDetailView = ({ project, related = [], contact }: ProjectDetailView
                   className='group inline-flex items-center gap-[0.5rem] text-[0.875rem] font-bold text-[#1A2B48] transition-colors duration-300 hover:text-[#B5935E]'
                 >
                   <ArrowLeft className='size-[1rem] transition-transform duration-300 group-hover:-translate-x-[0.1875rem]' />
-                  Quay lại Dự án
+                  {t('backToList')}
                 </Link>
                 <ShareActions />
               </div>
@@ -139,7 +142,7 @@ const ProjectDetailView = ({ project, related = [], contact }: ProjectDetailView
                   target={contact?.button?.target || undefined}
                   className='group mt-[1.5rem] flex items-center justify-between rounded-[0.5rem] bg-white py-[0.375rem] pr-[0.375rem] pl-[1.25rem] text-[0.875rem] font-semibold text-[#1A2B48] transition-colors duration-300 hover:bg-[#DFBA73]'
                 >
-                  {contact?.button?.title || 'Gửi yêu cầu tư vấn'}
+                  {contact?.button?.title || t('contactCta')}
                   <span className='flex size-[2.25rem] items-center justify-center rounded-[0.375rem] bg-[#1A2B48] text-white'>
                     <ArrowRight className='size-[1rem] transition-transform duration-300 group-hover:translate-x-[0.125rem]' />
                   </span>
@@ -153,7 +156,7 @@ const ProjectDetailView = ({ project, related = [], contact }: ProjectDetailView
       {others.length > 0 ? (
         <section className='border-t border-[#EEF1F5] bg-[#FAFBFC] py-[5rem] xsm:py-[3rem]'>
           <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
-            <SectionHeading title='Dự án khác' />
+            <SectionHeading title={t('related')} />
             <RelatedProjectsSlider projects={others} />
           </div>
         </section>

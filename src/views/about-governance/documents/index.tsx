@@ -1,9 +1,11 @@
 'use client'
 
 import { useLenis } from 'lenis/react'
+import { useTranslations } from 'next-intl'
 import { useQueryStates } from 'nuqs'
 import { useEffect } from 'react'
 
+import { sectionId } from '@/configs/section-ids'
 import { useDocuments } from '@/hooks/use-documents'
 import type { AdministrativeDocumentCategoryItem } from '@/interfaces/administrativeDocument.interface'
 import { scrollToSection } from '@/utils/scrollToSection'
@@ -25,6 +27,7 @@ const normalizeCategories = (categories: AdministrativeDocumentCategoryItem[]): 
   categories.filter((item): item is Category => Boolean(item.slug && item.name))
 
 const AboutGovernanceDocuments = ({ locale, categories }: AboutGovernanceDocumentsProps) => {
+  const t = useTranslations('AboutGovernance')
   const lenis = useLenis()
   const list = normalizeCategories(categories)
   const [{ 'danh-muc': categorySlug, trang: page }, setQuery] = useQueryStates(
@@ -51,13 +54,14 @@ const AboutGovernanceDocuments = ({ locale, categories }: AboutGovernanceDocumen
 
   const documents = data?.data ?? []
   const totalPages = Math.max(1, data?.totalPages ?? 1)
+  const docsSectionId = sectionId('documents', locale)
 
   const scrollToDocs = () => {
-    const el = document.getElementById('van-ban')
+    const el = document.getElementById(docsSectionId)
     if (!el) return
     // desktop có Lenis; mobile dùng gsap scrollToSection
     if (lenis) lenis.scrollTo(el, { offset: -96, duration: 0.8 })
-    else scrollToSection('van-ban', 0.6, 6)
+    else scrollToSection(docsSectionId, 0.6, 6)
   }
 
   const selectCategory = (slug: string) => {
@@ -73,11 +77,11 @@ const AboutGovernanceDocuments = ({ locale, categories }: AboutGovernanceDocumen
   if (!active) {
     return (
       <section
-        id='van-ban'
+        id={docsSectionId}
         className='bg-[#FAFBFC] pt-[1.5rem] pb-[6rem] xsm:pb-[3.5rem]'
       >
         <p className='mx-auto max-w-[95rem] px-[3.75rem] py-[3rem] text-center text-[0.9375rem] text-[#64748B] xsm:px-[1.25rem]'>
-          Chưa có danh mục văn bản.
+          {t('empty')}
         </p>
       </section>
     )
@@ -85,7 +89,7 @@ const AboutGovernanceDocuments = ({ locale, categories }: AboutGovernanceDocumen
 
   return (
     <section
-      id='van-ban'
+      id={docsSectionId}
       className='bg-[#FAFBFC] pt-[1.5rem] pb-[6rem] xsm:pb-[3.5rem]'
     >
       <div className='mx-auto grid max-w-[95rem] grid-cols-[20rem_1fr] items-start gap-[2rem] px-[3.75rem] xsm:grid-cols-1 xsm:gap-[1rem] xsm:px-[1.25rem]'>

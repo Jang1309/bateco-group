@@ -1,4 +1,5 @@
 import { ArrowLeft, Briefcase, Building2, GraduationCap, MapPin, Wallet } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import DetailHero from '@/components/shared/detail-hero'
 import ROUTES from '@/configs/routes'
@@ -15,18 +16,20 @@ type CareersDetailViewProps = {
 }
 
 const CareersDetailView = ({ job, bannerImage }: CareersDetailViewProps) => {
+  const t = useTranslations('Careers')
+  const tc = useTranslations('Common')
   const facts = [
-    { label: 'Mức lương', value: job.salary, icon: Wallet },
-    { label: 'Hình thức làm việc', value: job.type, icon: Briefcase },
-    { label: 'Học vấn', value: job.education, icon: GraduationCap },
-    { label: 'Địa điểm làm việc', value: job.location, icon: MapPin },
+    { label: t('salary'), value: job.salary, icon: Wallet },
+    { label: t('type'), value: job.type, icon: Briefcase },
+    { label: t('education'), value: job.education, icon: GraduationCap },
+    { label: t('location'), value: job.location, icon: MapPin },
   ].filter((fact) => fact.value)
 
   return (
     <main className='xsm:pb-[5.5rem]'>
       <DetailHero
         image={bannerImage}
-        eyebrow={job.type || 'Tuyển dụng'}
+        eyebrow={job.type || t('eyebrow')}
         title={job.title}
         titleClassName='business-hero-rise mt-[1rem] max-w-[36rem] text-[2.125rem] leading-[1.28] font-bold tracking-[-0.01em] text-pretty text-[#1A2B48] xsm:mt-[0.875rem] xsm:max-w-none xsm:text-[1.5rem] xsm:leading-[1.32]'
         meta={
@@ -79,7 +82,7 @@ const CareersDetailView = ({ job, bannerImage }: CareersDetailViewProps) => {
                   dangerouslySetInnerHTML={{ __html: job.content }}
                 />
               ) : (
-                <p className='text-[0.9375rem] text-[#64748B]'>Nội dung đang được cập nhật.</p>
+                <p className='text-[0.9375rem] text-[#64748B]'>{tc('contentUpdating')}</p>
               )}
 
               <div className='mt-[3.5rem] border-t border-[#E2E8F0] pt-[1.5rem]'>
@@ -88,7 +91,7 @@ const CareersDetailView = ({ job, bannerImage }: CareersDetailViewProps) => {
                   className='group inline-flex items-center gap-[0.5rem] text-[0.875rem] font-bold text-[#1A2B48] transition-colors duration-300 hover:text-[#B5935E]'
                 >
                   <ArrowLeft className='size-[1rem] transition-transform duration-300 group-hover:-translate-x-[0.1875rem]' />
-                  Quay lại danh sách tuyển dụng
+                  {t('backToList')}
                 </Link>
               </div>
             </div>

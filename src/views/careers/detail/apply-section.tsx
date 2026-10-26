@@ -1,6 +1,7 @@
 'use client'
 
 import { Send } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 import DrawerProvider from '@/components/providers/drawer-provider'
@@ -11,6 +12,7 @@ type ApplySectionProps = {
 }
 
 const ApplySection = ({ jobTitle }: ApplySectionProps) => {
+  const t = useTranslations('Careers')
   const [open, setOpen] = useState(false)
 
   return (
@@ -33,7 +35,7 @@ const ApplySection = ({ jobTitle }: ApplySectionProps) => {
             className='size-[1rem]'
             strokeWidth={1.75}
           />
-          Ứng tuyển ngay
+          {t('applyNow')}
         </button>
       </div>
 
@@ -43,7 +45,7 @@ const ApplySection = ({ jobTitle }: ApplySectionProps) => {
         className='max-h-[92vh] overflow-hidden pb-[max(0.5rem,env(safe-area-inset-bottom))]'
       >
         <div className='flex max-h-[calc(92vh-1.5rem)] flex-col overflow-hidden px-[1.25rem] pt-[0.5rem]'>
-          <p className='shrink-0 text-[1.125rem] font-bold text-[#1A2B48]'>Ứng tuyển ngay</p>
+          <p className='shrink-0 text-[1.125rem] font-bold text-[#1A2B48]'>{t('applyNow')}</p>
           <p className='mt-[0.25rem] line-clamp-2 shrink-0 text-[0.8125rem] leading-[1.5] text-[#64748B]'>
             {jobTitle}
           </p>

@@ -9,6 +9,7 @@ import {
   MapPin,
   Search,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useQueryStates } from 'nuqs'
 import { useEffect, useState } from 'react'
 
@@ -20,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { sectionId } from '@/configs/section-ids'
 import { useCareers } from '@/hooks/use-careers'
 import type { CareersTaxonomyItem } from '@/interfaces/careers.interface'
 import { cn } from '@/lib/utils'
@@ -78,6 +80,9 @@ type CareersJobsProps = {
 }
 
 const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsProps) => {
+  const t = useTranslations('Careers')
+  const tc = useTranslations('Common')
+  const tp = useTranslations('Common.pagination')
   const [{ 'phong-ban': deptSlug, 'dia-diem': locSlug, q, trang: page }, setQuery] = useQueryStates(
     careersSearchParams,
     { history: 'push', shallow: true },
@@ -136,8 +141,8 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
     {
       key: 'department',
       queryKey: 'phong-ban',
-      label: 'Phòng ban',
-      allLabel: 'Tất cả phòng ban',
+      label: t('department'),
+      allLabel: t('allDepartments'),
       options: departmentOptions,
       icon: Building2,
       width: 'w-[14rem]',
@@ -145,8 +150,8 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
     {
       key: 'location',
       queryKey: 'dia-diem',
-      label: 'Địa điểm',
-      allLabel: 'Tất cả địa điểm',
+      label: t('location'),
+      allLabel: t('allLocations'),
       options: locationOptions,
       icon: MapPin,
       width: 'w-[13rem]',
@@ -173,28 +178,28 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
 
   return (
     <section
-      id='vi-tri-tuyen-dung'
+      id={sectionId('careersJobs', locale)}
       className='scroll-mt-[6rem] bg-[#FAFBFC] py-[5rem] xsm:py-[3rem]'
     >
       <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
         <div className='max-w-[40rem]'>
           <h2 className='text-[2rem] leading-[1.3] font-bold tracking-[-0.015em] text-[#1A2B48] xsm:text-[1.5rem]'>
-            Vị trí đang tuyển dụng
+            {t('openPositions')}
           </h2>
           <p className='mt-[0.625rem] text-[0.9375rem] leading-[1.65] text-[#64748B] xsm:text-[0.875rem]'>
-            Khám phá cơ hội phát triển cùng chúng tôi trong các dự án sắp tới.
+            {t('openSubtitle')}
           </p>
         </div>
 
         <div className='mt-[2rem] flex flex-wrap items-center gap-[0.75rem] rounded-[0.875rem] border border-[#EEF1F5] bg-white p-[0.75rem] shadow-[0_0.75rem_2rem_-1.25rem_rgba(26,43,72,0.18)] xsm:mt-[1.5rem] xsm:flex-col xsm:items-stretch'>
           <label className='relative min-w-[16rem] flex-1'>
-            <span className='sr-only'>Tìm vị trí tuyển dụng</span>
+            <span className='sr-only'>{t('searchAria')}</span>
             <Search className='pointer-events-none absolute top-1/2 left-[1rem] size-[1rem] -translate-y-1/2 text-[#94A3B8]' />
             <input
               type='search'
               value={keyword}
               onChange={(event) => setKeyword(event.target.value)}
-              placeholder='Tìm vị trí tuyển dụng...'
+              placeholder={t('searchPlaceholder')}
               className='h-[2.875rem] w-full rounded-[0.5rem] border border-transparent bg-[#F8FAFC] pr-[1rem] pl-[2.75rem] text-[0.875rem] text-[#1A2B48] outline-none transition-colors duration-300 placeholder:text-[#94A3B8] focus:border-[#C6A15B] focus:bg-white'
             />
           </label>
@@ -327,7 +332,7 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
         </DrawerProvider>
 
         <p className='mt-[1.5rem] text-[0.8125rem] font-medium text-[#94A3B8]'>
-          {showSkeleton ? 'Đang tải…' : `${total} vị trí phù hợp`}
+          {showSkeleton ? tc('loading') : t('results', { count: total })}
         </p>
 
         <div className='mt-[1rem] flex flex-col gap-[1rem]'>
@@ -343,14 +348,14 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
             ))
           ) : (
             <p className='rounded-[1rem] border border-dashed border-[#E2E8F0] bg-white px-[1.5rem] py-[3rem] text-center text-[0.9375rem] text-[#64748B]'>
-              Không tìm thấy vị trí phù hợp.
+              {t('empty')}
             </p>
           )}
         </div>
 
         {totalPages > 1 && !showSkeleton ? (
           <nav
-            aria-label='Phân trang tuyển dụng'
+            aria-label={tp('label')}
             className='mt-[2.5rem] flex items-center justify-center gap-[0.5rem]'
           >
             <button
@@ -360,7 +365,7 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
               className='inline-flex h-[2.5rem] items-center gap-[0.25rem] rounded-full px-[0.875rem] text-[0.8125rem] font-semibold text-[#1A2B48] transition-colors duration-300 hover:text-[#B5935E] disabled:pointer-events-none disabled:opacity-35'
             >
               <ChevronLeft className='size-[0.875rem]' />
-              Trước
+              {t('prev')}
             </button>
 
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
@@ -386,7 +391,7 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
               onClick={() => goToPage(currentPage + 1)}
               className='inline-flex h-[2.5rem] items-center gap-[0.25rem] rounded-full px-[0.875rem] text-[0.8125rem] font-semibold text-[#1A2B48] transition-colors duration-300 hover:text-[#B5935E] disabled:pointer-events-none disabled:opacity-35'
             >
-              Sau
+              {t('next')}
               <ChevronRight className='size-[0.875rem]' />
             </button>
           </nav>

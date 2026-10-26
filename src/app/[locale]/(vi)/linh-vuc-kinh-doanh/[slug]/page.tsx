@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 
+import { assertPageLocale } from '@/i18n/assert-locale'
 import { routing } from '@/i18n/routing'
 import businessFieldService from '@/services/business-field'
 import siteSettingService from '@/services/site-setting'
@@ -18,12 +19,10 @@ export async function generateStaticParams() {
     const response = await businessFieldService.getSectors(routing.defaultLocale)
     const sectors = response?.data ?? []
 
-    return routing.locales.flatMap((locale) =>
-      sectors
-        .map((sector) => sector.slug)
-        .filter((slug): slug is string => Boolean(slug))
-        .map((slug) => ({ locale, slug })),
-    )
+    return sectors
+      .map((sector) => sector.slug)
+      .filter((slug): slug is string => Boolean(slug))
+      .map((slug) => ({ locale: 'vi' as const, slug }))
   } catch {
     return []
   }
@@ -48,6 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 const BusinessDetailPage = async ({ params }: Props) => {
   const { locale, slug } = await params
+  assertPageLocale(locale, 'vi')
   setRequestLocale(locale)
 
   const [detailResult, projectsResult, siteSettingResult] = await Promise.allSettled([

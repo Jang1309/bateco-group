@@ -1,5 +1,7 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
+
 import type { InvestorRelationsCategoryItem } from '@/interfaces/investorRelations.interface'
 import SidebarShell from '@/views/governance/documents/components/sidebar-shell'
 
@@ -27,16 +29,17 @@ const findActiveTitle = (categories: Category[], activeSlug: string): string => 
 }
 
 const DocumentsSidebar = ({ categories, activeSlug, onSelect }: DocumentsSidebarProps) => {
+  const t = useTranslations('Investor')
   const activeTitle = findActiveTitle(categories, activeSlug)
 
   return (
     <aside className='sticky top-[7.5rem] rounded-[0.75rem] border border-[#EEF1F5] bg-white p-[1.5rem] shadow-[0_0.5rem_1.5rem_rgba(15,28,51,0.05)] xsm:static xsm:p-[1rem]'>
       <SidebarShell
         key={activeSlug}
-        title='Quan hệ nhà đầu tư'
+        title={t('docsTitle')}
         activeTitle={activeTitle}
       >
-        <nav aria-label='Quan hệ nhà đầu tư'>
+        <nav aria-label={t('docsTitle')}>
           <ul className='flex flex-col gap-[0.25rem]'>
             {categories.map((item) => {
               const children = normalizeChildren(item)

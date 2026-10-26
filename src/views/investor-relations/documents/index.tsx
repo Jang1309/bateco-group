@@ -1,9 +1,11 @@
 'use client'
 
 import { useLenis } from 'lenis/react'
+import { useTranslations } from 'next-intl'
 import { useQueryStates } from 'nuqs'
 import { useEffect } from 'react'
 
+import { sectionId } from '@/configs/section-ids'
 import { useInvestorDocuments } from '@/hooks/use-investor-documents'
 import type { InvestorRelationsCategoryItem } from '@/interfaces/investorRelations.interface'
 import { scrollToSection } from '@/utils/scrollToSection'
@@ -43,6 +45,7 @@ const findActiveCategory = (selectable: Category[], slug?: string | null) =>
   selectable.find((item) => item.slug === slug) ?? selectable[0]
 
 const InvestorRelationsDocuments = ({ locale, categories }: InvestorRelationsDocumentsProps) => {
+  const t = useTranslations('Investor')
   const lenis = useLenis()
   const list = normalizeCategories(categories)
   const selectable = getSelectableCategories(list)
@@ -70,12 +73,13 @@ const InvestorRelationsDocuments = ({ locale, categories }: InvestorRelationsDoc
 
   const documents = data?.data ?? []
   const totalPages = Math.max(1, data?.totalPages ?? 1)
+  const docsSectionId = sectionId('documents', locale)
 
   const scrollToDocs = () => {
-    const el = document.getElementById('van-ban')
+    const el = document.getElementById(docsSectionId)
     if (!el) return
     if (lenis) lenis.scrollTo(el, { offset: -96, duration: 0.8 })
-    else scrollToSection('van-ban', 0.6, 6)
+    else scrollToSection(docsSectionId, 0.6, 6)
   }
 
   const selectCategory = (slug: string) => {
@@ -91,11 +95,11 @@ const InvestorRelationsDocuments = ({ locale, categories }: InvestorRelationsDoc
   if (!active) {
     return (
       <section
-        id='van-ban'
+        id={docsSectionId}
         className='bg-[#FAFBFC] pt-[1.5rem] pb-[6rem] xsm:pb-[3.5rem]'
       >
         <p className='mx-auto max-w-[95rem] px-[3.75rem] py-[3rem] text-center text-[0.9375rem] text-[#64748B] xsm:px-[1.25rem]'>
-          Chưa có danh mục tài liệu.
+          {t('empty')}
         </p>
       </section>
     )
@@ -103,7 +107,7 @@ const InvestorRelationsDocuments = ({ locale, categories }: InvestorRelationsDoc
 
   return (
     <section
-      id='van-ban'
+      id={docsSectionId}
       className='bg-[#FAFBFC] pt-[1.5rem] pb-[6rem] xsm:pb-[3.5rem]'
     >
       <div className='mx-auto grid max-w-[95rem] grid-cols-[20rem_1fr] items-start gap-[2rem] px-[3.75rem] xsm:grid-cols-1 xsm:gap-[1rem] xsm:px-[1.25rem]'>

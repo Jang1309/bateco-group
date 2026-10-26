@@ -1,17 +1,11 @@
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 import BannerTopOverlay from '@/components/shared/banner-top-overlay'
 import type { NewsPageBanner } from '@/interfaces/postList.interface'
 import { cn } from '@/lib/utils'
 
 const FALLBACK_IMAGE = '/home/vision/d-img-1.jpg'
-
-const FALLBACK_BANNER: NewsPageBanner = {
-  subtitle: 'Tin tức',
-  title: '<p>Định hình phong cách<br />\n<strong>Sống tương lai</strong></p>',
-  desc: 'Ứng dụng công nghệ hiện đại và năng lượng xanh để kiến tạo những giá trị sống chuẩn mực, cùng cơ hội đầu tư bền vững lâu dài cho cộng đồng.',
-  desktop: FALLBACK_IMAGE,
-}
 
 type NewsHeroProps = {
   data?: NewsPageBanner
@@ -71,7 +65,14 @@ const HeroCopy = ({ banner, stacked }: HeroCopyProps) => (
 )
 
 const NewsHero = ({ data }: NewsHeroProps) => {
-  const banner = data?.title || data?.subtitle ? data : FALLBACK_BANNER
+  const t = useTranslations('News')
+  const fallbackBanner: NewsPageBanner = {
+    subtitle: t('eyebrow'),
+    title: `<p>${t('heroTitle')}</p>`,
+    desc: t('heroDesc'),
+    desktop: FALLBACK_IMAGE,
+  }
+  const banner = data?.title || data?.subtitle ? data : fallbackBanner
   const desktop = banner.desktop || FALLBACK_IMAGE
   const mobile = typeof banner.mobile === 'string' && banner.mobile ? banner.mobile : desktop
 

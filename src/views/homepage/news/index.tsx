@@ -1,7 +1,8 @@
 import Image from 'next/image'
-import { getTranslations } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
+import type { ComponentProps } from 'react'
 
-import ROUTES from '@/configs/routes'
+import { hrefFor } from '@/configs/routes'
 import { Link } from '@/i18n/navigation'
 import type { PostListItem } from '@/interfaces/postList.interface'
 import Logo from '@/layouts/header/components/logo'
@@ -18,13 +19,14 @@ const formatPostDate = (value?: string) => {
   return `${day}.${month}.${date.getFullYear()}`
 }
 
-const postHref = (post: PostListItem) => {
+const postHref = (post: PostListItem, locale: string): ComponentProps<typeof Link>['href'] => {
   const slug = post.slug || (post.id != null ? String(post.id) : '')
-  if (!slug) return ROUTES.news
-  return { pathname: '/tin-tuc/[slug]' as const, params: { slug } }
+  if (!slug) return hrefFor('news', locale) as ComponentProps<typeof Link>['href']
+  return hrefFor('newsDetail', locale, { slug }) as ComponentProps<typeof Link>['href']
 }
 
 const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
+  const locale = await getLocale()
   const t = await getTranslations('HomeNews')
   const featured = posts?.[0]
   const others: OtherNewsSlide[] =
@@ -32,7 +34,7 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
       image: post.thumbnail?.url || '/home/news/featured.jpg',
       date: formatPostDate(post.published),
       title: post.title || '',
-      href: postHref(post),
+      href: postHref(post, locale),
     })) || []
 
   if (!featured && !others.length) return null
@@ -53,7 +55,7 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
       {featured ? (
         <div className='mx-auto flex w-full max-w-[95rem] items-stretch gap-[4.375rem] px-[3.75rem] py-[3rem] xsm:flex-col xsm:gap-[1.5rem] xsm:px-[1.5rem] xsm:py-[2rem]'>
           <Link
-            href={postHref(featured)}
+            href={postHref(featured, locale)}
             prefetch={false}
             data-aos='fade-right'
             className='group min-w-0 flex-1 overflow-hidden bg-[#f5f5f5] shadow-[0_0.3125rem_1.875rem_rgba(0,0,0,0.06)]'
@@ -74,7 +76,7 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
                 className='text-pretty text-[2.5rem] leading-[3.25rem] font-bold text-[#525252] xsm:text-[1.25rem] xsm:leading-[1.55]'
               >
                 <Link
-                  href={postHref(featured)}
+                  href={postHref(featured, locale)}
                   prefetch={false}
                   className='transition-colors duration-300 hover:text-[#b68d4c]'
                 >
@@ -123,7 +125,7 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
             ) : null}
 
             <Link
-              href={postHref(featured)}
+              href={postHref(featured, locale)}
               prefetch={false}
               className='mt-[1.25rem] inline-flex w-fit items-center justify-center bg-[#b68d4c] px-[2rem] py-[0.75rem] text-[0.875rem] leading-[1.25rem] font-semibold tracking-[0.04rem] text-white uppercase shadow-[0_0.078rem_0.078rem_rgba(0,0,0,0.05)] transition-colors hover:bg-[#a47d42]'
             >
@@ -145,7 +147,7 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
             </h2>
           </div>
           <Link
-            href={ROUTES.news}
+            href={hrefFor('news', locale) as ComponentProps<typeof Link>['href']}
             className='flex items-center gap-[0.5rem] text-[0.8125rem] leading-[1.25rem] font-semibold tracking-[0.04rem] text-[#b88e4f] uppercase transition-opacity hover:opacity-80'
           >
             {t('viewAll')}

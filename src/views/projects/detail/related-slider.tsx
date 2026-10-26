@@ -1,6 +1,7 @@
 'use client'
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import type { Swiper as SwiperType } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -18,6 +19,7 @@ type RelatedProjectsSliderProps = {
 }
 
 const RelatedProjectsSlider = ({ projects }: RelatedProjectsSliderProps) => {
+  const t = useTranslations('Projects')
   const [swiper, setSwiper] = useState<SwiperType | null>(null)
   const [edges, setEdges] = useState({ start: true, end: false })
 
@@ -61,7 +63,7 @@ const RelatedProjectsSlider = ({ projects }: RelatedProjectsSliderProps) => {
         <div className='mt-[2rem] flex justify-end gap-[0.5rem] xsm:mt-[1.25rem]'>
           <button
             type='button'
-            aria-label='Dự án trước'
+            aria-label={t('prev')}
             disabled={edges.start}
             onClick={() => swiper?.slidePrev()}
             className={NAV_BUTTON}
@@ -70,7 +72,7 @@ const RelatedProjectsSlider = ({ projects }: RelatedProjectsSliderProps) => {
           </button>
           <button
             type='button'
-            aria-label='Dự án tiếp theo'
+            aria-label={t('next')}
             disabled={edges.end}
             onClick={() => swiper?.slideNext()}
             className={NAV_BUTTON}

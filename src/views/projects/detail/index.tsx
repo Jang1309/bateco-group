@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { useLocale, useTranslations } from 'next-intl'
 
 import SectionHeading from '@/components/shared/section-heading'
-import { contactHrefFor } from '@/configs/routes'
+import { contactHrefFor, hrefFor } from '@/configs/routes'
 import { Link, toAppHref } from '@/i18n/navigation'
 import type { ProjectListItem } from '@/interfaces/projects.interface'
 import type { Contact } from '@/interfaces/siteSetting.interface'
@@ -61,7 +61,7 @@ const ProjectDetailView = ({ project, related = [], contact }: ProjectDetailView
 
               <div className='mt-[3.5rem] flex items-center justify-between gap-[1rem] border-t border-[#E2E8F0] pt-[1.5rem] xsm:flex-col xsm:items-start xsm:gap-[1.25rem]'>
                 <Link
-                  href={ROUTES.projects}
+                  href={toAppHref(hrefFor('projects', locale))}
                   className='group inline-flex items-center gap-[0.5rem] text-[0.875rem] font-bold text-[#1A2B48] transition-colors duration-300 hover:text-[#B5935E]'
                 >
                   <ArrowLeft className='size-[1rem] transition-transform duration-300 group-hover:-translate-x-[0.1875rem]' />

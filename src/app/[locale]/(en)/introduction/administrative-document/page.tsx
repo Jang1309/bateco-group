@@ -1,20 +1,33 @@
 import type { Metadata } from 'next'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
+import endpoints from '@/configs/endpoints'
+import getMetaDataRankMath from '@/fetches/getMetaDataRankMath'
 import { assertPageLocale } from '@/i18n/assert-locale'
 import administrativeDocumentService from '@/services/administrative-document'
+import metadataValues from '@/utils/metadataValues'
 import AboutGovernanceView from '@/views/about-governance'
-
-export const metadata: Metadata = {
-  title: 'Governance Documents | Bateco Group',
-  description: 'Corporate governance documents and policies of Bateco Group.',
-}
 
 export function generateStaticParams() {
   return [{ locale: 'en' as const }]
 }
 type Props = {
   params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const res = await getMetaDataRankMath(
+    endpoints.administrativeDocument.rank_math[
+      locale as keyof typeof endpoints.administrativeDocument.rank_math
+    ],
+  )
+  const t = await getTranslations({ locale, namespace: 'Meta' })
+  return metadataValues(res, { locale, description: t('governanceDesc') })
 }
 
 const AboutGovernancePage = async ({ params }: Props) => {

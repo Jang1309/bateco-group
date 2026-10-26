@@ -1,8 +1,15 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
+import JsonLd from '@/components/shared/json-ld'
+import endpoints from '@/configs/endpoints'
+import ENV from '@/configs/env'
+import { hrefFor } from '@/configs/routes'
+import getMetaDataRankMath from '@/fetches/getMetaDataRankMath'
 import { assertPageLocale } from '@/i18n/assert-locale'
+import { collectionPageGraph } from '@/lib/schema'
 import investorRelationsService from '@/services/investor-relations'
+import metadataValues from '@/utils/metadataValues'
 import InvestorRelationsView from '@/views/investor-relations'
 
 export function generateStaticParams() {
@@ -14,18 +21,21 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
+  const res = await getMetaDataRankMath(
+    endpoints.investorRelations.rank_math[
+      locale as keyof typeof endpoints.investorRelations.rank_math
+    ],
+  )
   const t = await getTranslations({ locale, namespace: 'Meta' })
-
-  return {
-    title: t('investorTitle'),
-    description: t('investorDesc'),
-  }
+  return metadataValues(res, { locale, description: t('investorDesc') })
 }
 
 const InvestorPage = async ({ params }: Props) => {
   const { locale } = await params
   assertPageLocale(locale, 'vi')
   setRequestLocale(locale)
+  const t = await getTranslations({ locale, namespace: 'Meta' })
+  const path = hrefFor('investor', locale)
 
   const [pageResponse, categoriesResponse] = await Promise.all([
     investorRelationsService.getInvestorRelations(locale),
@@ -33,11 +43,23 @@ const InvestorPage = async ({ params }: Props) => {
   ])
 
   return (
-    <InvestorRelationsView
-      locale={locale}
-      content={pageResponse?.acf}
-      categories={categoriesResponse?.data ?? []}
-    />
+    <>
+      <JsonLd
+        data={collectionPageGraph({
+          domain: ENV.DOMAIN,
+          locale: 'vi',
+          path,
+          name: t('investorTitle'),
+          description: t('investorDesc'),
+          crumbName: t('investorTitle').split('|')[0]!.trim(),
+        })}
+      />
+      <InvestorRelationsView
+        locale={locale}
+        content={pageResponse?.acf}
+        categories={categoriesResponse?.data ?? []}
+      />
+    </>
   )
 }
 

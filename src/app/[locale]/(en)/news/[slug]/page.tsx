@@ -1,10 +1,17 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
+import JsonLd from '@/components/shared/json-ld'
+import endpoints from '@/configs/endpoints'
+import ENV from '@/configs/env'
+import { hrefFor } from '@/configs/routes'
+import getMetaDataRankMath from '@/fetches/getMetaDataRankMath'
 import { assertPageLocale } from '@/i18n/assert-locale'
+import { breadcrumbSchema, newsArticleSchema, schemaGraph } from '@/lib/schema'
 import newsService from '@/services/news'
 import siteSettingService from '@/services/site-setting'
+import metadataValues from '@/utils/metadataValues'
 import NewsDetailView from '@/views/news/detail'
 import { mapPostListItems } from '@/views/news/map-post'
 import { mapPostDetail } from '@/views/news/map-post-detail'
@@ -35,20 +42,10 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
-
-  try {
-    const response = await newsService.getDetail(slug, locale)
-    const article = mapPostDetail(response?.data, locale)
-    if (!article) return {}
-
-    return {
-      title: `${article.title} | Bateco Group`,
-      description: article.excerpt || undefined,
-      openGraph: { images: [article.image] },
-    }
-  } catch {
-    return {}
-  }
+  const pathFor =
+    endpoints.news.rank_math_detail[locale as keyof typeof endpoints.news.rank_math_detail]
+  const res = await getMetaDataRankMath(pathFor(slug))
+  return metadataValues(res, { locale })
 }
 
 const NewsDetailPage = async ({ params }: Props) => {
@@ -63,6 +60,10 @@ const NewsDetailPage = async ({ params }: Props) => {
 
   const article = mapPostDetail(detailResult?.data, locale)
   if (!article) notFound()
+
+  const t = await getTranslations({ locale, namespace: 'Meta' })
+  const path = hrefFor('newsDetail', locale, { slug: article.id })
+  const newsPath = hrefFor('news', locale)
 
   let related = mapPostListItems(
     (
@@ -86,11 +87,31 @@ const NewsDetailPage = async ({ params }: Props) => {
   }
 
   return (
-    <NewsDetailView
-      article={article}
-      related={related.slice(0, 6)}
-      contact={siteSetting?.data?.contact}
-    />
+    <>
+      <JsonLd
+        data={schemaGraph(
+          newsArticleSchema({
+            domain: ENV.DOMAIN,
+            locale: 'en',
+            path,
+            title: article.title,
+            description: article.excerpt,
+            image: article.image,
+            datePublished: detailResult?.data?.published,
+          }),
+          breadcrumbSchema(ENV.DOMAIN, 'en', [
+            { name: 'Bateco Group', path: '/' },
+            { name: t('newsTitle').split('|')[0]!.trim(), path: newsPath },
+            { name: article.title, path },
+          ]),
+        )}
+      />
+      <NewsDetailView
+        article={article}
+        related={related.slice(0, 6)}
+        contact={siteSetting?.data?.contact}
+      />
+    </>
   )
 }
 

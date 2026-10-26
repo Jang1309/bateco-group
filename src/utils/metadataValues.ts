@@ -1,90 +1,141 @@
-import ENV from '@/configs/env'
+import type { Metadata } from 'next'
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export default function metadataValues(res: any) {
-  const domain = ENV.DOMAIN
+const SITE_NAME = 'Bateco Group'
+const DEFAULT_IMAGE = '/default.jpg'
+
+/** Shape returned by `parseRankMathHead` (and null when RankMath fetch fails). */
+export type RankMathHead = {
+  title?: string | null
+  description?: string | null
+  canonical?: string | null
+  openGraph?: {
+    title?: string | null
+    description?: string | null
+    url?: string | null
+    siteName?: string | null
+    locale?: string | null
+    type?: string | null
+    image?: {
+      url?: string | null
+      width?: string | null
+      height?: string | null
+      alt?: string | null
+    }
+  }
+  twitter?: {
+    card?: string | null
+    title?: string | null
+    description?: string | null
+    image?: string | string[] | null
+  }
+}
+
+function resolveDomain(domain?: string): string {
+  const value = domain || process.env.NEXT_PUBLIC_DOMAIN || ''
+  if (!value) {
+    throw new Error('NEXT_PUBLIC_DOMAIN is required for metadataBase')
+  }
+  return value
+}
+
+/**
+ * Map RankMath parsed head → Next.js `Metadata`.
+ * `description` is used when RankMath has none (avoids duplicate meta); `locale` sets
+ * og:locale since RankMath reports the CMS default for every language.
+ * Pass `domain` in tests; production uses `NEXT_PUBLIC_DOMAIN`.
+ */
+export default function metadataValues(
+  res?: RankMathHead | null,
+  options: { locale?: string; description?: string; domain?: string } = {},
+): Metadata {
+  const metadataBase = new URL(resolveDomain(options.domain))
+  const description = res?.description || options.description || SITE_NAME
+  const ogLocale = options.locale === 'en' ? 'en_US' : options.locale === 'vi' ? 'vi_VN' : undefined
+
   if (!res) {
     return {
-      metadataBase: new URL(domain || ''),
-      title: 'Homes World',
-      description: 'Homes World',
-      alternates: {
-        canonical: './',
-      },
-      author: 'Homes World',
+      metadataBase,
+      title: SITE_NAME,
+      description,
+      alternates: { canonical: './' },
+      authors: [{ name: SITE_NAME }],
       robots: 'index, follow',
-      schema: null,
     }
   }
 
-  const result = res
-
-  // Chuẩn hóa Open Graph Images
-  const ogImages: any[] = []
-  if (result?.openGraph?.image?.url) {
+  const ogImages: NonNullable<NonNullable<Metadata['openGraph']>['images']> = []
+  if (res.openGraph?.image?.url) {
     ogImages.push({
-      url: result.openGraph.image.url,
-      width: result.openGraph.image.width ? Number(result.openGraph.image.width) : 1200,
-      height: result.openGraph.image.height ? Number(result.openGraph.image.height) : 630,
-      alt: result.openGraph.image.alt || result.title || 'Homes World',
+      url: res.openGraph.image.url,
+      width: res.openGraph.image.width ? Number(res.openGraph.image.width) : 1200,
+      height: res.openGraph.image.height ? Number(res.openGraph.image.height) : 630,
+      alt: res.openGraph.image.alt || res.title || SITE_NAME,
     })
   }
-
-  // Chuẩn hóa Twitter Images
-  let twitterImages: any[] = []
-  if (result?.twitter?.image) {
-    if (Array.isArray(result.twitter.image)) {
-      twitterImages = result.twitter.image.map((url: string) => ({ url }))
-    } else {
-      twitterImages.push({ url: result.twitter.image })
-    }
-  }
-
-  // Fallback ảnh mặc định nếu không có
   if (ogImages.length === 0) {
     ogImages.push({
-      url: '/default.webp',
+      url: DEFAULT_IMAGE,
       width: 1200,
       height: 630,
-      alt: 'Homes World',
-    })
-  }
-  if (twitterImages.length === 0) {
-    twitterImages.push({
-      url: '/default.webp',
+      alt: SITE_NAME,
     })
   }
 
+  const twitterImages: { url: string }[] = []
+  if (res.twitter?.image) {
+    if (Array.isArray(res.twitter.image)) {
+      for (const url of res.twitter.image) {
+        if (url) twitterImages.push({ url })
+      }
+    } else {
+      twitterImages.push({ url: res.twitter.image })
+    }
+  }
+  if (twitterImages.length === 0) {
+    twitterImages.push({ url: DEFAULT_IMAGE })
+  }
+
+  const ogType = res.openGraph?.type
+  const openGraphType =
+    ogType === 'article' ||
+    ogType === 'website' ||
+    ogType === 'book' ||
+    ogType === 'profile' ||
+    ogType === 'music.song' ||
+    ogType === 'music.album' ||
+    ogType === 'music.playlist' ||
+    ogType === 'music.radio_station' ||
+    ogType === 'video.movie' ||
+    ogType === 'video.episode' ||
+    ogType === 'video.tv_show' ||
+    ogType === 'video.other'
+      ? ogType
+      : undefined
+
   return {
-    metadataBase: new URL(domain || ''),
-    title: result?.title || 'Homes World',
-    description: result?.description || 'Homes World',
-    alternates: {
-      canonical: './',
-    },
-    author: 'Homes World',
+    metadataBase,
+    title: res.title || SITE_NAME,
+    description,
+    alternates: { canonical: './' },
+    authors: [{ name: SITE_NAME }],
     robots: 'index, follow',
-    schema: result?.schema || null, // <-- Truyền xuống component để render JSON-LD
     openGraph: {
-      title: result?.openGraph?.title || result?.title || 'Homes World',
-      description: result?.openGraph?.description || result?.description || 'Homes World',
+      title: res.openGraph?.title || res.title || SITE_NAME,
+      description: res.openGraph?.description || description,
       url: './',
-      siteName: result?.openGraph?.siteName || 'Homes World',
+      siteName: res.openGraph?.siteName || SITE_NAME,
       images: ogImages,
-      locale: result?.openGraph?.locale,
-      type: result?.openGraph?.type,
+      locale: ogLocale || res.openGraph?.locale || undefined,
+      type: openGraphType,
     },
     twitter: {
-      card: result?.twitter?.card || 'summary_large_image',
-      title: result?.twitter?.title || result?.title || 'Homes World',
-      description: result?.twitter?.description || result?.description || 'Homes World',
-      creator: 'Homes World',
+      card:
+        (res.twitter?.card as 'summary_large_image' | 'summary' | undefined) ||
+        'summary_large_image',
+      title: res.twitter?.title || res.title || SITE_NAME,
+      description: res.twitter?.description || description,
+      creator: SITE_NAME,
       images: twitterImages,
-      label1: result?.twitter?.label1,
-      data1: result?.twitter?.data1,
-      label2: result?.twitter?.label2,
-      data2: result?.twitter?.data2,
-      misc: result?.twitter_misc,
     },
   }
 }

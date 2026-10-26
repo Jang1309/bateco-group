@@ -15,6 +15,7 @@ type JobCardProps = {
 const JobCard = ({ job, index = 0 }: JobCardProps) => {
   const locale = useLocale()
   const t = useTranslations('Careers')
+  const detailHref = toAppHref(hrefFor('careerDetail', locale, { slug: job.slug }))
 
   return (
     <div
@@ -33,7 +34,12 @@ const JobCard = ({ job, index = 0 }: JobCardProps) => {
           ) : null}
 
           <h3 className='mt-[0.875rem] text-[1.1875rem] leading-[1.35] font-bold tracking-[-0.01em] text-pretty text-[#1A2B48] uppercase transition-all duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:text-[#0F1C33] xsm:text-[1.0625rem]'>
-            {job.title}
+            <Link
+              href={detailHref}
+              className='hover:text-[#B5935E] focus-visible:rounded-[0.25rem] focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-offset-2 focus-visible:outline-none transition-all duration-300'
+            >
+              {job.title}
+            </Link>
           </h3>
 
           <ul className='mt-[1.125rem] flex flex-wrap gap-x-[1.25rem] gap-y-[0.5rem] text-[0.8125rem] text-[#64748B]'>
@@ -69,7 +75,7 @@ const JobCard = ({ job, index = 0 }: JobCardProps) => {
 
         <Link
           href={toAppHref(hrefFor('careerDetail', locale, { slug: job.slug }))}
-          className='inline-flex shrink-0 items-center gap-[0.75rem] rounded-full bg-[#1A2B48] py-[0.5rem] pr-[0.5rem] pl-[1.25rem] text-[0.8125rem] font-bold text-white transition-colors duration-300 hover:bg-[#243656] focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-offset-2 focus-visible:outline-none xsm:w-full xsm:justify-between'
+          className='inline-flex shrink-0 items-center gap-[0.75rem] rounded-full bg-[#1A2B48] py-[0.5rem] pr-[0.5rem] pl-[1.25rem] text-[0.8125rem] font-bold text-white transition-all duration-300 hover:bg-[#243656] focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-offset-2 focus-visible:outline-none xsm:w-full xsm:justify-between'
         >
           {t('viewDetail')}
           <span

@@ -1,10 +1,17 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
+import JsonLd from '@/components/shared/json-ld'
+import endpoints from '@/configs/endpoints'
+import ENV from '@/configs/env'
+import { hrefFor } from '@/configs/routes'
+import getMetaDataRankMath from '@/fetches/getMetaDataRankMath'
 import { assertPageLocale } from '@/i18n/assert-locale'
+import { breadcrumbSchema, projectSchema, schemaGraph } from '@/lib/schema'
 import projectsService from '@/services/projects'
 import siteSettingService from '@/services/site-setting'
+import metadataValues from '@/utils/metadataValues'
 import ProjectDetailView from '@/views/projects/detail'
 import { mapProjectDetail } from '@/views/projects/map-project-detail'
 
@@ -34,20 +41,10 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
-
-  try {
-    const response = await projectsService.getDetail(slug, locale)
-    const project = mapProjectDetail(response?.data)
-    if (!project) return {}
-
-    return {
-      title: `${project.title} | Bateco Group`,
-      description: project.summary || undefined,
-      openGraph: { images: [project.image] },
-    }
-  } catch {
-    return {}
-  }
+  const pathFor =
+    endpoints.projects.rank_math_detail[locale as keyof typeof endpoints.projects.rank_math_detail]
+  const res = await getMetaDataRankMath(pathFor(slug))
+  return metadataValues(res, { locale })
 }
 
 const ProjectDetailPage = async ({ params }: Props) => {
@@ -61,6 +58,10 @@ const ProjectDetailPage = async ({ params }: Props) => {
   ])
   const project = mapProjectDetail(detailResult?.data)
   if (!project) notFound()
+
+  const t = await getTranslations({ locale, namespace: 'Meta' })
+  const path = hrefFor('projectDetail', locale, { slug: project.slug })
+  const projectsPath = hrefFor('projects', locale)
 
   let related =
     (
@@ -84,11 +85,31 @@ const ProjectDetailPage = async ({ params }: Props) => {
   }
 
   return (
-    <ProjectDetailView
-      project={project}
-      related={related}
-      contact={siteSetting?.data?.contact}
-    />
+    <>
+      <JsonLd
+        data={schemaGraph(
+          projectSchema({
+            domain: ENV.DOMAIN,
+            locale: 'en',
+            path,
+            title: project.title,
+            description: project.summary,
+            image: project.image,
+            datePublished: project.date,
+          }),
+          breadcrumbSchema(ENV.DOMAIN, 'en', [
+            { name: 'Bateco Group', path: '/' },
+            { name: t('projectsTitle').split('|')[0]!.trim(), path: projectsPath },
+            { name: project.title, path },
+          ]),
+        )}
+      />
+      <ProjectDetailView
+        project={project}
+        related={related}
+        contact={siteSetting?.data?.contact}
+      />
+    </>
   )
 }
 

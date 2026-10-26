@@ -1,5 +1,6 @@
 'use client'
 
+import { useLenis } from 'lenis/react'
 import {
   Building2,
   Check,
@@ -25,6 +26,7 @@ import { sectionId } from '@/configs/section-ids'
 import { useCareers } from '@/hooks/use-careers'
 import type { CareersTaxonomyItem } from '@/interfaces/careers.interface'
 import { cn } from '@/lib/utils'
+import { scrollToSection } from '@/utils/scrollToSection'
 import { JOBS_PER_PAGE } from '@/views/careers/data'
 import JobCard from '@/views/careers/job-card'
 import { mapCareerListItem, type CareerCardModel } from '@/views/careers/map-career'
@@ -83,6 +85,8 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
   const t = useTranslations('Careers')
   const tc = useTranslations('Common')
   const tp = useTranslations('Common.pagination')
+  const lenis = useLenis()
+  const jobsSectionId = sectionId('careersJobs', locale)
   const [{ 'phong-ban': deptSlug, 'dia-diem': locSlug, q, trang: page }, setQuery] = useQueryStates(
     careersSearchParams,
     { history: 'push', shallow: true },
@@ -169,8 +173,16 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
     else void setQuery({ 'dia-diem': next, trang: 1 })
   }
 
+  const scrollToJobs = () => {
+    const el = document.getElementById(jobsSectionId)
+    if (!el) return
+    if (lenis) lenis.scrollTo(el, { offset: -96, duration: 0.8 })
+    else scrollToSection(jobsSectionId, 0.6, 6)
+  }
+
   const goToPage = (nextPage: number) => {
     void setQuery({ trang: nextPage <= 1 ? 1 : nextPage })
+    scrollToJobs()
   }
 
   const activeFilter = drawer ? filters.find((item) => item.key === drawer) : null
@@ -178,7 +190,7 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
 
   return (
     <section
-      id={sectionId('careersJobs', locale)}
+      id={jobsSectionId}
       className='scroll-mt-[6rem] bg-[#FAFBFC] py-[5rem] xsm:py-[3rem]'
     >
       <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>

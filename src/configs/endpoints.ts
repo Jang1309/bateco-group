@@ -8,10 +8,18 @@ const ENDPOINTS = {
     getPostList: (locale: string) => `api/v1/get-all/post?limit=8&lang=${locale}`,
     getSectors: (locale: string) => `api/v1/taxonomies/sectors?lang=${locale}&parent=0&acf=true`,
     getProjects: (locale: string) => `api/v1/get-all/projects?limit=8&lang=${locale}`,
+    rank_math: {
+      vi: '/trang-chu',
+      en: '/homepage',
+    },
   },
   introduction: {
     vi: 'wp/v2/pages/246?_fields=acf&acf_format=standard',
     en: 'wp/v2/pages/248?_fields=acf&acf_format=standard',
+    rank_math: {
+      vi: '/gioi-thieu',
+      en: '/introduction',
+    },
   },
   administrativeDocument: {
     vi: 'wp/v2/pages/344?_fields=acf&acf_format=standard',
@@ -32,6 +40,10 @@ const ENDPOINTS = {
       }`,
     getCategories: (locale: string) =>
       `api/v1/taxonomies/ad-document-cate?lang=${locale}&parent=0&acf=true`,
+    rank_math: {
+      vi: '/van-ban-quan-tri',
+      en: '/administrative-document',
+    },
   },
   businessField: {
     vi: 'wp/v2/pages/391?_fields=acf&acf_format=standard',
@@ -41,6 +53,11 @@ const ENDPOINTS = {
       `api/v1/taxonomy-detail?taxonomy=sectors&slug=${slug}&lang=${lang}&acf=true`,
     getProjects: (locale: string, slug: string) =>
       `api/v1/get-all/projects?limit=3&lang=${locale}&tax=sectors&sectors=${slug}&acf=true`,
+    rank_math: {
+      vi: '/linh-vuc-kinh-doanh',
+      en: '/business-field',
+    },
+    rank_math_detail: (slug: string, lang: string) => `api/v1/seo/head-term/${slug}?lang=${lang}`,
   },
   investorRelations: {
     vi: 'wp/v2/pages/465?_fields=acf&acf_format=standard',
@@ -61,6 +78,10 @@ const ENDPOINTS = {
       }`,
     getCategories: (locale: string) =>
       `api/v1/taxonomies/cate-investor-relations?lang=${locale}&nested=true&acf=true`,
+    rank_math: {
+      vi: '/quan-he-nha-dau-tu',
+      en: '/investor-relations',
+    },
   },
   projects: {
     vi: 'wp/v2/pages/498?_fields=acf&acf_format=standard',
@@ -100,6 +121,14 @@ const ENDPOINTS = {
     },
     getDetail: (slug: string, lang: string) =>
       `api/v1/get-detail/projects?slug=${slug}&lang=${lang}&acf=true`,
+    rank_math: {
+      vi: '/du-an',
+      en: '/projects',
+    },
+    rank_math_detail: {
+      en: (slug: string) => `/en/projects/${slug}`,
+      vi: (slug: string) => `/projects/${slug}`,
+    },
   },
   news: {
     vi: 'wp/v2/pages/516?_fields=acf&acf_format=standard',
@@ -122,6 +151,14 @@ const ENDPOINTS = {
       }`,
     getDetail: (slug: string, lang: string) =>
       `api/v1/get-detail/post?slug=${slug}&lang=${lang}&acf=true`,
+    rank_math: {
+      vi: '/tin-tuc',
+      en: '/news',
+    },
+    rank_math_detail: {
+      en: (slug: string) => `/en/${slug}`,
+      vi: (slug: string) => `/${slug}`,
+    },
   },
   careers: {
     vi: 'wp/v2/pages/533?_fields=acf&acf_format=standard',
@@ -172,12 +209,24 @@ const ENDPOINTS = {
     },
     getDetail: (slug: string, lang: string) =>
       `api/v1/get-detail/careers?slug=${slug}&lang=${lang}&acf=true`,
+    rank_math: {
+      vi: '/co-hoi-nghe-nghiep',
+      en: '/career-opportunities',
+    },
+    rank_math_detail: {
+      en: (slug: string) => `/en/careers/${slug}`,
+      vi: (slug: string) => `/careers/${slug}`,
+    },
     form_id: '574',
     unit_tag: 'a0f8589',
   },
   contact: {
     vi: 'wp/v2/pages/587?_fields=acf&acf_format=standard',
     en: 'wp/v2/pages/589?_fields=acf&acf_format=standard',
+    rank_math: {
+      vi: '/lien-he',
+      en: '/contact',
+    },
   },
 }
 

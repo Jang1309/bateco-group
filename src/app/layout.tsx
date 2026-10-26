@@ -1,25 +1,6 @@
 import type { Metadata } from 'next'
-import { Arimo } from 'next/font/google'
-import NextTopLoader from 'nextjs-toploader'
-import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
-import { AosProvider } from '@/components/providers/aos-provider'
-import { LenisProvider } from '@/components/providers/lenis-provider'
-import { SwrProvider } from '@/components/providers/swr-provider'
-import { Toaster } from '@/components/ui/sonner'
 import '@/styles/globals.css'
-
-// const geologica = Geologica({
-//   variable: '--font-geologica',
-//   subsets: ['latin', 'latin-ext', 'vietnamese'],
-//   weight: ['400', '500', '600', '700'],
-// })
-
-const arimo = Arimo({
-  variable: '--font-arimo',
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-})
 
 export const metadata: Metadata = {
   title: 'Bateco Group',
@@ -27,39 +8,11 @@ export const metadata: Metadata = {
     'Bateco Group — multi-sector investment group driven by execution and lasting value.',
 }
 
+// <html> lives in `[locale]/layout` so `lang` follows the locale; root not-found renders its own.
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return (
-    <html lang='en'>
-      <body
-        suppressHydrationWarning
-        // overflow-x-clip: chặn thanh cuộn ngang khi phần tử AOS trượt vào từ mép phải
-        className={`${arimo.variable} overflow-x-clip font-sans antialiased`}
-      >
-        <NextTopLoader
-          color='#2563eb'
-          height={3}
-          crawl
-          showSpinner={false}
-          easing='ease'
-          speed={220}
-          shadow='0 0 10px #2563eb,0 0 5px #2563eb'
-        />
-        <SwrProvider>
-          <NuqsAdapter>
-            <LenisProvider>
-              <AosProvider>{children}</AosProvider>
-              <Toaster
-                richColors
-                closeButton
-              />
-            </LenisProvider>
-          </NuqsAdapter>
-        </SwrProvider>
-      </body>
-    </html>
-  )
+  return children
 }

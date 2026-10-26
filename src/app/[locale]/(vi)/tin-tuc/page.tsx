@@ -1,8 +1,15 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
+import JsonLd from '@/components/shared/json-ld'
+import endpoints from '@/configs/endpoints'
+import ENV from '@/configs/env'
+import { hrefFor } from '@/configs/routes'
+import getMetaDataRankMath from '@/fetches/getMetaDataRankMath'
 import { assertPageLocale } from '@/i18n/assert-locale'
+import { collectionPageGraph } from '@/lib/schema'
 import newsService from '@/services/news'
+import metadataValues from '@/utils/metadataValues'
 import NewsView from '@/views/news'
 import { buildCategoryBlocks, mapNewsCategories } from '@/views/news/build-category-blocks'
 import { mapPostListItems } from '@/views/news/map-post'
@@ -16,18 +23,19 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
+  const res = await getMetaDataRankMath(
+    endpoints.news.rank_math[locale as keyof typeof endpoints.news.rank_math],
+  )
   const t = await getTranslations({ locale, namespace: 'Meta' })
-
-  return {
-    title: t('newsTitle'),
-    description: t('newsDesc'),
-  }
+  return metadataValues(res, { locale, description: t('newsDesc') })
 }
 
 const NewsPage = async ({ params }: Props) => {
   const { locale } = await params
   assertPageLocale(locale, 'vi')
   setRequestLocale(locale)
+  const t = await getTranslations({ locale, namespace: 'Meta' })
+  const path = hrefFor('news', locale)
 
   const [pageResponse, categoriesResponse, postsResponse] = await Promise.all([
     newsService.getNewsPage(locale).catch(() => null),
@@ -40,10 +48,22 @@ const NewsPage = async ({ params }: Props) => {
   const categoryBlocks = buildCategoryBlocks(categories, articles)
 
   return (
-    <NewsView
-      content={pageResponse?.acf}
-      categoryBlocks={categoryBlocks}
-    />
+    <>
+      <JsonLd
+        data={collectionPageGraph({
+          domain: ENV.DOMAIN,
+          locale: 'vi',
+          path,
+          name: t('newsTitle'),
+          description: t('newsDesc'),
+          crumbName: t('newsTitle').split('|')[0]!.trim(),
+        })}
+      />
+      <NewsView
+        content={pageResponse?.acf}
+        categoryBlocks={categoryBlocks}
+      />
+    </>
   )
 }
 

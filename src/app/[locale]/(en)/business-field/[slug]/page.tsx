@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import JsonLd from '@/components/shared/json-ld'
 import endpoints from '@/configs/endpoints'
 import ENV from '@/configs/env'
-import { hrefFor } from '@/configs/routes'
+import { hrefFor, localePathsFor } from '@/configs/routes'
 import { getMetaDataSeoApi } from '@/fetches/getMetaDataRankMath'
 import { assertPageLocale } from '@/i18n/assert-locale'
 import { breadcrumbSchema, schemaGraph, serviceSchema } from '@/lib/schema'
@@ -37,7 +37,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
   const res = await getMetaDataSeoApi(endpoints.businessField.rank_math_detail(slug, locale))
-  return metadataValues(res, { locale })
+  return metadataValues(res, { locale, ...localePathsFor('businessDetail', locale, { slug }) })
 }
 
 const BusinessDetailPage = async ({ params }: Props) => {

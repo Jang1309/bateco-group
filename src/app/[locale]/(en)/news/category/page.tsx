@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
+import { localePathsFor } from '@/configs/routes'
 import { assertPageLocale } from '@/i18n/assert-locale'
 import newsService from '@/services/news'
+import metadataValues from '@/utils/metadataValues'
 import { mapNewsCategories } from '@/views/news/build-category-blocks'
 import NewsCategoryView from '@/views/news/category'
 
@@ -18,8 +20,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: 'Meta' })
 
   return {
+    ...metadataValues(null, {
+      locale,
+      description: t('newsCategoryDesc'),
+      ...localePathsFor('newsCategory', locale),
+    }),
     title: t('newsCategoryTitle'),
-    description: t('newsCategoryDesc'),
+    robots: 'noindex, follow',
   }
 }
 

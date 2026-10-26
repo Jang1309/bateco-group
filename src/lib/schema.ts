@@ -110,10 +110,13 @@ export function webPageSchema(input: {
   const base = siteBase(input.domain)
   const url = abs(input.domain, input.locale, input.path)
 
+  // Home URL has no trailing slash; Google prefers `/#webpage` over `#webpage`.
+  const pageId = input.path === '/' ? `${base}/#webpage` : `${url}#webpage`
+
   return {
     '@context': CONTEXT,
     '@type': input.type || 'WebPage',
-    '@id': `${url}#webpage`,
+    '@id': pageId,
     url,
     name: input.name,
     ...(input.description ? { description: input.description } : {}),

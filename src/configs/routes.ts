@@ -52,6 +52,19 @@ export function hrefFor(
   return path
 }
 
+/** This-locale path + alternate-locale path for metadata canonical/hreflang. */
+export function localePathsFor(
+  key: RouteKey,
+  locale: string = 'vi',
+  params?: Record<string, string>,
+): { path: string; alternatePath: string } {
+  const other = locale === 'en' ? 'vi' : 'en'
+  return {
+    path: hrefFor(key, locale, params),
+    alternatePath: hrefFor(key, other, params),
+  }
+}
+
 /** True when URL is (or ends with) a contact page path in either locale. */
 export function isContactPath(url?: string): boolean {
   if (!url) return false

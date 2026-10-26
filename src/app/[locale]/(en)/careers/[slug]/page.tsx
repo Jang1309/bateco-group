@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import JsonLd from '@/components/shared/json-ld'
 import endpoints from '@/configs/endpoints'
 import ENV from '@/configs/env'
-import { hrefFor } from '@/configs/routes'
+import { hrefFor, localePathsFor } from '@/configs/routes'
 import getMetaDataRankMath from '@/fetches/getMetaDataRankMath'
 import { assertPageLocale } from '@/i18n/assert-locale'
 import { breadcrumbSchema, jobPostingSchema, schemaGraph } from '@/lib/schema'
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const pathFor =
     endpoints.careers.rank_math_detail[locale as keyof typeof endpoints.careers.rank_math_detail]
   const res = await getMetaDataRankMath(pathFor(slug))
-  return metadataValues(res, { locale })
+  return metadataValues(res, { locale, ...localePathsFor('careerDetail', locale, { slug }) })
 }
 
 const FALLBACK_BANNER = '/home/vision/d-img-2.jpg'

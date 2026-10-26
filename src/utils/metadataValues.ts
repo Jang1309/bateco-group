@@ -1,7 +1,13 @@
 import type { Metadata } from 'next'
 
+import { absolutePublicUrl, type AppLocale } from '@/lib/sitemap'
+
 const SITE_NAME = 'Bateco Group'
 const DEFAULT_IMAGE = '/default.jpg'
+const DEFAULT_DESCRIPTION_VI =
+  'Bateco Group — tập đoàn đầu tư đa ngành, phát triển bằng năng lực thực thi và giá trị bền vững.'
+const DEFAULT_DESCRIPTION_EN =
+  'Bateco Group — a multi-sector investment group growing through execution capability and lasting value.'
 
 /** Shape returned by `parseRankMathHead` (and null when RankMath fetch fails). */
 export type RankMathHead = {
@@ -30,6 +36,19 @@ export type RankMathHead = {
   }
 }
 
+export type MetadataValuesOptions = {
+  locale?: string
+  /**
+   * Public path for this page (no `/vi` or `/en` prefix), e.g. `/gioi-thieu`.
+   * Required for a correct absolute canonical (avoids next-intl internal `/vi/...`).
+   */
+  path?: string
+  /** Public path of the alternate locale when slugs differ (e.g. `/introduction`). */
+  alternatePath?: string
+  description?: string
+  domain?: string
+}
+
 function resolveDomain(domain?: string): string {
   const value = domain || process.env.NEXT_PUBLIC_DOMAIN || ''
   if (!value) {
@@ -38,26 +57,59 @@ function resolveDomain(domain?: string): string {
   return value
 }
 
+function resolveLocale(locale?: string): AppLocale {
+  return locale === 'en' ? 'en' : 'vi'
+}
+
+function buildAlternates(
+  domain: string,
+  locale: AppLocale,
+  path: string,
+  alternatePath?: string,
+): NonNullable<Metadata['alternates']> {
+  const otherPath = alternatePath ?? path
+  const viPath = locale === 'vi' ? path : otherPath
+  const enPath = locale === 'en' ? path : otherPath
+  const viUrl = absolutePublicUrl(domain, 'vi', viPath)
+  const enUrl = absolutePublicUrl(domain, 'en', enPath)
+  const canonical = locale === 'en' ? enUrl : viUrl
+
+  return {
+    canonical,
+    languages: {
+      vi: viUrl,
+      en: enUrl,
+      'x-default': viUrl,
+    },
+  }
+}
+
 /**
  * Map RankMath parsed head → Next.js `Metadata`.
- * `description` is used when RankMath has none (avoids duplicate meta); `locale` sets
- * og:locale since RankMath reports the CMS default for every language.
- * Pass `domain` in tests; production uses `NEXT_PUBLIC_DOMAIN`.
+ * Pass `path` (public URL path) so canonical/og:url never resolve to internal `/vi/...`.
  */
 export default function metadataValues(
   res?: RankMathHead | null,
-  options: { locale?: string; description?: string; domain?: string } = {},
+  options: MetadataValuesOptions = {},
 ): Metadata {
-  const metadataBase = new URL(resolveDomain(options.domain))
-  const description = res?.description || options.description || SITE_NAME
+  const domain = resolveDomain(options.domain)
+  const metadataBase = new URL(domain)
+  const locale = resolveLocale(options.locale)
+  const fallbackDesc = locale === 'en' ? DEFAULT_DESCRIPTION_EN : DEFAULT_DESCRIPTION_VI
+  const description = res?.description?.trim() || options.description?.trim() || fallbackDesc
   const ogLocale = options.locale === 'en' ? 'en_US' : options.locale === 'vi' ? 'vi_VN' : undefined
+
+  const alternates = options.path
+    ? buildAlternates(domain, locale, options.path, options.alternatePath)
+    : undefined
+  const canonicalUrl = typeof alternates?.canonical === 'string' ? alternates.canonical : undefined
 
   if (!res) {
     return {
       metadataBase,
       title: SITE_NAME,
       description,
-      alternates: { canonical: './' },
+      ...(alternates ? { alternates } : {}),
       authors: [{ name: SITE_NAME }],
       robots: 'index, follow',
     }
@@ -116,14 +168,14 @@ export default function metadataValues(
     metadataBase,
     title: res.title || SITE_NAME,
     description,
-    alternates: { canonical: './' },
+    ...(alternates ? { alternates } : {}),
     authors: [{ name: SITE_NAME }],
     robots: 'index, follow',
     openGraph: {
       title: res.openGraph?.title || res.title || SITE_NAME,
       description: res.openGraph?.description || description,
-      url: './',
-      siteName: res.openGraph?.siteName || SITE_NAME,
+      ...(canonicalUrl ? { url: canonicalUrl } : {}),
+      siteName: SITE_NAME,
       images: ogImages,
       locale: ogLocale || res.openGraph?.locale || undefined,
       type: openGraphType,

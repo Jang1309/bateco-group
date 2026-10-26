@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cacheOption } from '@/configs/cache'
 import ENDPOINTS from '@/configs/endpoints'
 import fetchData from '@/fetches/fetchData'
 import type {
@@ -21,31 +22,31 @@ const careersService = {
   getCareersPage: async (locale: string): Promise<{ acf?: CareersPageResponse }> => {
     return await fetchData({
       api: ENDPOINTS.careers[locale as 'vi' | 'en'],
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.careers),
     })
   },
   getLocations: async (locale: string): Promise<CareersTaxonomiesResponse> => {
     return await fetchData({
       api: ENDPOINTS.careers.getLocations(locale),
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.careers),
     })
   },
   getDepartments: async (locale: string): Promise<CareersTaxonomiesResponse> => {
     return await fetchData({
       api: ENDPOINTS.careers.getDepartments(locale),
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.careers),
     })
   },
   getCareers: async (params: GetCareersParams): Promise<CareersListResponse> => {
     return await fetchData({
       api: ENDPOINTS.careers.getCareers(params),
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.careers),
     })
   },
   getDetail: async (slug: string, locale: string): Promise<CareersDetailResponse> => {
     return await fetchData({
       api: ENDPOINTS.careers.getDetail(slug, locale),
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.careers),
     })
   },
 }

@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cacheNext } from '@/configs/cache'
 import ENV from '@/configs/env'
 import parseRankMathHead from '@/utils/parseRankMathHead'
 
@@ -10,15 +11,13 @@ export default async function getMetaDataRankMath(slug: string) {
         headers: {
           'Content-Type': 'application/json',
         },
-        next: {
-          revalidate: 60,
-        },
+        next: cacheNext(CACHE_TAGS.rankmath),
       },
     )
     if (!res.ok) return null
     const data = await res.json()
     if (!data?.success || !data?.head) return null
-    return parseRankMathHead(data.head) // Phân tách dữ liệu head
+    return parseRankMathHead(data.head)
   } catch {
     return null
   }

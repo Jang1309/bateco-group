@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cacheOption } from '@/configs/cache'
 import ENDPOINTS from '@/configs/endpoints'
 import fetchData from '@/fetches/fetchData'
 import type { ProjectDetailResponse, ProjectsListResponse } from '@/interfaces/projects.interface'
@@ -15,25 +16,25 @@ const projectsService = {
   getProjectsPage: async (locale: string) => {
     return await fetchData({
       api: ENDPOINTS.projects[locale as 'vi' | 'en'],
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.projects),
     })
   },
   getProjectsCategories: async (locale: string) => {
     return await fetchData({
       api: ENDPOINTS.projects.getSectors(locale),
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.projects, CACHE_TAGS.business),
     })
   },
   getProjectsList: async (params: GetProjectsParams): Promise<ProjectsListResponse> => {
     return await fetchData({
       api: ENDPOINTS.projects.getProjects(params),
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.projects),
     })
   },
   getDetail: async (slug: string, locale: string): Promise<ProjectDetailResponse> => {
     return await fetchData({
       api: ENDPOINTS.projects.getDetail(slug, locale),
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.projects),
     })
   },
 }

@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cacheOption } from '@/configs/cache'
 import ENDPOINTS from '@/configs/endpoints'
 import fetchData from '@/fetches/fetchData'
 import type {
@@ -18,25 +19,25 @@ const newsService = {
   getNewsPage: async (locale: string): Promise<{ acf?: NewsPageResponse }> => {
     return await fetchData({
       api: ENDPOINTS.news[locale as 'vi' | 'en'],
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.news),
     })
   },
   getCategories: async (locale: string): Promise<NewsCategoriesResponse> => {
     return await fetchData({
       api: ENDPOINTS.news.getCategories(locale),
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.news),
     })
   },
   getPosts: async (params: GetPostsParams): Promise<NewsPostsListResponse> => {
     return await fetchData({
       api: ENDPOINTS.news.getPosts(params),
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.news),
     })
   },
   getDetail: async (slug: string, locale: string): Promise<NewsPostDetailResponse> => {
     return await fetchData({
       api: ENDPOINTS.news.getDetail(slug, locale),
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.news),
     })
   },
 }

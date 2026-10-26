@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { CACHE_REVALIDATE } from '@/configs/cache'
 import ENV from '@/configs/env'
 
 export type RequestPostGuest = {
@@ -22,10 +23,10 @@ export default async function fetchData(request: RequestPostGuest) {
         ...request.headers,
       },
       ...restOption,
-      // GET: ISR mặc định 60s; caller override qua option.next.revalidate
+      // GET: Data Cache opt-in (Next 16). Default TTL; override via option.next
       ...(method === 'GET' && {
         next: {
-          revalidate: 60,
+          revalidate: CACHE_REVALIDATE,
           ...next,
         },
       }),

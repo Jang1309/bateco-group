@@ -2,9 +2,13 @@
 
 import { SWRConfig } from 'swr'
 
-import fetchData from '@/fetches/fetchData'
-
-const swrFetcher = (api: string) => fetchData({ api })
+async function swrFetcher(api: string) {
+  const res = await fetch(`/api/cms?api=${encodeURIComponent(api)}`)
+  if (!res.ok) {
+    throw new Error(`SWR fetch failed: ${res.status}`)
+  }
+  return res.json()
+}
 
 export function SwrProvider({ children }: { children: React.ReactNode }) {
   return (

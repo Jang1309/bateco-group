@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cacheOption } from '@/configs/cache'
 import ENDPOINTS from '@/configs/endpoints'
 import fetchData from '@/fetches/fetchData'
 import type {
@@ -16,18 +17,19 @@ const administrativeDocumentService = {
   getAdministrativeDocument: async (locale: string) => {
     return await fetchData({
       api: ENDPOINTS.administrativeDocument[locale as 'vi' | 'en'],
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.governance),
     })
   },
   getDocuments: async (params: GetDocumentsParams): Promise<AdDocumentsResponse> => {
     return await fetchData({
       api: ENDPOINTS.administrativeDocument.getDocuments(params),
+      option: cacheOption(CACHE_TAGS.governance),
     })
   },
   getCategories: async (locale: string): Promise<AdDocumentCategoriesResponse> => {
     return await fetchData({
       api: ENDPOINTS.administrativeDocument.getCategories(locale),
-      option: { next: { revalidate: 300 } },
+      option: cacheOption(CACHE_TAGS.governance),
     })
   },
 }

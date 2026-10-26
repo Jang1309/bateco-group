@@ -30,7 +30,7 @@ const STATIC_ROUTES: RouteKey[] = [
 
 const PAGE_SIZE = 100
 
-/** Revalidate sitemap hourly so new CMS content is picked up. */
+/** Revalidate sitemap hourly; CMS fetch tags also cover underlying data. */
 export const revalidate = 3600
 
 function urlFor(locale: AppLocale, path: string): string {

@@ -1,9 +1,9 @@
 import { ArrowLeft, Briefcase, Building2, GraduationCap, MapPin, Wallet } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 import DetailHero from '@/components/shared/detail-hero'
-import ROUTES from '@/configs/routes'
-import { Link } from '@/i18n/navigation'
+import { hrefFor } from '@/configs/routes'
+import { Link, toAppHref } from '@/i18n/navigation'
 import ApplySection from '@/views/careers/detail/apply-section'
 import type { CareerDetailModel } from '@/views/careers/map-career'
 
@@ -16,6 +16,7 @@ type CareersDetailViewProps = {
 }
 
 const CareersDetailView = ({ job, bannerImage }: CareersDetailViewProps) => {
+  const locale = useLocale()
   const t = useTranslations('Careers')
   const tc = useTranslations('Common')
   const facts = [
@@ -87,7 +88,7 @@ const CareersDetailView = ({ job, bannerImage }: CareersDetailViewProps) => {
 
               <div className='mt-[3.5rem] border-t border-[#E2E8F0] pt-[1.5rem]'>
                 <Link
-                  href={ROUTES.careers}
+                  href={toAppHref(hrefFor('careers', locale))}
                   className='group inline-flex items-center gap-[0.5rem] text-[0.875rem] font-bold text-[#1A2B48] transition-colors duration-300 hover:text-[#B5935E]'
                 >
                   <ArrowLeft className='size-[1rem] transition-transform duration-300 group-hover:-translate-x-[0.1875rem]' />

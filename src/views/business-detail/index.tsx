@@ -8,18 +8,28 @@ import SectorIntro from '@/views/business-detail/intro'
 import SectorProjects from '@/views/business-detail/projects'
 
 type BusinessDetailViewProps = {
+  locale: string
   sector: SectorItem
   projects?: ProjectListItem[]
   ecosystem?: Ecosystem
   contact?: Contact
 }
 
-const BusinessDetailView = ({ sector, projects, ecosystem, contact }: BusinessDetailViewProps) => {
+const BusinessDetailView = ({
+  locale,
+  sector,
+  projects,
+  ecosystem,
+  contact,
+}: BusinessDetailViewProps) => {
   return (
     <main>
       <SectorHero sector={sector} />
       <SectorIntro sector={sector} />
-      <SectorProjects projects={projects} />
+      <SectorProjects
+        projects={projects}
+        locale={locale}
+      />
       <SectorEcosystem data={ecosystem} />
       <SectorCta data={contact} />
     </main>

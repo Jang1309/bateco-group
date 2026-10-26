@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 import type { GovernanceBasePath } from '@/views/governance/base-path'
 import { DOCUMENTS_PER_PAGE, type DocumentsCategory } from '@/views/governance/data'
 
@@ -11,6 +13,7 @@ type DocumentListProps = {
 }
 
 const DocumentList = ({ category, page, basePath }: DocumentListProps) => {
+  const t = useTranslations('Governance')
   const {
     items: documents,
     currentPage,
@@ -33,9 +36,7 @@ const DocumentList = ({ category, page, basePath }: DocumentListProps) => {
           ))}
         </ul>
       ) : (
-        <p className='py-[3rem] text-center text-[0.9375rem] text-[#64748B]'>
-          Chưa có văn bản nào trong danh mục này.
-        </p>
+        <p className='py-[3rem] text-center text-[0.9375rem] text-[#64748B]'>{t('empty')}</p>
       )}
 
       <GovernancePagination

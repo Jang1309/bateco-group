@@ -1,124 +1,163 @@
-import { ArrowLeft, ArrowRight, MapPin } from 'lucide-react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
+import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+import type { ComponentProps } from 'react'
 
-import DetailHero from '@/components/shared/detail-hero'
 import SectionHeading from '@/components/shared/section-heading'
+import ROUTES from '@/configs/routes'
 import { Link } from '@/i18n/navigation'
+import type { ProjectListItem } from '@/interfaces/projects.interface'
+import type { Contact } from '@/interfaces/siteSetting.interface'
 import ShareActions from '@/views/news/detail/share-actions'
-import { getSectorLabel, PROJECTS, type ProjectDetail } from '@/views/projects/data'
-import ProjectGallery from '@/views/projects/detail/gallery'
-import ProjectCard from '@/views/projects/listing/components/project-card'
+import ProjectDetailHero from '@/views/projects/detail/hero'
+import RelatedProjectsSlider from '@/views/projects/detail/related-slider'
+import { mapProjectListItem } from '@/views/projects/map-project'
+import type { ProjectDetailModel } from '@/views/projects/map-project-detail'
+
+import './styles/styles.css'
 
 type ProjectDetailViewProps = {
-  project: ProjectDetail
+  project: ProjectDetailModel
+  related?: ProjectListItem[]
+  /** Khối liên hệ chung từ site settings (ảnh dùng ảnh dự án thay cho ảnh của settings) */
+  contact?: Contact
 }
 
-const ProjectDetailView = ({ project }: ProjectDetailViewProps) => {
-  const sectorLabel = getSectorLabel(project.sector)
-  // Ưu tiên dự án cùng lĩnh vực, thiếu thì bù bằng dự án khác
-  const others = PROJECTS.filter((item) => item.id !== project.id)
-    .sort((a, b) => Number(b.sector === project.sector) - Number(a.sector === project.sector))
-    .slice(0, 3)
+const ProjectDetailView = ({ project, related = [], contact }: ProjectDetailViewProps) => {
+  const t = useTranslations('Projects')
+  const tc = useTranslations('Common')
+  const contacts = contact?.contacts?.filter((item) => item.link?.title) ?? []
+  const buttonHref = (contact?.button?.url || ROUTES.contact) as ComponentProps<typeof Link>['href']
+  const others = related
+    .map(mapProjectListItem)
+    .filter((item): item is NonNullable<typeof item> => item !== null)
+    .filter((item) => item.slug !== project.slug)
+    .slice(0, 6)
 
   return (
     <main>
-      <DetailHero
+      <ProjectDetailHero
         image={project.image}
-        eyebrow={sectorLabel}
+        sectorLabel={project.sectorLabel}
         title={project.title}
-        description={project.summary}
-        meta={
-          <span className='inline-flex items-center gap-[0.375rem] font-medium text-[#475569]'>
-            <MapPin
-              className='size-[0.875rem] text-[#B5935E]'
-              strokeWidth={1.75}
-            />
-            {project.location}
-          </span>
-        }
+        date={project.date}
+        location={project.location}
+        summary={project.summary}
       />
 
-      <article className='bg-white pt-[4.5rem] pb-[5rem] xsm:pt-[2rem] xsm:pb-[3rem]'>
-        <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
-          <div className='grid grid-cols-[minmax(0,54rem)_24rem] justify-between gap-[5rem] xlg:grid-cols-1 xlg:gap-[3rem]'>
-            <div className='xlg:order-2'>
-              {/* content là HTML từ CMS nội bộ (nguồn tin cậy) */}
-              <div
-                className='news-content [&>h2:first-child]:mt-0'
-                dangerouslySetInnerHTML={{ __html: project.content }}
-              />
+      <article className='project-detail-content'>
+        {/* Bài viết trái + sidebar thông tin dự án phải (cùng lưới với trang tin tức) */}
+        <div className='project-detail-content__inner !grid !max-w-[95rem] grid-cols-[minmax(0,54rem)_22rem] justify-center gap-[4rem] !px-[3.75rem] xlg:grid-cols-1 xlg:gap-[2rem] xsm:!px-[1rem]'>
+          <div className='project-detail-content__article-wrap w-full'>
+            <div className='project-detail-content__article'>
+              {project.content ? (
+                <div
+                  id='project_detail'
+                  dangerouslySetInnerHTML={{ __html: project.content }}
+                />
+              ) : (
+                <p className='text-[0.9375rem] text-[#64748B]'>{tc('contentUpdating')}</p>
+              )}
 
               <div className='mt-[3.5rem] flex items-center justify-between gap-[1rem] border-t border-[#E2E8F0] pt-[1.5rem] xsm:flex-col xsm:items-start xsm:gap-[1.25rem]'>
                 <Link
-                  href='/projects'
+                  href={ROUTES.projects}
                   className='group inline-flex items-center gap-[0.5rem] text-[0.875rem] font-bold text-[#1A2B48] transition-colors duration-300 hover:text-[#B5935E]'
                 >
                   <ArrowLeft className='size-[1rem] transition-transform duration-300 group-hover:-translate-x-[0.1875rem]' />
-                  Quay lại Dự án
+                  {t('backToList')}
                 </Link>
                 <ShareActions />
               </div>
             </div>
+          </div>
 
-            <aside className='self-start lg:sticky lg:top-[7rem] xlg:order-1'>
-              <div className='overflow-hidden rounded-[1rem] bg-[#0F1C33] p-[2rem] text-white shadow-[0_1.5rem_3rem_rgba(15,28,51,0.18)] xsm:rounded-[0.75rem] xsm:p-[1.5rem]'>
-                <p className='text-[0.75rem] font-bold tracking-[0.16em] text-[#DFBA73] uppercase'>
-                  Thông tin dự án
-                </p>
-                <dl className='mt-[1.25rem]'>
-                  {project.specs.map((spec) => (
-                    <div
-                      key={spec.label}
-                      className='flex items-baseline justify-between gap-[1rem] border-b border-white/10 py-[0.875rem] last:border-b-0'
-                    >
-                      <dt className='shrink-0 text-[0.8125rem] text-white/60'>{spec.label}</dt>
-                      <dd className='text-right text-[0.9375rem] font-semibold'>{spec.value}</dd>
-                    </div>
-                  ))}
-                </dl>
+          <aside className='self-start lg:sticky lg:top-[7rem]'>
+            <div className='overflow-hidden rounded-[1rem] bg-[#1A2B48] text-white xsm:rounded-[0.75rem]'>
+              <div className='relative aspect-[16/9]'>
+                <Image
+                  src={project.image}
+                  alt=''
+                  fill
+                  unoptimized
+                  sizes='22rem'
+                  className='object-cover'
+                />
+                <div
+                  aria-hidden
+                  className='absolute inset-0 bg-[linear-gradient(180deg,rgba(26,43,72,0)_40%,#1A2B48_100%)]'
+                />
+              </div>
+
+              <div className='px-[1.75rem] pb-[1.75rem] xsm:px-[1.25rem] xsm:pb-[1.25rem]'>
+                {contact?.eyebrow ? (
+                  <p className='text-[0.6875rem] font-bold tracking-[0.16em] text-[#DFBA73] uppercase'>
+                    {contact.eyebrow}
+                  </p>
+                ) : null}
+                {contact?.title ? (
+                  <div
+                    className='mt-[0.5rem] text-[1.25rem] leading-[1.35] font-bold [&_br]:hidden [&_p]:m-0 [&_strong]:text-[#DFBA73]'
+                    dangerouslySetInnerHTML={{ __html: contact.title }}
+                  />
+                ) : null}
+                {contact?.desc ? (
+                  <p className='mt-[0.625rem] text-[0.875rem] leading-[1.6] text-white/65'>
+                    {contact.desc}
+                  </p>
+                ) : null}
+
+                {contacts.length > 0 ? (
+                  <ul className='mt-[1.5rem] flex flex-col gap-[0.875rem] border-t border-white/10 pt-[1.25rem]'>
+                    {contacts.map((item, index) => {
+                      const isMail = item.link?.url?.startsWith('mailto:')
+
+                      return (
+                        <li key={item.link?.url || index}>
+                          <a
+                            href={item.link?.url || '#'}
+                            className='group block'
+                          >
+                            <span className='block text-[0.6875rem] font-bold tracking-[0.16em] text-white/50 uppercase'>
+                              {isMail ? 'Email' : 'Hotline'}
+                            </span>
+                            <span
+                              className={
+                                isMail
+                                  ? 'mt-[0.125rem] block truncate text-[0.9375rem] font-semibold transition-colors duration-300 group-hover:text-[#DFBA73]'
+                                  : 'mt-[0.125rem] block text-[1.5rem] leading-tight font-bold tabular-nums transition-colors duration-300 group-hover:text-[#DFBA73]'
+                              }
+                            >
+                              {item.link?.title}
+                            </span>
+                          </a>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                ) : null}
+
                 <Link
-                  href='/contact'
-                  className='group mt-[1.5rem] flex items-center justify-center gap-[0.625rem] rounded-full bg-[linear-gradient(93deg,#C9A468_0%,#B5935E_55%,#9E7C48_100%)] px-[1.5rem] py-[0.875rem] text-[0.8125rem] font-bold tracking-[0.06em] text-white uppercase transition-[transform,box-shadow] duration-300 hover:-translate-y-[0.125rem] hover:shadow-[0_0.75rem_1.5rem_rgba(181,147,94,0.45)]'
+                  href={buttonHref}
+                  target={contact?.button?.target || undefined}
+                  className='group mt-[1.5rem] flex items-center justify-between rounded-[0.5rem] bg-white py-[0.375rem] pr-[0.375rem] pl-[1.25rem] text-[0.875rem] font-semibold text-[#1A2B48] transition-colors duration-300 hover:bg-[#DFBA73]'
                 >
-                  Liên hệ tư vấn
-                  <ArrowRight className='size-[1rem] transition-transform duration-300 group-hover:translate-x-[0.25rem]' />
+                  {contact?.button?.title || t('contactCta')}
+                  <span className='flex size-[2.25rem] items-center justify-center rounded-[0.375rem] bg-[#1A2B48] text-white'>
+                    <ArrowRight className='size-[1rem] transition-transform duration-300 group-hover:translate-x-[0.125rem]' />
+                  </span>
                 </Link>
               </div>
-            </aside>
-          </div>
+            </div>
+          </aside>
         </div>
       </article>
-
-      {project.gallery.length > 0 ? (
-        <section className='bg-white pb-[5rem] xsm:pb-[3rem]'>
-          <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
-            <SectionHeading title='Hình ảnh dự án' />
-            <ProjectGallery
-              title={project.title}
-              images={project.gallery}
-            />
-          </div>
-        </section>
-      ) : null}
 
       {others.length > 0 ? (
         <section className='border-t border-[#EEF1F5] bg-[#FAFBFC] py-[5rem] xsm:py-[3rem]'>
           <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
-            <SectionHeading title='Dự án khác' />
-            <ul className='mt-[2.5rem] grid grid-cols-3 gap-[1.75rem] xsm:mt-[1.5rem] xsm:grid-cols-1 xsm:gap-[1rem]'>
-              {others.map((item, index) => (
-                <li
-                  key={item.id}
-                  data-aos='business-rise'
-                  data-aos-duration='800'
-                  data-aos-delay={index * 100}
-                >
-                  <ProjectCard
-                    project={item}
-                    number={index + 1}
-                  />
-                </li>
-              ))}
-            </ul>
+            <SectionHeading title={t('related')} />
+            <RelatedProjectsSlider projects={others} />
           </div>
         </section>
       ) : null}

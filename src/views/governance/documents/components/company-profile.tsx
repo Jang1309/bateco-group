@@ -1,4 +1,5 @@
 import { CalendarDays, Download, Eye, FileText, Languages } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import type { ProfileCategory } from '@/views/governance/data'
 
@@ -10,6 +11,7 @@ type CompanyProfileProps = {
 }
 
 const CompanyProfile = ({ category }: CompanyProfileProps) => {
+  const t = useTranslations('Governance')
   const { profile } = category
 
   return (
@@ -40,7 +42,7 @@ const CompanyProfile = ({ category }: CompanyProfileProps) => {
             {/* Thông tin */}
             <div>
               <p className='text-[0.6875rem] font-bold tracking-[0.2em] text-[#B5935E] uppercase'>
-                Tài liệu doanh nghiệp
+                {t('companyDocs')}
               </p>
               <h3 className='mt-[0.5rem] text-[1.5rem] leading-[1.3] font-bold text-[#1A2B48] xsm:text-[1.25rem]'>
                 {profile.title}
@@ -72,7 +74,7 @@ const CompanyProfile = ({ category }: CompanyProfileProps) => {
                   className='group/btn inline-flex items-center justify-center gap-[0.5rem] rounded-[0.5rem] bg-[linear-gradient(93deg,#C9A468_0%,#B5935E_55%,#9E7C48_100%)] px-[1.375rem] py-[0.75rem] text-[0.8125rem] font-bold text-white shadow-[0_0.5rem_1.25rem_rgba(181,147,94,0.35)] transition-[transform,box-shadow] duration-300 hover:-translate-y-[0.125rem] hover:shadow-[0_0.75rem_1.5rem_rgba(181,147,94,0.45)]'
                 >
                   <Download className='size-[0.9375rem] transition-transform duration-300 group-hover/btn:translate-y-[0.125rem]' />
-                  Tải về (PDF)
+                  {t('download')}
                 </a>
                 <a
                   href={profile.viewUrl}
@@ -81,7 +83,7 @@ const CompanyProfile = ({ category }: CompanyProfileProps) => {
                   className='inline-flex items-center justify-center gap-[0.5rem] rounded-[0.5rem] border border-[#D7DEE8] bg-white px-[1.375rem] py-[0.75rem] text-[0.8125rem] font-bold text-[#1A2B48] transition-colors duration-300 hover:border-[#0F5A3C] hover:text-[#0F5A3C]'
                 >
                   <Eye className='size-[0.9375rem]' />
-                  Xem trực tuyến
+                  {t('view')}
                 </a>
               </div>
             </div>

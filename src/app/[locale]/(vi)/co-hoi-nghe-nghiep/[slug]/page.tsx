@@ -2,9 +2,11 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 
+import { assertPageLocale } from '@/i18n/assert-locale'
 import { routing } from '@/i18n/routing'
-import { getJobDetail, JOB_SLUGS } from '@/views/careers/data'
+import careersService from '@/services/careers'
 import CareersDetailView from '@/views/careers/detail'
+import { mapCareerDetail } from '@/views/careers/map-career'
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>
@@ -12,29 +14,68 @@ type Props = {
 
 export const dynamicParams = true
 
-export function generateStaticParams() {
-  return routing.locales.flatMap((locale) => JOB_SLUGS.map((slug) => ({ locale, slug })))
-}
+export async function generateStaticParams() {
+  try {
+    const response = await careersService.getCareers({
+      lang: routing.defaultLocale,
+      limit: 50,
+      paged: 1,
+    })
+    const careers = response?.data ?? []
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  const job = getJobDetail(slug)
-  if (!job) return {}
-
-  return {
-    title: `${job.title} | Bateco Group`,
-    description: `${job.title} — ${job.department}, ${job.location}. Mức lương: ${job.salary}.`,
+    return careers
+      .map((item) => item.slug)
+      .filter((slug): slug is string => Boolean(slug))
+      .map((slug) => ({ locale: 'vi' as const, slug }))
+  } catch {
+    return []
   }
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale, slug } = await params
+
+  try {
+    const response = await careersService.getDetail(slug, locale)
+    const job = mapCareerDetail(response?.data)
+    if (!job) return {}
+
+    return {
+      title: `${job.title} | Bateco Group`,
+      description:
+        job.excerpt ||
+        `${job.title}${job.department ? ` — ${job.department}` : ''}${job.location ? `, ${job.location}` : ''}.`,
+      openGraph: { images: [job.image] },
+    }
+  } catch {
+    return {}
+  }
+}
+
+const FALLBACK_BANNER = '/home/vision/d-img-2.jpg'
+
 const CareersDetailPage = async ({ params }: Props) => {
   const { locale, slug } = await params
+  assertPageLocale(locale, 'vi')
   setRequestLocale(locale)
 
-  const job = getJobDetail(slug)
+  const [detailResult, pageResult] = await Promise.all([
+    careersService.getDetail(slug, locale).catch(() => null),
+    careersService.getCareersPage(locale).catch(() => null),
+  ])
+
+  const job = mapCareerDetail(detailResult?.data)
   if (!job) notFound()
 
-  return <CareersDetailView job={job} />
+  const bannerImage =
+    pageResult?.acf?.banner?.desktop || pageResult?.acf?.featured_image || FALLBACK_BANNER
+
+  return (
+    <CareersDetailView
+      job={job}
+      bannerImage={bannerImage}
+    />
+  )
 }
 
 export default CareersDetailPage

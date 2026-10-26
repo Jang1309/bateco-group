@@ -4,7 +4,7 @@ import { ArrowRight, ChevronRight } from 'lucide-react'
 import { motion, type Variants } from 'motion/react'
 import { useTranslations } from 'next-intl'
 
-import { Link, usePathname } from '@/i18n/navigation'
+import { Link, toAppHref, usePathname } from '@/i18n/navigation'
 import type { HeaderMenuItem, HeaderNavGroup } from '@/interfaces/siteSetting.interface'
 import { MEGA_ACCENTS, type MegaAccent } from '@/layouts/header/mega-menu-data'
 import { cn } from '@/lib/utils'
@@ -80,7 +80,7 @@ const Column = ({ column, accent, onNavigate, split }: ColumnProps) => {
 
       <ul className={cn('mt-[1rem] grid gap-[0.25rem]', split && 'grid-cols-2 gap-x-[1.5rem]')}>
         {column.menu?.map((entry, index) => {
-          const href = entry.link?.url || '/'
+          const href = toAppHref(entry.link?.url || '/')
           const label = entry.link?.title
           if (!label) return null
 
@@ -139,7 +139,7 @@ const asideVariants: Variants = {
 
 const MegaMenuPanel = ({ item, columns, onNavigate }: MegaMenuPanelProps) => {
   const t = useTranslations('Header')
-  const href = item.link?.url || '/'
+  const href = toAppHref(item.link?.url || '/')
 
   return (
     <motion.div

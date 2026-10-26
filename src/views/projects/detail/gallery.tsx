@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import type { Swiper as SwiperType } from 'swiper'
 import { Keyboard } from 'swiper/modules'
@@ -23,6 +24,7 @@ type ProjectGalleryProps = {
 }
 
 const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
+  const t = useTranslations('Projects')
   const [active, setActive] = useState<number | null>(null)
   const [swiper, setSwiper] = useState<SwiperType | null>(null)
   const [index, setIndex] = useState(0)
@@ -59,13 +61,16 @@ const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
                 }}
                 className='absolute inset-0 cursor-zoom-in'
                 aria-label={
-                  isLastPreview ? `Xem thêm ${extra} ảnh` : `Xem ảnh ${i + 1} của ${title}`
+                  isLastPreview
+                    ? t('galleryMore', { n: extra })
+                    : t('galleryViewImage', { n: i + 1, title })
                 }
               >
                 <Image
                   src={src}
-                  alt={`${title} - ảnh ${i + 1}`}
+                  alt={t('galleryAlt', { title, n: i + 1 })}
                   fill
+                  unoptimized
                   sizes={
                     i === 0 ? '(max-width: 639px) 92vw, 46vw' : '(max-width: 639px) 46vw, 23vw'
                   }
@@ -94,7 +99,7 @@ const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
           className='flex max-h-[90dvh] w-[min(58rem,calc(100%-2rem))] max-w-[min(58rem,calc(100%-2rem))] flex-col gap-0 overflow-hidden rounded-[1.125rem] border-0 bg-[#0F1C33] p-0 text-white shadow-[0_2rem_4rem_rgba(11,21,40,0.45)] ring-1 ring-white/10 sm:max-w-[min(58rem,calc(100%-2rem))]'
         >
           <DialogTitle className='sr-only'>
-            {title} — ảnh {index + 1}/{images.length}
+            {t('galleryCounter', { title, n: index + 1, total: images.length })}
           </DialogTitle>
 
           {/* Chiều cao cố định — tránh Swiper/Dialog collapse về 0 */}
@@ -105,7 +110,7 @@ const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
               </p>
               <DialogClose className='flex size-[2.375rem] items-center justify-center rounded-full border border-white/25 bg-black/45 text-white backdrop-blur-sm transition-colors hover:border-[#DFBA73] hover:bg-[#B5935E]'>
                 <X className='size-[1.0625rem]' />
-                <span className='sr-only'>Đóng</span>
+                <span className='sr-only'>{t('galleryClose')}</span>
               </DialogClose>
             </div>
 
@@ -115,7 +120,7 @@ const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
                   type='button'
                   onClick={() => swiper?.slidePrev()}
                   className={cn(NAV_BTN, 'left-[0.875rem]')}
-                  aria-label='Ảnh trước'
+                  aria-label={t('galleryPrev')}
                 >
                   <ChevronLeft className='size-[1.25rem]' />
                 </button>
@@ -123,7 +128,7 @@ const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
                   type='button'
                   onClick={() => swiper?.slideNext()}
                   className={cn(NAV_BTN, 'right-[0.875rem]')}
-                  aria-label='Ảnh sau'
+                  aria-label={t('galleryNext')}
                 >
                   <ChevronRight className='size-[1.25rem]' />
                 </button>
@@ -153,8 +158,9 @@ const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
                     <div className='relative h-full w-full'>
                       <Image
                         src={src}
-                        alt={`${title} - ảnh ${i + 1}`}
+                        alt={t('galleryAlt', { title, n: i + 1 })}
                         fill
+                        unoptimized
                         sizes='(max-width: 639px) 94vw, 58rem'
                         className='object-cover'
                         priority={i === active}
@@ -182,13 +188,14 @@ const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
                       ? 'opacity-100 ring-[#DFBA73]'
                       : 'opacity-70 ring-transparent hover:opacity-100',
                   )}
-                  aria-label={`Chuyển tới ảnh ${i + 1}`}
+                  aria-label={t('galleryGoto', { n: i + 1 })}
                   aria-current={i === index}
                 >
                   <Image
                     src={src}
                     alt=''
                     fill
+                    unoptimized
                     sizes='(max-width: 639px) 56px, 72px'
                     quality={90}
                     className='object-cover'

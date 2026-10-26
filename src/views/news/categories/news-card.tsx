@@ -1,5 +1,7 @@
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+import type { ComponentProps } from 'react'
 
 import { Link } from '@/i18n/navigation'
 import type { NewsArticle } from '@/views/news/data'
@@ -9,9 +11,11 @@ type NewsCardProps = {
 }
 
 const NewsCard = ({ article }: NewsCardProps) => {
+  const t = useTranslations('News')
+
   return (
     <Link
-      href={{ pathname: '/tin-tuc/[slug]', params: { slug: article.id } }}
+      href={article.href as ComponentProps<typeof Link>['href']}
       className='group flex flex-col rounded-[0.75rem] outline-none focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-offset-4 focus-visible:ring-offset-[#FAFBFC]'
     >
       <div className='relative aspect-[4/3] overflow-hidden rounded-[0.75rem] shadow-[0_1rem_2rem_-1.25rem_rgba(26,43,72,0.35)]'>
@@ -38,7 +42,7 @@ const NewsCard = ({ article }: NewsCardProps) => {
       </p>
       <span className='mt-auto inline-flex w-fit items-center gap-[0.375rem] pt-[1rem] text-[0.75rem] font-bold text-[#B5935E]'>
         <span className='bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat pb-[0.125rem] transition-[background-size] duration-300 group-hover:bg-[length:100%_1px]'>
-          Xem thêm
+          {t('seeMore')}
         </span>
         <ArrowRight className='size-[0.8125rem] transition-transform duration-300 group-hover:translate-x-[0.1875rem]' />
       </span>

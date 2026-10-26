@@ -1,10 +1,10 @@
 import type { ComponentProps } from 'react'
 
-import ROUTES from '@/configs/routes'
+import { hrefFor } from '@/configs/routes'
 import { Link } from '@/i18n/navigation'
 import type { SectorItem } from '@/interfaces/sectors.interface'
 
-/** Fallback khi acf.image trống */
+/** Fallback khi acf.banner.image trống */
 export const SECTOR_FALLBACK_IMAGES = [
   '/home/investment/d-card-1.png',
   '/home/investment/d-card-2.png',
@@ -28,7 +28,7 @@ const splitTitle = (name?: string): [string, string] => {
   return [words.slice(0, mid).join(' '), words.slice(mid).join(' ')]
 }
 
-export const mapSectors = (sectors?: SectorItem[]): InvestmentItem[] => {
+export const mapSectors = (sectors?: SectorItem[], locale: string = 'vi'): InvestmentItem[] => {
   const items: InvestmentItem[] = []
 
   ;(sectors || []).forEach((sector: SectorItem, index) => {
@@ -38,11 +38,12 @@ export const mapSectors = (sectors?: SectorItem[]): InvestmentItem[] => {
     items.push({
       label: sector.name || '',
       title: splitTitle(sector.name),
-      description: sector.description || '',
-      image: sector.acf?.image || SECTOR_FALLBACK_IMAGES[index % SECTOR_FALLBACK_IMAGES.length],
-      href: slug
-        ? { pathname: '/linh-vuc-kinh-doanh/[slug]' as const, params: { slug } }
-        : ROUTES.business,
+      description: sector.description || sector.acf?.banner?.desc || '',
+      image:
+        sector.acf?.banner?.image || SECTOR_FALLBACK_IMAGES[index % SECTOR_FALLBACK_IMAGES.length],
+      href: (slug
+        ? hrefFor('businessDetail', locale, { slug })
+        : hrefFor('business', locale)) as ComponentProps<typeof Link>['href'],
     })
   })
 

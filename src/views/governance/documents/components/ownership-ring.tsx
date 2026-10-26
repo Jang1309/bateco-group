@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, useReducedMotion } from 'motion/react'
+import { useTranslations } from 'next-intl'
 
 import CountUp from '@/components/shared/count-up'
 
@@ -11,6 +12,7 @@ type OwnershipRingProps = {
 const RADIUS = 70
 
 const OwnershipRing = ({ value }: OwnershipRingProps) => {
+  const t = useTranslations('Governance')
   const reducedMotion = useReducedMotion()
   const ratio = Math.min(Math.max((Number.parseFloat(value) || 0) / 100, 0), 1)
 
@@ -66,7 +68,7 @@ const OwnershipRing = ({ value }: OwnershipRingProps) => {
           <CountUp value={value} />
         </span>
         <span className='mt-[0.375rem] text-[0.625rem] font-bold tracking-[0.2em] xsm:mt-[0.25rem] xsm:text-[0.5rem] xsm:tracking-[0.12em] text-[#B5935E] uppercase'>
-          Nhà đầu tư
+          {t('investorLabel')}
         </span>
       </div>
     </div>

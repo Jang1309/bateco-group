@@ -1,18 +1,27 @@
+import type { ProjectListItem } from '@/interfaces/projects.interface'
+import type { SectorItem } from '@/interfaces/sectors.interface'
+import type { Contact, Ecosystem } from '@/interfaces/siteSetting.interface'
 import SectorCta from '@/views/business-detail/cta'
-import type { SectorDetail } from '@/views/business-detail/data'
 import SectorEcosystem from '@/views/business-detail/ecosystem'
 import SectorHero from '@/views/business-detail/hero'
 import SectorIntro from '@/views/business-detail/intro'
 import SectorProjects from '@/views/business-detail/projects'
 
-const BusinessDetailView = ({ sector }: { sector: SectorDetail }) => {
+type BusinessDetailViewProps = {
+  sector: SectorItem
+  projects?: ProjectListItem[]
+  ecosystem?: Ecosystem
+  contact?: Contact
+}
+
+const BusinessDetailView = ({ sector, projects, ecosystem, contact }: BusinessDetailViewProps) => {
   return (
     <main>
       <SectorHero sector={sector} />
       <SectorIntro sector={sector} />
-      <SectorProjects sector={sector} />
-      <SectorEcosystem />
-      <SectorCta />
+      <SectorProjects projects={projects} />
+      <SectorEcosystem data={ecosystem} />
+      <SectorCta data={contact} />
     </main>
   )
 }

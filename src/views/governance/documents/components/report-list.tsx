@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 import type { GovernanceBasePath } from '@/views/governance/base-path'
 import { REPORTS_PER_PAGE, type ReportsCategory } from '@/views/governance/data'
 
@@ -12,6 +14,7 @@ type ReportListProps = {
 }
 
 const ReportList = ({ category, heading, page, basePath }: ReportListProps) => {
+  const t = useTranslations('Governance')
   const {
     items: reports,
     currentPage,
@@ -42,9 +45,7 @@ const ReportList = ({ category, heading, page, basePath }: ReportListProps) => {
           ))}
         </ul>
       ) : (
-        <p className='py-[3rem] text-center text-[0.9375rem] text-[#64748B]'>
-          Chưa có báo cáo nào trong danh mục này.
-        </p>
+        <p className='py-[3rem] text-center text-[0.9375rem] text-[#64748B]'>{t('empty')}</p>
       )}
 
       <GovernancePagination

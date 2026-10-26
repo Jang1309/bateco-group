@@ -2,42 +2,75 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 
+import { assertPageLocale } from '@/i18n/assert-locale'
 import { routing } from '@/i18n/routing'
+import businessFieldService from '@/services/business-field'
+import siteSettingService from '@/services/site-setting'
 import BusinessDetailView from '@/views/business-detail'
-import { getSectorDetail, SECTOR_DETAILS } from '@/views/business-detail/data'
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>
 }
 
-// Slug sector từ CMS có thể lệch mock data — cho runtime notFound() thay vì 404 HTML.
 export const dynamicParams = true
 
-export function generateStaticParams() {
-  return routing.locales.flatMap((locale) =>
-    SECTOR_DETAILS.map((sector) => ({ locale, slug: sector.slug })),
-  )
+export async function generateStaticParams() {
+  try {
+    const response = await businessFieldService.getSectors(routing.defaultLocale)
+    const sectors = response?.data ?? []
+
+    return sectors
+      .map((sector) => sector.slug)
+      .filter((slug): slug is string => Boolean(slug))
+      .map((slug) => ({ locale: 'vi' as const, slug }))
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  const sector = getSectorDetail(slug)
-  if (!sector) return {}
+  const { locale, slug } = await params
 
-  return {
-    title: `${sector.name} | Bateco Group`,
-    description: sector.hero.description,
+  try {
+    const response = await businessFieldService.getDetail(slug, locale)
+    const sector = response?.data
+    if (!sector) return {}
+
+    return {
+      title: `${sector.name} | Bateco Group`,
+      description: sector.acf?.banner?.desc || sector.description || undefined,
+    }
+  } catch {
+    return {}
   }
 }
 
 const BusinessDetailPage = async ({ params }: Props) => {
   const { locale, slug } = await params
+  assertPageLocale(locale, 'vi')
   setRequestLocale(locale)
 
-  const sector = getSectorDetail(slug)
+  const [detailResult, projectsResult, siteSettingResult] = await Promise.allSettled([
+    businessFieldService.getDetail(slug, locale),
+    businessFieldService.getProjects(locale, slug),
+    siteSettingService.getSiteSettings(locale),
+  ])
+
+  const sector = detailResult.status === 'fulfilled' ? detailResult.value?.data : undefined
   if (!sector) notFound()
 
-  return <BusinessDetailView sector={sector} />
+  const projects = projectsResult.status === 'fulfilled' ? (projectsResult.value?.data ?? []) : []
+  const siteData =
+    siteSettingResult.status === 'fulfilled' ? siteSettingResult.value?.data : undefined
+
+  return (
+    <BusinessDetailView
+      sector={sector}
+      projects={projects}
+      ecosystem={siteData?.ecosystem}
+      contact={siteData?.contact}
+    />
+  )
 }
 
 export default BusinessDetailPage

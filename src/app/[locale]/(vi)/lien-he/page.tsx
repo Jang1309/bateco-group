@@ -1,23 +1,35 @@
 import type { Metadata } from 'next'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
+import { assertPageLocale } from '@/i18n/assert-locale'
+import contactService from '@/services/contact'
 import ContactView from '@/views/contact'
 
-export const metadata: Metadata = {
-  title: 'Liên hệ | Bateco Group',
-  description:
-    'Liên hệ Bateco Group — trụ sở Hà Nội và các chi nhánh. Kết nối với đội ngũ để được tư vấn nhanh chóng, bảo mật thông tin.',
+export function generateStaticParams() {
+  return [{ locale: 'vi' as const }]
 }
-
 type Props = {
   params: Promise<{ locale: string }>
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Meta' })
+
+  return {
+    title: t('contactTitle'),
+    description: t('contactDesc'),
+  }
+}
+
 const ContactPage = async ({ params }: Props) => {
   const { locale } = await params
+  assertPageLocale(locale, 'vi')
   setRequestLocale(locale)
 
-  return <ContactView />
+  const pageResponse = await contactService.getContactPage(locale).catch(() => null)
+
+  return <ContactView content={pageResponse?.acf} />
 }
 
 export default ContactPage

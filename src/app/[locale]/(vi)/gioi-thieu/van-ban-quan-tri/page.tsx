@@ -1,12 +1,17 @@
+import { assertPageLocale } from '@/i18n/assert-locale'
 import administrativeDocumentService from '@/services/administrative-document'
 import AboutGovernanceView from '@/views/about-governance'
 
+export function generateStaticParams() {
+  return [{ locale: 'vi' as const }]
+}
 type Props = {
   params: Promise<{ locale: string }>
 }
 
 const AboutGovernancePage = async ({ params }: Props) => {
   const { locale } = await params
+  assertPageLocale(locale, 'vi')
 
   const [pageResponse, categoriesResponse] = await Promise.all([
     administrativeDocumentService.getAdministrativeDocument(locale),

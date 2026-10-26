@@ -12,16 +12,31 @@ type CountUpProps = {
 }
 
 const parseValue = (value: string) => {
-  const match = value.match(/^(\D*)(\d+)(.*)$/)
+  // Hỗ trợ '14+', '05', '1.000+', '1,000+'
+  const match = value.match(/^(\D*)([\d.,]+)(.*)$/)
   if (!match) return null
   const [, prefix, digits, suffix] = match
-  return { prefix, suffix, target: Number(digits), pad: digits.startsWith('0') ? digits.length : 1 }
+  const useDotThousands = digits.includes('.') && !digits.includes(',')
+  const normalized = digits.replace(/[.,]/g, '')
+  if (!/^\d+$/.test(normalized)) return null
+  return {
+    prefix,
+    suffix,
+    target: Number(normalized),
+    pad:
+      digits.startsWith('0') && !digits.includes('.') && !digits.includes(',') ? digits.length : 1,
+    useDotThousands,
+  }
 }
 
 const formatValue = (value: string, n: number) => {
   const parsed = parseValue(value)
   if (!parsed) return value
-  return `${parsed.prefix}${String(Math.round(n)).padStart(parsed.pad, '0')}${parsed.suffix}`
+  let num = String(Math.round(n)).padStart(parsed.pad, '0')
+  if (parsed.useDotThousands) {
+    num = num.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  }
+  return `${parsed.prefix}${num}${parsed.suffix}`
 }
 
 const CountUp = ({ value, duration = 1.6, delay = 0, className }: CountUpProps) => {

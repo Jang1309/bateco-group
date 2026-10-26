@@ -1,9 +1,12 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
+
 import type { HomepagePartners } from '@/interfaces/homepage.interface'
 import { LogoCell, LogoRow } from '@/views/homepage/partners/components/logo-row'
 
 const Partners = ({ data }: { data?: HomepagePartners }) => {
+  const t = useTranslations('HomePartners')
   const ecosystem = data?.ecosystem?.gallery?.filter(Boolean) || []
   const partners = data?.partners?.gallery?.filter(Boolean) || []
   const ecosystemTitle = data?.ecosystem?.ecosystem_title || data?.ecosystem?.partners_title
@@ -31,7 +34,7 @@ const Partners = ({ data }: { data?: HomepagePartners }) => {
         </div>
 
         {ecosystem.length ? (
-          <LogoRow title={ecosystemTitle || 'Hệ sinh thái'}>
+          <LogoRow title={ecosystemTitle || t('ecosystem')}>
             {ecosystem.map((logo, index) => (
               <LogoCell
                 key={index}
@@ -45,7 +48,7 @@ const Partners = ({ data }: { data?: HomepagePartners }) => {
 
         {partners.length ? (
           <LogoRow
-            title={partnersTitle || 'Đối tác'}
+            title={partnersTitle || t('partners')}
             reverse
           >
             {partners.map((logo, index) => (

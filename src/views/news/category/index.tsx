@@ -1,72 +1,92 @@
-import PageHero from '@/components/shared/page-hero'
-import { Link } from '@/i18n/navigation'
-import { cn } from '@/lib/utils'
+'use client'
+
+import { useLenis } from 'lenis/react'
+import { useQueryStates } from 'nuqs'
+import { Suspense } from 'react'
+
+import { sectionId } from '@/configs/section-ids'
+import { useNewsPosts } from '@/hooks/use-news-posts'
+import type { NewsPageBanner } from '@/interfaces/postList.interface'
+import { scrollToSection } from '@/utils/scrollToSection'
 import ArticleCard from '@/views/news/components/article-card'
-import BlockHeader from '@/views/news/components/block-header'
-import { getCategoryArticles, getCategoryTitle, NEWS_CATEGORIES } from '@/views/news/data'
-import FeaturedArticle from '@/views/news/featured/featured-article'
+import type { NewsCategory } from '@/views/news/data'
+import NewsHero from '@/views/news/hero'
+import { mapPostListItems } from '@/views/news/map-post'
+import { newsSearchParams } from '@/views/news/search-params'
+import ProjectPagination from '@/views/projects/listing/components/pagination'
+
+import { ArticleListSkeleton } from './components/article-card-skeleton'
+import EmptyState from './components/empty-state'
+import FilterTabs from './components/filter-tabs'
+
+const LIMIT = 9
 
 type NewsCategoryViewProps = {
-  categoryId: string
+  locale: string
+  categories: NewsCategory[]
+  banner?: NewsPageBanner
 }
 
-// TODO: thêm phân trang khi có dữ liệu thật từ CMS
-const NewsCategoryView = ({ categoryId }: NewsCategoryViewProps) => {
-  const categoryTitle = getCategoryTitle(categoryId)
-  const [featured, ...rest] = getCategoryArticles(categoryId)
+const NewsCategoryListing = ({ locale, categories, banner }: NewsCategoryViewProps) => {
+  const lenis = useLenis()
+  const [{ 'danh-muc': categorySlug, trang: page }, setQuery] = useQueryStates(newsSearchParams, {
+    history: 'push',
+    shallow: true,
+  })
+
+  const activeCategory = categories.find((item) => item.id === categorySlug)
+  const category = activeCategory?.id
+
+  const { data, isLoading, isValidating } = useNewsPosts({
+    lang: locale,
+    paged: page,
+    limit: LIMIT,
+    category,
+  })
+
+  const articles = mapPostListItems(data?.data, locale)
+  const showSkeleton = isLoading || (isValidating && articles.length === 0)
+  const totalPages = Math.max(1, data?.totalPages ?? 1)
+  const listingId = sectionId('newsListing', locale)
+
+  const scrollToListing = () => {
+    const el = document.getElementById(listingId)
+    if (!el) return
+    if (lenis) lenis.scrollTo(el, { offset: -96, duration: 0.8 })
+    else scrollToSection(listingId, 0.6, 6)
+  }
+
+  const selectCategory = (next?: string) => {
+    void setQuery({ 'danh-muc': next ?? null, trang: 1 })
+    scrollToListing()
+  }
+
+  const goToPage = (nextPage: number) => {
+    void setQuery({ trang: nextPage <= 1 ? 1 : nextPage })
+    scrollToListing()
+  }
 
   return (
-    <main>
-      <PageHero
-        eyebrow={categoryTitle}
-        title='Khám phá'
-        highlight='để dẫn đầu'
-        description='Tư duy kiến tạo - Năng lực thực thi'
-        image='/home/vision/d-img-1.jpg'
-      />
+    <>
+      <NewsHero data={banner} />
 
-      <section className='border-t border-[#EEF1F5] bg-[#FAFBFC] pt-[3.5rem] pb-[6rem] xsm:pt-[2rem] xsm:pb-[3.5rem]'>
+      <section
+        id={listingId}
+        className='scroll-mt-[6rem] border-t border-[#EEF1F5] bg-[#FAFBFC] pt-[3.5rem] pb-[6rem] xsm:pt-[2rem] xsm:pb-[3.5rem]'
+      >
         <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
-          <nav
-            aria-label='Chuyên mục tin tức'
-            className='-mx-[1.25rem] flex gap-[0.625rem] overflow-x-auto px-[1.25rem] pb-[0.25rem] [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0'
-          >
-            {NEWS_CATEGORIES.map((category) => {
-              const active = category.id === categoryId
-              return (
-                <Link
-                  key={category.id}
-                  href={{ pathname: '/tin-tuc/danh-muc/[slug]', params: { slug: category.id } }}
-                  aria-current={active ? 'page' : undefined}
-                  className={cn(
-                    'shrink-0 rounded-full border px-[1.125rem] py-[0.625rem] text-[0.8125rem] font-semibold whitespace-nowrap transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-offset-2',
-                    active
-                      ? 'border-[#1A2B48] bg-[#1A2B48] text-white shadow-[0_0.75rem_1.5rem_-0.75rem_rgba(26,43,72,0.6)]'
-                      : 'border-[#E2E8F0] bg-white text-[#1A2B48] hover:border-[#B5935E] hover:text-[#B5935E]',
-                  )}
-                >
-                  {category.title}
-                </Link>
-              )
-            })}
-          </nav>
+          <FilterTabs
+            categories={categories}
+            current={category}
+            onSelect={selectCategory}
+          />
 
-          {featured ? (
-            <div
-              data-aos='business-rise'
-              data-aos-duration='800'
-              className='mt-[2.5rem] xsm:mt-[1.5rem]'
-            >
-              <FeaturedArticle article={featured} />
-            </div>
-          ) : null}
-
-          {rest.length > 0 ? (
-            <div className='mt-[5rem] xsm:mt-[3rem]'>
-              <BlockHeader title='Tất cả bài viết' />
-
-              <ul className='mt-[2.25rem] grid grid-cols-3 gap-[2rem] xsm:mt-[1.5rem] xsm:grid-cols-1 xsm:gap-[1.25rem]'>
-                {rest.map((article, index) => (
+          {showSkeleton ? (
+            <ArticleListSkeleton count={LIMIT} />
+          ) : articles.length > 0 ? (
+            <>
+              <ul className='mt-[2.5rem] grid grid-cols-3 gap-[2rem] xsm:mt-[1.5rem] xsm:grid-cols-1 xsm:gap-[1.25rem]'>
+                {articles.map((article, index) => (
                   <li
                     key={article.id}
                     data-aos='business-rise'
@@ -78,10 +98,42 @@ const NewsCategoryView = ({ categoryId }: NewsCategoryViewProps) => {
                   </li>
                 ))}
               </ul>
-            </div>
-          ) : null}
+
+              <ProjectPagination
+                currentPage={Math.min(page, totalPages)}
+                totalPages={totalPages}
+                onPageChange={goToPage}
+              />
+            </>
+          ) : (
+            <EmptyState
+              categoryTitle={activeCategory?.title}
+              onBrowseAll={category ? () => selectCategory(undefined) : undefined}
+            />
+          )}
         </div>
       </section>
+    </>
+  )
+}
+
+const ListingFallback = ({ banner }: { banner?: NewsPageBanner }) => (
+  <>
+    <NewsHero data={banner} />
+    <section className='border-t border-[#EEF1F5] bg-[#FAFBFC] pt-[3.5rem] pb-[6rem] xsm:pt-[2rem] xsm:pb-[3.5rem]'>
+      <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
+        <ArticleListSkeleton count={LIMIT} />
+      </div>
+    </section>
+  </>
+)
+
+const NewsCategoryView = (props: NewsCategoryViewProps) => {
+  return (
+    <main>
+      <Suspense fallback={<ListingFallback banner={props.banner} />}>
+        <NewsCategoryListing {...props} />
+      </Suspense>
     </main>
   )
 }

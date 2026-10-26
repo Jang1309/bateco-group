@@ -15,7 +15,7 @@ export default async function fetchData(request: RequestPostGuest) {
   const { next, ...restOption } = request.option ?? {}
 
   try {
-    const res = await fetch(`${ENV.CMS ?? ''}${ENV.API ?? ''}${request.api}`, {
+    const res = await fetch(`${ENV.CMS}${ENV.API!}${request.api}`, {
       method,
       headers: {
         ...(!request.notJson && { 'Content-Type': 'application/json' }),
@@ -40,6 +40,6 @@ export default async function fetchData(request: RequestPostGuest) {
   } catch (error: unknown) {
     // Convert the error to a string or handle based on its type
     const errorMessage = error instanceof Error ? error.message : String(error)
-    throw new Error(`${ENV.CMS ?? ''}${ENV.API ?? ''}${request.api}: ${errorMessage}`)
+    throw new Error(`${ENV.CMS}${ENV.API!}${request.api}: ${errorMessage}`)
   }
 }

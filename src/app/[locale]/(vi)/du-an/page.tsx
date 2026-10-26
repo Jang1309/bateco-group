@@ -1,32 +1,51 @@
 import type { Metadata } from 'next'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
+import { assertPageLocale } from '@/i18n/assert-locale'
+import projectsService from '@/services/projects'
 import ProjectsView from '@/views/projects'
-import { PROJECT_SECTORS, type ProjectSort } from '@/views/projects/data'
 
-export const metadata: Metadata = {
-  title: 'Dự án | Bateco Group',
-  description:
-    'Các dự án tiêu biểu của Bateco Group trong dịch vụ công nghiệp, bất động sản - hạ tầng công nghiệp, an ninh - quốc phòng, kinh tế xanh và sản xuất vật liệu mới.',
+export function generateStaticParams() {
+  return [{ locale: 'vi' as const }]
 }
-
 type Props = {
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ 'linh-vuc'?: string; q?: string; 'sap-xep'?: string; trang?: string }>
 }
 
-const ProjectsPage = async ({ params, searchParams }: Props) => {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Meta' })
+
+  return {
+    title: t('projectsTitle'),
+    description: t('projectsDesc'),
+  }
+}
+
+const ProjectsPage = async ({ params }: Props) => {
+  const { locale } = await params
+  assertPageLocale(locale, 'vi')
   setRequestLocale(locale)
 
-  const raw = await searchParams
-  const sector = PROJECT_SECTORS.some((item) => item.id === raw['linh-vuc'])
-    ? raw['linh-vuc']
-    : undefined
-  const sort: ProjectSort = raw['sap-xep'] === 'cu-nhat' ? 'cu-nhat' : 'moi-nhat'
-  const page = Number.parseInt(raw.trang ?? '1', 10) || 1
+  const [pageResponse, sectorsResponse, featuredResponse] = await Promise.all([
+    projectsService.getProjectsPage(locale),
+    projectsService.getProjectsCategories(locale),
+    projectsService.getProjectsList({
+      lang: locale,
+      limit: 3,
+      paged: 1,
+      order: 'DESC',
+    }),
+  ])
 
-  return <ProjectsView query={{ sector, q: raw.q, sort, page }} />
+  return (
+    <ProjectsView
+      locale={locale}
+      content={pageResponse?.acf}
+      sectors={sectorsResponse?.data ?? []}
+      featured={featuredResponse?.data ?? []}
+    />
+  )
 }
 
 export default ProjectsPage

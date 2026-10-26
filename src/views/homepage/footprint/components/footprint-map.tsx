@@ -3,6 +3,7 @@
 import { Star } from 'lucide-react'
 import { motion, useInView } from 'motion/react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import { useId, useRef } from 'react'
 
 import type { HomepageFootprint, HomepageMapPoint } from '@/interfaces/homepage.interface'
@@ -70,6 +71,7 @@ function curvePath(originPoint: MapPoint, point: MapPoint) {
 }
 
 const FootprintMap = ({ map }: { map?: HomepageFootprint['map'] }) => {
+  const t = useTranslations('HomeFootprint')
   const originPoint = toMapPoint(map?.origin)
   const points =
     map?.points?.map(toMapPoint).filter((point): point is MapPoint => Boolean(point)) || []
@@ -90,7 +92,7 @@ const FootprintMap = ({ map }: { map?: HomepageFootprint['map'] }) => {
     >
       <Image
         src='/vn.svg'
-        alt='Bản đồ Việt Nam'
+        alt={t('mapAlt')}
         fill
         className='object-contain drop-shadow-[0_1.5rem_2rem_rgba(153,110,39,0.18)]'
       />

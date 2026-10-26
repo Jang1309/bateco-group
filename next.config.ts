@@ -23,6 +23,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'cms.bateco-investment.vn' },
       { protocol: 'http', hostname: 'cms.bateco-investment.vn' },
+      { protocol: 'https', hostname: 'cms.bateco.vn' },
+      { protocol: 'http', hostname: 'cms.bateco.vn' },
       // CMS chạy local lúc dev
       { protocol: 'http', hostname: 'localhost' },
       { protocol: 'http', hostname: '127.0.0.1' },

@@ -1,6 +1,7 @@
 'use client'
 
 import { Check, ChevronDown, Search } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 
 import DrawerProvider from '@/components/providers/drawer-provider'
@@ -11,64 +12,62 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useRouter } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
-import type { ProjectSort } from '@/views/projects/data'
-
-import { buildProjectQuery, type ProjectQuery } from '../query'
+import type { ProjectSort } from '@/views/projects/search-params'
 
 type SearchSortProps = {
-  current: ProjectQuery
+  search: string
+  sort: ProjectSort
+  onSearch: (value?: string) => void
+  onSort: (value: ProjectSort) => void
 }
 
-const SORT_OPTIONS: { value: ProjectSort; label: string }[] = [
-  { value: 'moi-nhat', label: 'Mới nhất' },
-  { value: 'cu-nhat', label: 'Cũ nhất' },
+const SORT_OPTIONS: { value: ProjectSort; labelKey: 'sortNewest' | 'sortOldest' }[] = [
+  { value: 'moi-nhat', labelKey: 'sortNewest' },
+  { value: 'cu-nhat', labelKey: 'sortOldest' },
 ]
 
-const SearchSort = ({ current }: SearchSortProps) => {
-  const router = useRouter()
-  const [keyword, setKeyword] = useState(current.q ?? '')
+const SearchSort = ({ search, sort, onSearch, onSort }: SearchSortProps) => {
+  const t = useTranslations('Projects')
+  const [keyword, setKeyword] = useState(search)
+  const [prevSearch, setPrevSearch] = useState(search)
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const sort = current.sort ?? 'moi-nhat'
-  const sortLabel = SORT_OPTIONS.find((option) => option.value === sort)?.label
+  const sortOption = SORT_OPTIONS.find((option) => option.value === sort)
+  const sortLabel = sortOption ? t(sortOption.labelKey) : undefined
 
-  const navigate = (next: ProjectQuery) =>
-    router.replace(
-      { pathname: '/du-an', query: buildProjectQuery({ ...current, ...next, page: 1 }) },
-      { scroll: false },
-    )
+  // Đồng bộ khi URL đổi (back/forward) — adjust state khi render, không dùng effect
+  if (search !== prevSearch) {
+    setPrevSearch(search)
+    setKeyword(search)
+  }
 
-  // Gõ xong 400ms mới tìm
   useEffect(() => {
-    if (keyword.trim() === (current.q ?? '').trim()) return
-    const timer = setTimeout(() => navigate({ q: keyword }), 400)
+    if (keyword.trim() === search.trim()) return
+    const timer = setTimeout(() => onSearch(keyword), 400)
     return () => clearTimeout(timer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- chỉ chạy lại khi từ khóa đổi
-  }, [keyword])
+  }, [keyword, onSearch, search])
 
   return (
     <div className='flex items-center gap-[0.75rem] xsm:flex-col xsm:items-stretch'>
       <label className='relative flex-1'>
-        <span className='sr-only'>Tìm kiếm dự án</span>
+        <span className='sr-only'>{t('searchAria')}</span>
         <Search className='pointer-events-none absolute top-1/2 left-[1rem] size-[1rem] -translate-y-1/2 text-[#94A3B8]' />
         <input
           type='search'
           value={keyword}
           onChange={(event) => setKeyword(event.target.value)}
-          placeholder='Tìm kiếm dự án...'
+          placeholder={t('searchPlaceholder')}
           className='h-[2.875rem] w-full rounded-[0.5rem] border border-transparent bg-[#F1F5F9] pr-[1rem] pl-[2.75rem] text-[0.875rem] text-[#1A2B48] transition-colors duration-300 outline-none placeholder:text-[#94A3B8] focus:border-[#C6A15B] focus:bg-white'
         />
       </label>
 
-      {/* Desktop: dropdown shadcn */}
       <div className='xsm:hidden'>
         <Select
           value={sort}
-          onValueChange={(value) => navigate({ sort: value as ProjectSort })}
+          onValueChange={(value) => onSort(value as ProjectSort)}
         >
           <SelectTrigger
-            aria-label='Sắp xếp'
+            aria-label={t('sortAria')}
             className='w-[12rem] cursor-pointer rounded-[0.5rem] border-[#E2E8F0] bg-white px-[1rem] text-[0.875rem] font-semibold text-[#1A2B48] focus-visible:border-[#C6A15B] focus-visible:ring-[#C6A15B]/20 data-[size=default]:h-[2.875rem] data-[state=open]:border-[#C6A15B] [&_svg]:text-[#64748B]'
           >
             <SelectValue />
@@ -85,14 +84,13 @@ const SearchSort = ({ current }: SearchSortProps) => {
                 value={option.value}
                 className='cursor-pointer rounded-[0.375rem] py-[0.625rem] pl-[0.75rem] text-[0.875rem] text-[#1A2B48] focus:bg-[#F7F9FB] focus:text-[#B5935E] not-data-[variant=destructive]:focus:**:text-[#B5935E] data-[state=checked]:font-semibold data-[state=checked]:text-[#B5935E]'
               >
-                {option.label}
+                {t(option.labelKey)}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
-      {/* Mobile: mở drawer từ dưới lên */}
       <button
         type='button'
         aria-haspopup='dialog'
@@ -100,7 +98,7 @@ const SearchSort = ({ current }: SearchSortProps) => {
         className='hidden h-[2.875rem] items-center justify-between rounded-[0.5rem] border border-[#E2E8F0] bg-white px-[1rem] text-[0.875rem] font-semibold text-[#1A2B48] xsm:flex'
       >
         <span>
-          <span className='font-normal text-[#94A3B8]'>Sắp xếp: </span>
+          <span className='font-normal text-[#94A3B8]'>{t('sortAria')}: </span>
           {sortLabel}
         </span>
         <ChevronDown className='size-[1rem] text-[#64748B]' />
@@ -112,10 +110,10 @@ const SearchSort = ({ current }: SearchSortProps) => {
         className='pb-[max(1.5rem,env(safe-area-inset-bottom))]'
       >
         <div className='px-[1.25rem] pt-[1rem]'>
-          <p className='text-[1.125rem] font-bold text-[#1A2B48]'>Sắp xếp theo</p>
+          <p className='text-[1.125rem] font-bold text-[#1A2B48]'>{t('sortAria')}</p>
           <ul
             role='listbox'
-            aria-label='Sắp xếp'
+            aria-label={t('sortAria')}
             className='mt-[0.75rem]'
           >
             {SORT_OPTIONS.map((option) => {
@@ -132,14 +130,14 @@ const SearchSort = ({ current }: SearchSortProps) => {
                     type='button'
                     onClick={() => {
                       setDrawerOpen(false)
-                      if (!selected) navigate({ sort: option.value })
+                      if (!selected) onSort(option.value)
                     }}
                     className={cn(
                       'flex w-full items-center justify-between py-[1rem] text-left text-[1rem]',
                       selected ? 'font-semibold text-[#B5935E]' : 'text-[#1A2B48]',
                     )}
                   >
-                    {option.label}
+                    {t(option.labelKey)}
                     {selected ? <Check className='size-[1.125rem]' /> : null}
                   </button>
                 </li>

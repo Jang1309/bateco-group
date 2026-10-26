@@ -1,8 +1,6 @@
 'use client'
 
 import {
-  ArrowRight,
-  Briefcase,
   Building2,
   Check,
   ChevronDown,
@@ -10,9 +8,10 @@ import {
   ChevronRight,
   MapPin,
   Search,
-  Wallet,
 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { useQueryStates } from 'nuqs'
+import { useEffect, useState } from 'react'
 
 import DrawerProvider from '@/components/providers/drawer-provider'
 import {
@@ -22,16 +21,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Link } from '@/i18n/navigation'
+import { sectionId } from '@/configs/section-ids'
+import { useCareers } from '@/hooks/use-careers'
+import type { CareersTaxonomyItem } from '@/interfaces/careers.interface'
 import { cn } from '@/lib/utils'
-import {
-  JOB_DEPARTMENTS,
-  JOB_LOCATIONS,
-  JOB_TYPES,
-  JOBS,
-  JOBS_PER_PAGE,
-  type Job,
-} from '@/views/careers/data'
+import { JOBS_PER_PAGE } from '@/views/careers/data'
+import JobCard from '@/views/careers/job-card'
+import { mapCareerListItem, type CareerCardModel } from '@/views/careers/map-career'
+import { careersSearchParams } from '@/views/careers/search-params'
 
 const ALL = 'all'
 
@@ -44,181 +41,176 @@ const SELECT_CONTENT =
 const SELECT_ITEM =
   'cursor-pointer rounded-[0.375rem] py-[0.625rem] pl-[0.75rem] text-[0.875rem] text-[#1A2B48] focus:bg-[#F7F9FB] focus:text-[#1A2B48] not-data-[variant=destructive]:focus:**:text-[#1A2B48] data-[state=checked]:bg-[#F7F9FB] data-[state=checked]:font-semibold'
 
-type FilterKey = 'department' | 'location' | 'type'
+type FilterKey = 'department' | 'location'
+
+type TaxOption = { slug: string; name: string }
 
 type FilterConfig = {
   key: FilterKey
+  queryKey: 'phong-ban' | 'dia-diem'
   label: string
   allLabel: string
-  options: readonly string[]
+  options: TaxOption[]
   icon: typeof Building2
   width: string
 }
 
-const FILTERS: FilterConfig[] = [
-  {
-    key: 'department',
-    label: 'Phòng ban',
-    allLabel: 'Tất cả phòng ban',
-    options: JOB_DEPARTMENTS,
-    icon: Building2,
-    width: 'w-[14rem]',
-  },
-  {
-    key: 'location',
-    label: 'Địa điểm',
-    allLabel: 'Tất cả địa điểm',
-    options: JOB_LOCATIONS,
-    icon: MapPin,
-    width: 'w-[13rem]',
-  },
-  {
-    key: 'type',
-    label: 'Loại vị trí',
-    allLabel: 'Tất cả vị trí',
-    options: JOB_TYPES,
-    icon: Briefcase,
-    width: 'w-[12rem]',
-  },
-]
+const flattenTaxonomies = (items: CareersTaxonomyItem[] = []): TaxOption[] => {
+  const result: TaxOption[] = []
 
-const JobCard = ({ job, index }: { job: Job; index: number }) => {
-  return (
-    // AOS gắn wrapper ngoài để không đụng translate của hover
-    <div
-      data-aos='business-rise'
-      data-aos-duration='800'
-      data-aos-delay={index * 80}
-    >
-      <article className='group flex items-center justify-between gap-[2rem] rounded-[1.25rem] bg-white p-[1.75rem] shadow-[0_0.75rem_2rem_-1.5rem_rgba(26,43,72,0.1)] ring-1 ring-[#1A2B48]/[0.06] transition-[box-shadow,translate] duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[0.25rem] hover:shadow-[0_2rem_3.5rem_-1.75rem_rgba(26,43,72,0.22)] xsm:flex-col xsm:items-stretch xsm:gap-[1.25rem] xsm:rounded-[1rem] xsm:p-[1.25rem] xsm:transition-none xsm:hover:translate-y-0 xsm:hover:shadow-[0_0.75rem_2rem_-1.5rem_rgba(26,43,72,0.1)]'>
-        <div className='min-w-0 flex-1'>
-          <div className='flex flex-wrap items-center gap-[0.625rem]'>
-            <span className='rounded-[0.25rem] bg-[#F1F4F8] px-[0.625rem] py-[0.25rem] text-[0.6875rem] font-bold tracking-[0.08em] text-[#1A2B48] uppercase'>
-              {job.type}
-            </span>
-            <span className='text-[0.75rem] font-semibold text-[#94A3B8]'>Mã: {job.code}</span>
-          </div>
-
-          <h3 className='mt-[0.875rem] text-[1.1875rem] leading-[1.35] font-bold tracking-[-0.01em] text-pretty text-[#1A2B48] uppercase transition-all duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:text-[#0F1C33] xsm:text-[1.0625rem]'>
-            {job.title}
-          </h3>
-
-          <ul className='mt-[1.125rem] flex flex-wrap gap-x-[1.25rem] gap-y-[0.5rem] text-[0.8125rem] text-[#64748B]'>
-            <li className='inline-flex items-center gap-[0.375rem]'>
-              <Building2
-                className='size-[0.875rem] text-[#B5935E]'
-                strokeWidth={1.5}
-              />
-              {job.department}
-            </li>
-            <li className='inline-flex items-center gap-[0.375rem]'>
-              <MapPin
-                className='size-[0.875rem] text-[#B5935E]'
-                strokeWidth={1.5}
-              />
-              {job.location}
-            </li>
-            <li className='inline-flex items-center gap-[0.375rem]'>
-              <Wallet
-                className='size-[0.875rem] text-[#B5935E]'
-                strokeWidth={1.5}
-              />
-              {job.salary}
-            </li>
-          </ul>
-        </div>
-
-        <Link
-          href={{ pathname: '/co-hoi-nghe-nghiep/[slug]', params: { slug: job.id } }}
-          className='inline-flex shrink-0 items-center gap-[0.75rem] rounded-full bg-[#1A2B48] py-[0.5rem] pr-[0.5rem] pl-[1.25rem] text-[0.8125rem] font-bold text-white transition-colors duration-300 hover:bg-[#243656] focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-offset-2 focus-visible:outline-none xsm:w-full xsm:justify-between'
-        >
-          Xem chi tiết
-          <span
-            aria-hidden
-            className='flex size-[2rem] items-center justify-center rounded-full bg-white/10 transition-[transform,background-color] duration-300 group-hover:translate-x-[0.125rem] group-hover:bg-[#B5935E] xsm:transition-none xsm:group-hover:translate-x-0'
-          >
-            <ArrowRight className='size-[0.875rem]' />
-          </span>
-        </Link>
-      </article>
-    </div>
-  )
-}
-
-const CareersJobs = () => {
-  const [keyword, setKeyword] = useState('')
-  const [filters, setFilters] = useState<Record<FilterKey, string>>({
-    department: ALL,
-    location: ALL,
-    type: ALL,
-  })
-  const [page, setPage] = useState(1)
-  const [drawer, setDrawer] = useState<FilterKey | null>(null)
-
-  const filtered = useMemo(() => {
-    const q = keyword.trim().toLowerCase()
-
-    return JOBS.filter((job) => {
-      if (filters.department !== ALL && job.department !== filters.department) return false
-      if (filters.location !== ALL && job.location !== filters.location) return false
-      if (filters.type !== ALL && job.type !== filters.type) return false
-      if (!q) return true
-      return (
-        job.title.toLowerCase().includes(q) ||
-        job.code.toLowerCase().includes(q) ||
-        job.department.toLowerCase().includes(q)
-      )
-    })
-  }, [keyword, filters])
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / JOBS_PER_PAGE))
-  const currentPage = Math.min(page, totalPages)
-  const pageItems = filtered.slice((currentPage - 1) * JOBS_PER_PAGE, currentPage * JOBS_PER_PAGE)
-
-  const setFilter = (key: FilterKey, value: string) => {
-    setFilters((prev) => ({ ...prev, [key]: value }))
-    setPage(1)
+  const walk = (nodes: CareersTaxonomyItem[]) => {
+    for (const node of nodes) {
+      if (node.slug && node.name) result.push({ slug: node.slug, name: node.name })
+      if (node.children?.length) walk(node.children)
+    }
   }
 
-  const activeFilter = drawer ? FILTERS.find((item) => item.key === drawer) : null
-  const activeValue = drawer ? filters[drawer] : ALL
+  walk(items)
+  return result
+}
+
+const JobCardSkeleton = () => (
+  <div className='h-[8.5rem] animate-pulse rounded-[1.25rem] bg-white ring-1 ring-[#1A2B48]/[0.06] xsm:h-[12rem] xsm:rounded-[1rem]' />
+)
+
+type CareersJobsProps = {
+  locale: string
+  departments?: CareersTaxonomyItem[]
+  locations?: CareersTaxonomyItem[]
+}
+
+const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsProps) => {
+  const t = useTranslations('Careers')
+  const tc = useTranslations('Common')
+  const tp = useTranslations('Common.pagination')
+  const [{ 'phong-ban': deptSlug, 'dia-diem': locSlug, q, trang: page }, setQuery] = useQueryStates(
+    careersSearchParams,
+    { history: 'push', shallow: true },
+  )
+
+  const departmentOptions = flattenTaxonomies(departments)
+  const locationOptions = flattenTaxonomies(locations)
+
+  const department = departmentOptions.some((item) => item.slug === deptSlug)
+    ? (deptSlug ?? undefined)
+    : undefined
+  const location = locationOptions.some((item) => item.slug === locSlug)
+    ? (locSlug ?? undefined)
+    : undefined
+
+  const searchFromUrl = q ?? ''
+  const [keyword, setKeyword] = useState(searchFromUrl)
+  const [prevSearch, setPrevSearch] = useState(searchFromUrl)
+  const [drawer, setDrawer] = useState<FilterKey | null>(null)
+
+  // Đồng bộ khi URL đổi (back/forward) — adjust state khi render, không dùng effect
+  if (searchFromUrl !== prevSearch) {
+    setPrevSearch(searchFromUrl)
+    setKeyword(searchFromUrl)
+  }
+
+  useEffect(() => {
+    const next = keyword.trim()
+    const current = searchFromUrl.trim()
+    if (next === current) return
+    const timer = setTimeout(() => {
+      void setQuery({ q: next || null, trang: 1 })
+    }, 400)
+    return () => clearTimeout(timer)
+  }, [keyword, searchFromUrl, setQuery])
+
+  const { data, isLoading, isValidating } = useCareers({
+    lang: locale,
+    paged: page,
+    limit: JOBS_PER_PAGE,
+    location,
+    department,
+    search: q ?? undefined,
+  })
+
+  const jobs = (data?.data ?? [])
+    .map(mapCareerListItem)
+    .filter((item): item is CareerCardModel => item !== null)
+
+  const showSkeleton = isLoading || (isValidating && jobs.length === 0)
+  const total = data?.total ?? jobs.length
+  const totalPages = Math.max(1, data?.totalPages ?? 1)
+  const currentPage = Math.min(Math.max(1, page), totalPages)
+
+  const filters: FilterConfig[] = [
+    {
+      key: 'department',
+      queryKey: 'phong-ban',
+      label: t('department'),
+      allLabel: t('allDepartments'),
+      options: departmentOptions,
+      icon: Building2,
+      width: 'w-[14rem]',
+    },
+    {
+      key: 'location',
+      queryKey: 'dia-diem',
+      label: t('location'),
+      allLabel: t('allLocations'),
+      options: locationOptions,
+      icon: MapPin,
+      width: 'w-[13rem]',
+    },
+  ]
+
+  const filterValue = (key: FilterKey) => {
+    if (key === 'department') return department ?? ALL
+    return location ?? ALL
+  }
+
+  const setFilter = (key: FilterKey, value: string) => {
+    const next = value === ALL ? null : value
+    if (key === 'department') void setQuery({ 'phong-ban': next, trang: 1 })
+    else void setQuery({ 'dia-diem': next, trang: 1 })
+  }
+
+  const goToPage = (nextPage: number) => {
+    void setQuery({ trang: nextPage <= 1 ? 1 : nextPage })
+  }
+
+  const activeFilter = drawer ? filters.find((item) => item.key === drawer) : null
+  const activeValue = drawer ? filterValue(drawer) : ALL
 
   return (
-    <section className='bg-[#FAFBFC] py-[5rem] xsm:py-[3rem]'>
+    <section
+      id={sectionId('careersJobs', locale)}
+      className='scroll-mt-[6rem] bg-[#FAFBFC] py-[5rem] xsm:py-[3rem]'
+    >
       <div className='mx-auto max-w-[95rem] px-[3.75rem] xsm:px-[1.25rem]'>
         <div className='max-w-[40rem]'>
           <h2 className='text-[2rem] leading-[1.3] font-bold tracking-[-0.015em] text-[#1A2B48] xsm:text-[1.5rem]'>
-            Vị trí đang tuyển dụng
+            {t('openPositions')}
           </h2>
           <p className='mt-[0.625rem] text-[0.9375rem] leading-[1.65] text-[#64748B] xsm:text-[0.875rem]'>
-            Khám phá cơ hội phát triển cùng chúng tôi trong các dự án sắp tới.
+            {t('openSubtitle')}
           </p>
         </div>
 
         <div className='mt-[2rem] flex flex-wrap items-center gap-[0.75rem] rounded-[0.875rem] border border-[#EEF1F5] bg-white p-[0.75rem] shadow-[0_0.75rem_2rem_-1.25rem_rgba(26,43,72,0.18)] xsm:mt-[1.5rem] xsm:flex-col xsm:items-stretch'>
           <label className='relative min-w-[16rem] flex-1'>
-            <span className='sr-only'>Tìm vị trí tuyển dụng</span>
+            <span className='sr-only'>{t('searchAria')}</span>
             <Search className='pointer-events-none absolute top-1/2 left-[1rem] size-[1rem] -translate-y-1/2 text-[#94A3B8]' />
             <input
               type='search'
               value={keyword}
-              onChange={(event) => {
-                setKeyword(event.target.value)
-                setPage(1)
-              }}
-              placeholder='Tìm vị trí tuyển dụng...'
+              onChange={(event) => setKeyword(event.target.value)}
+              placeholder={t('searchPlaceholder')}
               className='h-[2.875rem] w-full rounded-[0.5rem] border border-transparent bg-[#F8FAFC] pr-[1rem] pl-[2.75rem] text-[0.875rem] text-[#1A2B48] outline-none transition-colors duration-300 placeholder:text-[#94A3B8] focus:border-[#C6A15B] focus:bg-white'
             />
           </label>
 
-          {/* Desktop: shadcn Select */}
           <div className='flex flex-wrap items-center gap-[0.75rem] xsm:hidden'>
-            {FILTERS.map((filter) => {
+            {filters.map((filter) => {
               const Icon = filter.icon
               return (
                 <Select
                   key={filter.key}
-                  value={filters[filter.key]}
+                  value={filterValue(filter.key)}
                   onValueChange={(value) => setFilter(filter.key, value)}
                 >
                   <SelectTrigger
@@ -244,11 +236,11 @@ const CareersJobs = () => {
                     </SelectItem>
                     {filter.options.map((item) => (
                       <SelectItem
-                        key={item}
-                        value={item}
+                        key={item.slug}
+                        value={item.slug}
                         className={SELECT_ITEM}
                       >
-                        {item}
+                        {item.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -257,12 +249,14 @@ const CareersJobs = () => {
             })}
           </div>
 
-          {/* Mobile: mở drawer */}
           <div className='hidden gap-[0.625rem] xsm:flex xsm:flex-col'>
-            {FILTERS.map((filter) => {
+            {filters.map((filter) => {
               const Icon = filter.icon
-              const value = filters[filter.key]
-              const display = value === ALL ? filter.allLabel : value
+              const value = filterValue(filter.key)
+              const display =
+                value === ALL
+                  ? filter.allLabel
+                  : (filter.options.find((item) => item.slug === value)?.name ?? filter.allLabel)
 
               return (
                 <button
@@ -301,7 +295,10 @@ const CareersJobs = () => {
               >
                 {[
                   { value: ALL, label: activeFilter.allLabel },
-                  ...activeFilter.options.map((item) => ({ value: item, label: item })),
+                  ...activeFilter.options.map((item) => ({
+                    value: item.slug,
+                    label: item.name,
+                  })),
                 ].map((option) => {
                   const selected = option.value === activeValue
 
@@ -335,12 +332,14 @@ const CareersJobs = () => {
         </DrawerProvider>
 
         <p className='mt-[1.5rem] text-[0.8125rem] font-medium text-[#94A3B8]'>
-          {filtered.length} vị trí phù hợp
+          {showSkeleton ? tc('loading') : t('results', { count: total })}
         </p>
 
         <div className='mt-[1rem] flex flex-col gap-[1rem]'>
-          {pageItems.length > 0 ? (
-            pageItems.map((job, index) => (
+          {showSkeleton ? (
+            Array.from({ length: JOBS_PER_PAGE }, (_, index) => <JobCardSkeleton key={index} />)
+          ) : jobs.length > 0 ? (
+            jobs.map((job, index) => (
               <JobCard
                 key={job.id}
                 job={job}
@@ -349,24 +348,24 @@ const CareersJobs = () => {
             ))
           ) : (
             <p className='rounded-[1rem] border border-dashed border-[#E2E8F0] bg-white px-[1.5rem] py-[3rem] text-center text-[0.9375rem] text-[#64748B]'>
-              Không tìm thấy vị trí phù hợp.
+              {t('empty')}
             </p>
           )}
         </div>
 
-        {totalPages > 1 ? (
+        {totalPages > 1 && !showSkeleton ? (
           <nav
-            aria-label='Phân trang tuyển dụng'
+            aria-label={tp('label')}
             className='mt-[2.5rem] flex items-center justify-center gap-[0.5rem]'
           >
             <button
               type='button'
               disabled={currentPage <= 1}
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              onClick={() => goToPage(currentPage - 1)}
               className='inline-flex h-[2.5rem] items-center gap-[0.25rem] rounded-full px-[0.875rem] text-[0.8125rem] font-semibold text-[#1A2B48] transition-colors duration-300 hover:text-[#B5935E] disabled:pointer-events-none disabled:opacity-35'
             >
               <ChevronLeft className='size-[0.875rem]' />
-              Trước
+              {t('prev')}
             </button>
 
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
@@ -374,7 +373,7 @@ const CareersJobs = () => {
                 key={pageNumber}
                 type='button'
                 aria-current={pageNumber === currentPage ? 'page' : undefined}
-                onClick={() => setPage(pageNumber)}
+                onClick={() => goToPage(pageNumber)}
                 className={cn(
                   'inline-flex size-[2.5rem] items-center justify-center rounded-full text-[0.875rem] font-bold transition-colors duration-300',
                   pageNumber === currentPage
@@ -389,10 +388,10 @@ const CareersJobs = () => {
             <button
               type='button'
               disabled={currentPage >= totalPages}
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              onClick={() => goToPage(currentPage + 1)}
               className='inline-flex h-[2.5rem] items-center gap-[0.25rem] rounded-full px-[0.875rem] text-[0.8125rem] font-semibold text-[#1A2B48] transition-colors duration-300 hover:text-[#B5935E] disabled:pointer-events-none disabled:opacity-35'
             >
-              Sau
+              {t('next')}
               <ChevronRight className='size-[0.875rem]' />
             </button>
           </nav>

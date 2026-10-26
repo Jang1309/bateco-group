@@ -11,6 +11,7 @@ import { sectionId } from '@/configs/section-ids'
 import type { ProjectsPageBanner } from '@/interfaces/projects.interface'
 import { cn } from '@/lib/utils'
 import { scrollToSection } from '@/utils/scrollToSection'
+import { stripHtml } from '@/views/news/map-post'
 
 const FALLBACK_IMAGE = '/home/investment/d-card-2.png'
 
@@ -111,6 +112,7 @@ const ProjectsHero = ({ data }: ProjectsHeroProps) => {
   const banner = data?.title || data?.subtitle ? data : fallbackBanner
   const desktop = banner.desktop || FALLBACK_IMAGE
   const mobile = typeof banner.mobile === 'string' && banner.mobile ? banner.mobile : desktop
+  const srTitle = stripHtml(banner.title) || banner.subtitle || t('heroTitle')
 
   const handleExplore = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault()
@@ -127,6 +129,7 @@ const ProjectsHero = ({ data }: ProjectsHeroProps) => {
 
   return (
     <section className='relative overflow-hidden bg-white'>
+      <h1 className='sr-only'>{srTitle}</h1>
       {/* Desktop: chữ trái + ảnh phải */}
       <div className='relative overflow-hidden pt-[9.5rem] pb-[6rem] xsm:hidden'>
         <div className='absolute inset-y-0 right-0 w-[70%]'>

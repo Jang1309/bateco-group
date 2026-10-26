@@ -52,6 +52,31 @@ export function hrefFor(
   return path
 }
 
+/** True when URL is (or ends with) a contact page path in either locale. */
+export function isContactPath(url?: string): boolean {
+  if (!url) return false
+  try {
+    const path = url.startsWith('http') ? new URL(url).pathname : url
+    return (
+      path === PATHS.contact.vi ||
+      path === PATHS.contact.en ||
+      path.endsWith(PATHS.contact.vi) ||
+      path.endsWith(PATHS.contact.en)
+    )
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Locale-aware contact href. Remaps CMS `/lien-he` or `/contact` (and absolute
+ * variants) so EN never lands on `/en/lien-he`.
+ */
+export function contactHrefFor(locale: string = 'vi', cmsUrl?: string): string {
+  if (!cmsUrl || isContactPath(cmsUrl)) return hrefFor('contact', locale)
+  return cmsUrl
+}
+
 /** @deprecated Prefer pathFor(key, locale). Defaults to vi public paths. */
 const ROUTES = {
   home: PATHS.home.vi,

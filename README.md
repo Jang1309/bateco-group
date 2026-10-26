@@ -30,11 +30,12 @@ ANALYZE=true pnpm build
 
 Biến môi trường (`src/configs/env.ts`):
 
-| Biến                 | Dùng cho      |
-| -------------------- | ------------- |
-| `NEXT_PUBLIC_DOMAIN` | Domain public |
-| `NEXT_PUBLIC_CMS`    | Origin CMS    |
-| `NEXT_PUBLIC_API`    | Prefix API    |
+| Biến                 | Dùng cho                   |
+| -------------------- | -------------------------- |
+| `NEXT_PUBLIC_DOMAIN` | Domain public              |
+| `NEXT_PUBLIC_CMS`    | Origin CMS                 |
+| `NEXT_PUBLIC_API`    | Prefix API                 |
+| `NEXT_PUBLIC_GA_ID`  | GA4 measurement id (`G-…`) |
 
 Build dùng `output: 'standalone'`.
 

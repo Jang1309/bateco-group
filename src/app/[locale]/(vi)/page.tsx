@@ -1,8 +1,26 @@
+import type { Metadata } from 'next'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
+
 import homepageService from '@/services/homepage'
 import HomePageView from '@/views/homepage'
 
-const HomePage = async ({ params }: { params: Promise<{ locale: string }> }) => {
+type Props = {
+  params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Meta' })
+
+  return {
+    title: t('homeTitle'),
+    description: t('homeDesc'),
+  }
+}
+
+const HomePage = async ({ params }: Props) => {
+  const { locale } = await params
+  setRequestLocale(locale)
 
   const [homepageResponse, postListResponse, sectorsResponse, projectsResponse] = await Promise.all(
     [

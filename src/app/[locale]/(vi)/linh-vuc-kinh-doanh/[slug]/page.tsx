@@ -65,6 +65,7 @@ const BusinessDetailPage = async ({ params }: Props) => {
 
   return (
     <BusinessDetailView
+      locale={locale}
       sector={sector}
       projects={projects}
       ecosystem={siteData?.ecosystem}

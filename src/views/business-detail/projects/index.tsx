@@ -4,7 +4,7 @@ import type { ComponentProps } from 'react'
 
 import { hrefFor } from '@/configs/routes'
 import { sectionId } from '@/configs/section-ids'
-import { Link } from '@/i18n/navigation'
+import { Link, toAppHref } from '@/i18n/navigation'
 import type { ProjectListItem } from '@/interfaces/projects.interface'
 
 import ProjectCard, { type SectorProjectCard } from './components/card'
@@ -13,19 +13,19 @@ const FALLBACK_IMAGE = '/home/news/card-1.jpg'
 
 type SectorProjectsProps = {
   projects?: ProjectListItem[]
-  locale?: string
+  locale: string
 }
 
 const projectHref = (
   project: ProjectListItem,
-  locale: string = 'vi',
+  locale: string,
 ): ComponentProps<typeof Link>['href'] => {
   const slug = project.slug || (project.id != null ? String(project.id) : '')
-  if (!slug) return hrefFor('projects', locale) as ComponentProps<typeof Link>['href']
-  return hrefFor('projectDetail', locale, { slug }) as ComponentProps<typeof Link>['href']
+  if (!slug) return toAppHref(hrefFor('projects', locale))
+  return toAppHref(hrefFor('projectDetail', locale, { slug }))
 }
 
-const mapProject = (project: ProjectListItem, locale: string = 'vi'): SectorProjectCard | null => {
+const mapProject = (project: ProjectListItem, locale: string): SectorProjectCard | null => {
   if (!project.title && !project.slug) return null
 
   const acf =
@@ -42,7 +42,7 @@ const mapProject = (project: ProjectListItem, locale: string = 'vi'): SectorProj
   }
 }
 
-const SectorProjects = ({ projects = [], locale = 'vi' }: SectorProjectsProps) => {
+const SectorProjects = ({ projects = [], locale }: SectorProjectsProps) => {
   const t = useTranslations('BusinessDetail')
   const items = projects
     .map((project) => mapProject(project, locale))
@@ -72,7 +72,7 @@ const SectorProjects = ({ projects = [], locale = 'vi' }: SectorProjectsProps) =
           </div>
 
           <Link
-            href={hrefFor('projects', locale) as ComponentProps<typeof Link>['href']}
+            href={toAppHref(hrefFor('projects', locale))}
             className='group/all flex w-fit items-center gap-[0.875rem] text-[0.8125rem] font-bold tracking-[0.12em] text-[#1A2B48] uppercase xsm:text-[0.75rem]'
           >
             {t('viewAllProjects')}

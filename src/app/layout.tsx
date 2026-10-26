@@ -22,8 +22,9 @@ const arimo = Arimo({
 })
 
 export const metadata: Metadata = {
-  title: 'Next.js 16 Template Docs',
-  description: 'Source overview and how this Next.js 16 template works.',
+  title: 'Bateco Group',
+  description:
+    'Bateco Group — multi-sector investment group driven by execution and lasting value.',
 }
 
 export default function RootLayout({

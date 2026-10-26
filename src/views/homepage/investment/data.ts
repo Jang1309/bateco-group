@@ -4,7 +4,7 @@ import ROUTES from '@/configs/routes'
 import { Link } from '@/i18n/navigation'
 import type { SectorItem } from '@/interfaces/sectors.interface'
 
-/** Fallback khi acf.image trống */
+/** Fallback khi acf.banner.image trống */
 export const SECTOR_FALLBACK_IMAGES = [
   '/home/investment/d-card-1.png',
   '/home/investment/d-card-2.png',
@@ -38,8 +38,9 @@ export const mapSectors = (sectors?: SectorItem[]): InvestmentItem[] => {
     items.push({
       label: sector.name || '',
       title: splitTitle(sector.name),
-      description: sector.description || '',
-      image: sector.acf?.image || SECTOR_FALLBACK_IMAGES[index % SECTOR_FALLBACK_IMAGES.length],
+      description: sector.description || sector.acf?.banner?.desc || '',
+      image:
+        sector.acf?.banner?.image || SECTOR_FALLBACK_IMAGES[index % SECTOR_FALLBACK_IMAGES.length],
       href: slug
         ? { pathname: '/linh-vuc-kinh-doanh/[slug]' as const, params: { slug } }
         : ROUTES.business,

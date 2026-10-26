@@ -14,7 +14,9 @@ const SectorRow = ({ sector, index }: SectorRowProps) => {
   const reversed = index % 2 === 1
   const title = sector.name || ''
   const slug = sector.slug
-  const image = sector.acf?.image || SECTOR_FALLBACK_IMAGES[index % SECTOR_FALLBACK_IMAGES.length]
+  const description = sector.description || sector.acf?.banner?.desc || ''
+  const image =
+    sector.acf?.banner?.image || SECTOR_FALLBACK_IMAGES[index % SECTOR_FALLBACK_IMAGES.length]
 
   return (
     <li
@@ -47,9 +49,9 @@ const SectorRow = ({ sector, index }: SectorRowProps) => {
         <h2 className='mt-[1rem] max-w-[32rem] text-[2rem] leading-[1.3] font-bold tracking-[0.01em] text-[#B88E4F] uppercase xsm:text-[1.375rem]'>
           {title}
         </h2>
-        {sector.description ? (
+        {description ? (
           <p className='mt-[1.25rem] max-w-[34rem] text-justify text-[1rem] leading-[1.75] font-medium text-[#1F2A37] xsm:text-[0.9375rem]'>
-            {sector.description}
+            {description}
           </p>
         ) : null}
         {slug ? (

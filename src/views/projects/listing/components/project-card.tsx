@@ -1,23 +1,24 @@
 import Image from 'next/image'
 
 import { Link } from '@/i18n/navigation'
-import { getSectorLabel, type Project } from '@/views/projects/data'
+import type { ProjectCardModel } from '@/views/projects/map-project'
 
 type ProjectCardProps = {
-  project: Project
+  project: ProjectCardModel
   number: number
 }
 
 const ProjectCard = ({ project, number }: ProjectCardProps) => {
   return (
     <Link
-      href={{ pathname: '/du-an/[slug]', params: { slug: project.id } }}
-      className='group relative block aspect-[3/4] overflow-hidden rounded-[0.75rem] bg-[#0F1C33] shadow-[0_0.75rem_2rem_rgba(15,28,51,0.12)] xsm:aspect-[4/5]'
+      href={{ pathname: '/du-an/[slug]', params: { slug: project.slug } }}
+      className='group relative block aspect-[3/4] overflow-hidden rounded-[0.75rem] bg-[#0F1C33] shadow-[0_0.75rem_2rem_rgba(15,28,51,0.12)] xsm:aspect-[4/5] xsm:rounded-[0.5rem]'
     >
       <Image
         src={project.image}
         alt={project.title}
         fill
+        unoptimized
         sizes='(max-width: 639px) 92vw, 30vw'
         className='object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]'
       />
@@ -37,15 +38,17 @@ const ProjectCard = ({ project, number }: ProjectCardProps) => {
         >
           {String(number).padStart(2, '0')}.
         </p>
-        <p className='mt-[0.75rem] text-[0.6875rem] font-bold tracking-[0.12em] text-[#DFBA73] uppercase'>
-          {getSectorLabel(project.sector)}
-        </p>
+        {project.sectorLabel ? (
+          <p className='mt-[0.75rem] text-[0.6875rem] font-bold tracking-[0.12em] text-[#DFBA73] uppercase xsm:mt-[0.5rem] xsm:text-[0.625rem]'>
+            {project.sectorLabel}
+          </p>
+        ) : null}
         <h3 className='mt-[0.375rem] line-clamp-2 text-[1.5rem] leading-[1.3] font-bold text-white xsm:text-[1.25rem]'>
           {project.title}
         </h3>
         <span
           aria-hidden
-          className='mt-[1rem] block h-[0.125rem] w-[2rem] bg-[#C6A15B] transition-[width] duration-500 ease-out group-hover:w-[4rem]'
+          className='mt-[1rem] block h-[0.125rem] w-[2rem] bg-[#C6A15B] transition-[width] duration-500 ease-out group-hover:w-[4rem] xsm:mt-[0.75rem]'
         />
       </div>
     </Link>

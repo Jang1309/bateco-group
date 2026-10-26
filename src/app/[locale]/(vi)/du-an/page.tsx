@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 
+import projectsService from '@/services/projects'
 import ProjectsView from '@/views/projects'
-import { PROJECT_SECTORS, type ProjectSort } from '@/views/projects/data'
 
 export const metadata: Metadata = {
   title: 'Dự án | Bateco Group',
@@ -12,21 +12,31 @@ export const metadata: Metadata = {
 
 type Props = {
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ 'linh-vuc'?: string; q?: string; 'sap-xep'?: string; trang?: string }>
 }
 
-const ProjectsPage = async ({ params, searchParams }: Props) => {
+const ProjectsPage = async ({ params }: Props) => {
   const { locale } = await params
   setRequestLocale(locale)
 
-  const raw = await searchParams
-  const sector = PROJECT_SECTORS.some((item) => item.id === raw['linh-vuc'])
-    ? raw['linh-vuc']
-    : undefined
-  const sort: ProjectSort = raw['sap-xep'] === 'cu-nhat' ? 'cu-nhat' : 'moi-nhat'
-  const page = Number.parseInt(raw.trang ?? '1', 10) || 1
+  const [pageResponse, sectorsResponse, featuredResponse] = await Promise.all([
+    projectsService.getProjectsPage(locale),
+    projectsService.getProjectsCategories(locale),
+    projectsService.getProjectsList({
+      lang: locale,
+      limit: 3,
+      paged: 1,
+      order: 'DESC',
+    }),
+  ])
 
-  return <ProjectsView query={{ sector, q: raw.q, sort, page }} />
+  return (
+    <ProjectsView
+      locale={locale}
+      content={pageResponse?.acf}
+      sectors={sectorsResponse?.data ?? []}
+      featured={featuredResponse?.data ?? []}
+    />
+  )
 }
 
 export default ProjectsPage

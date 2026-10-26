@@ -66,6 +66,7 @@ const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
                   src={src}
                   alt={`${title} - ảnh ${i + 1}`}
                   fill
+                  unoptimized
                   sizes={
                     i === 0 ? '(max-width: 639px) 92vw, 46vw' : '(max-width: 639px) 46vw, 23vw'
                   }
@@ -155,6 +156,7 @@ const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
                         src={src}
                         alt={`${title} - ảnh ${i + 1}`}
                         fill
+                        unoptimized
                         sizes='(max-width: 639px) 94vw, 58rem'
                         className='object-cover'
                         priority={i === active}
@@ -189,6 +191,7 @@ const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
                     src={src}
                     alt=''
                     fill
+                    unoptimized
                     sizes='(max-width: 639px) 56px, 72px'
                     quality={90}
                     className='object-cover'

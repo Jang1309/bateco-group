@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import { useRef, useState } from 'react'
 import type { Swiper as SwiperType } from 'swiper'
@@ -9,16 +9,16 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 
 import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
-import { getSectorLabel, type Project } from '@/views/projects/data'
+import type { ProjectCardModel } from '@/views/projects/map-project'
 
 import 'swiper/css'
 import 'swiper/css/effect-fade'
 
 const NAV_BUTTON =
-  'flex size-[2.75rem] items-center justify-center rounded-full border border-white/30 text-white transition-colors duration-300 hover:border-white hover:bg-white hover:text-[#1A2B48] xsm:size-[2.5rem]'
+  'flex size-[2.5rem] items-center justify-center rounded-full border border-white/25 bg-white/5 text-white backdrop-blur-sm transition-[border-color,background-color,color] duration-300 hover:border-white hover:bg-white hover:text-[#1A2B48] xsm:size-[2.25rem]'
 
 type FeaturedSliderProps = {
-  projects: Project[]
+  projects: ProjectCardModel[]
 }
 
 const pad = (n: number) => String(n).padStart(2, '0')
@@ -29,13 +29,13 @@ const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
   const progressRef = useRef<HTMLSpanElement>(null)
 
   return (
-    <div className='relative overflow-hidden rounded-[1rem] bg-[#0F1C33] shadow-[0_1.5rem_3rem_rgba(15,28,51,0.18)] xsm:rounded-[0.75rem]'>
+    <div className='relative overflow-hidden rounded-[0.75rem] bg-[#0F1C33] xsm:rounded-[0.5rem]'>
       <Swiper
         modules={[Autoplay, EffectFade]}
         effect='fade'
         fadeEffect={{ crossFade: true }}
-        loop
-        speed={1000}
+        loop={projects.length > 1}
+        speed={900}
         autoplay={{ delay: 6000, disableOnInteraction: false, pauseOnMouseEnter: true }}
         onSwiper={setSwiper}
         onSlideChange={(instance) => setActiveIndex(instance.realIndex)}
@@ -44,53 +44,76 @@ const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
         }}
       >
         {projects.map((project, index) => {
-          const active = activeIndex === index
+          const isActive = activeIndex === index
 
           return (
             <SwiperSlide key={project.id}>
-              <article className='relative aspect-[16/7] overflow-hidden xsm:aspect-[4/5]'>
+              <article className='relative aspect-[16/8] overflow-hidden xsm:aspect-[3/4]'>
                 <Image
                   src={project.image}
                   alt={project.title}
                   fill
                   priority={index === 0}
+                  unoptimized
                   sizes='(max-width: 639px) 100vw, 88vw'
                   className={cn(
                     'object-cover transition-transform ease-out',
-                    active ? 'scale-[1.08] duration-[7s]' : 'scale-100 delay-1000 duration-0',
+                    isActive ? 'scale-[1.04] duration-[8s]' : 'scale-100 delay-1000 duration-0',
                   )}
                 />
                 <div
                   aria-hidden
-                  className='absolute inset-0 bg-[linear-gradient(90deg,rgba(15,28,51,0.85)_0%,rgba(15,28,51,0.45)_40%,rgba(15,28,51,0)_70%),linear-gradient(0deg,rgba(15,28,51,0.8)_0%,rgba(15,28,51,0)_40%)] xsm:bg-[linear-gradient(0deg,rgba(15,28,51,0.95)_0%,rgba(15,28,51,0.5)_45%,rgba(15,28,51,0)_75%)]'
+                  className='absolute inset-0 bg-[linear-gradient(180deg,rgba(15,28,51,0.1)_0%,rgba(15,28,51,0.35)_50%,rgba(15,28,51,0.92)_100%)]'
                 />
 
-                <div className='absolute inset-x-0 bottom-[6.5rem] px-[4rem] xsm:bottom-[5.5rem] xsm:px-[1.25rem]'>
-                  <span
-                    className={cn(
-                      'inline-block border-l-[0.1875rem] border-[#C6A15B] pl-[0.75rem] text-[0.75rem] font-bold tracking-[0.18em] text-[#DFBA73] uppercase transition-[opacity,transform] duration-700 ease-out',
-                      active
-                        ? 'translate-y-0 opacity-100 delay-300'
-                        : 'translate-y-[1rem] opacity-0',
-                    )}
-                  >
-                    {getSectorLabel(project.sector)}
-                  </span>
-                  <h3
-                    className={cn(
-                      'mt-[1rem] max-w-[42rem] text-[3.25rem] leading-[1.12] font-bold text-white transition-[opacity,transform] duration-700 ease-out xsm:text-[1.875rem]',
-                      active
-                        ? 'translate-y-0 opacity-100 delay-500'
-                        : 'translate-y-[1.5rem] opacity-0',
-                    )}
-                  >
-                    <Link
-                      href={{ pathname: '/du-an/[slug]', params: { slug: project.id } }}
-                      className='transition-colors duration-300 hover:text-[#DFBA73]'
+                <div className='absolute inset-x-0 bottom-0 px-[2.5rem] pt-[6rem] pb-[5.25rem] xsm:px-[1.25rem] xsm:pt-[4rem] xsm:pb-[4.75rem]'>
+                  <div className='max-w-[32rem]'>
+                    {project.sectorLabel ? (
+                      <p
+                        className={cn(
+                          'flex items-center gap-[0.625rem] text-[0.6875rem] font-semibold tracking-[0.14em] text-[#DFBA73] uppercase transition-[opacity,transform] duration-500 ease-out xsm:text-[0.625rem] xsm:tracking-[0.12em]',
+                          isActive
+                            ? 'translate-y-0 opacity-100 delay-150'
+                            : 'translate-y-[0.75rem] opacity-0',
+                        )}
+                      >
+                        <span
+                          aria-hidden
+                          className='h-px w-[1.5rem] shrink-0 bg-[#C6A15B] xsm:w-[1rem]'
+                        />
+                        <span className='line-clamp-1'>{project.sectorLabel}</span>
+                      </p>
+                    ) : null}
+
+                    <h3
+                      className={cn(
+                        'mt-[0.75rem] text-[1.625rem] leading-[1.3] font-bold text-pretty text-white transition-[opacity,transform] duration-700 ease-out xsm:mt-[0.5rem] xsm:text-[1.125rem] xsm:leading-[1.35]',
+                        isActive
+                          ? 'translate-y-0 opacity-100 delay-200'
+                          : 'translate-y-[1rem] opacity-0',
+                      )}
                     >
-                      {project.title}
+                      <Link
+                        href={{ pathname: '/du-an/[slug]', params: { slug: project.slug } }}
+                        className='line-clamp-3 transition-colors duration-300 hover:text-[#DFBA73] xsm:line-clamp-4'
+                      >
+                        {project.title}
+                      </Link>
+                    </h3>
+
+                    <Link
+                      href={{ pathname: '/du-an/[slug]', params: { slug: project.slug } }}
+                      className={cn(
+                        'group mt-[1rem] inline-flex items-center gap-[0.5rem] text-[0.75rem] font-bold tracking-[0.08em] text-white/75 uppercase transition-[opacity,transform,color] duration-700 ease-out hover:text-[#DFBA73] xsm:mt-[0.75rem] xsm:text-[0.6875rem]',
+                        isActive
+                          ? 'translate-y-0 opacity-100 delay-300'
+                          : 'translate-y-[0.75rem] opacity-0',
+                      )}
+                    >
+                      Xem dự án
+                      <ArrowRight className='size-[0.875rem] transition-transform duration-300 group-hover:translate-x-[0.2rem]' />
                     </Link>
-                  </h3>
+                  </div>
                 </div>
               </article>
             </SwiperSlide>
@@ -98,9 +121,8 @@ const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
         })}
       </Swiper>
 
-      {/* Thanh điều khiển ở đáy */}
-      <div className='absolute inset-x-0 bottom-0 z-10 flex items-center justify-between gap-[1.5rem] px-[4rem] pb-[2.5rem] xsm:px-[1.25rem] xsm:pb-[1.5rem]'>
-        <div className='flex flex-1 items-center gap-[0.5rem]'>
+      <div className='absolute inset-x-0 bottom-0 z-10 flex items-center justify-between gap-[0.75rem] px-[2.5rem] pb-[1.75rem] xsm:px-[1.25rem] xsm:pb-[1.15rem]'>
+        <div className='flex min-w-0 flex-1 items-center gap-[0.375rem] overflow-hidden'>
           {projects.map((project, index) => (
             <button
               key={project.id}
@@ -108,9 +130,14 @@ const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
               aria-label={`Chuyển tới dự án ${index + 1}`}
               aria-current={index === activeIndex}
               onClick={() => swiper?.slideToLoop(index)}
-              className='group/bar py-[0.75rem]'
+              className='group/bar shrink-0 py-[0.5rem]'
             >
-              <span className='relative block h-[0.1875rem] w-[3.5rem] overflow-hidden bg-white/25 transition-colors duration-300 group-hover/bar:bg-white/50 xsm:w-[2.5rem]'>
+              <span
+                className={cn(
+                  'relative block h-[0.125rem] overflow-hidden bg-white/25 transition-[width,background-color] duration-300 group-hover/bar:bg-white/50',
+                  index === activeIndex ? 'w-[2.5rem] xsm:w-[1.75rem]' : 'w-[1rem] xsm:w-[0.75rem]',
+                )}
+              >
                 {index === activeIndex ? (
                   <span
                     ref={progressRef}
@@ -123,28 +150,32 @@ const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
           ))}
         </div>
 
-        <div className='flex items-center gap-[1.25rem] xsm:gap-[0.75rem]'>
-          <p className='text-[0.875rem] font-semibold tracking-[0.08em] text-white/60 tabular-nums'>
-            <span className='text-white'>{pad(activeIndex + 1)}</span> / {pad(projects.length)}
+        <div className='flex shrink-0 items-center gap-[0.75rem] xsm:gap-[0.5rem]'>
+          <p className='text-[0.75rem] font-medium tracking-[0.1em] text-white/50 tabular-nums xsm:text-[0.6875rem]'>
+            <span className='text-white'>{pad(activeIndex + 1)}</span>
+            <span className='mx-[0.25rem]'>/</span>
+            {pad(projects.length)}
           </p>
-          <div className='flex gap-[0.5rem]'>
-            <button
-              type='button'
-              aria-label='Dự án trước'
-              onClick={() => swiper?.slidePrev()}
-              className={NAV_BUTTON}
-            >
-              <ChevronLeft className='size-[1.125rem]' />
-            </button>
-            <button
-              type='button'
-              aria-label='Dự án tiếp theo'
-              onClick={() => swiper?.slideNext()}
-              className={NAV_BUTTON}
-            >
-              <ChevronRight className='size-[1.125rem]' />
-            </button>
-          </div>
+          {projects.length > 1 ? (
+            <div className='flex gap-[0.375rem]'>
+              <button
+                type='button'
+                aria-label='Dự án trước'
+                onClick={() => swiper?.slidePrev()}
+                className={NAV_BUTTON}
+              >
+                <ChevronLeft className='size-[1rem]' />
+              </button>
+              <button
+                type='button'
+                aria-label='Dự án tiếp theo'
+                onClick={() => swiper?.slideNext()}
+                className={NAV_BUTTON}
+              >
+                <ChevronRight className='size-[1rem]' />
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

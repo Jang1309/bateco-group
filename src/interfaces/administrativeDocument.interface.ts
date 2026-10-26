@@ -32,6 +32,12 @@ export interface AdministrativeDocumentThumbnail {
   url?: string | null
 }
 
+export interface AdministrativeDocumentAcf {
+  /** URL file PDF/đính kèm; false/null khi chưa upload */
+  file?: string | false | null
+  featured_image?: string | null
+}
+
 export interface AdministrativeDocumentListItem {
   id?: number
   title?: string
@@ -44,7 +50,7 @@ export interface AdministrativeDocumentListItem {
   taxonomies?: {
     'ad-document-cate'?: PostTaxonomyTerm[]
   }
-  acf?: unknown | null
+  acf?: AdministrativeDocumentAcf | null
   views?: number
   post_excerpt?: string
   excerpt?: string

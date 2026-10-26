@@ -3,31 +3,52 @@ import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 
 import { routing } from '@/i18n/routing'
-import { getProjectDetail, PROJECTS } from '@/views/projects/data'
+import projectsService from '@/services/projects'
+import siteSettingService from '@/services/site-setting'
 import ProjectDetailView from '@/views/projects/detail'
+import { mapProjectDetail } from '@/views/projects/map-project-detail'
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>
 }
 
-// Slug từ CMS có thể chưa có trong mock generateStaticParams — tránh 404 HTML phá RSC prefetch.
 export const dynamicParams = true
 
-export function generateStaticParams() {
-  return routing.locales.flatMap((locale) =>
-    PROJECTS.map((project) => ({ locale, slug: project.id })),
-  )
+export async function generateStaticParams() {
+  try {
+    const response = await projectsService.getProjectsList({
+      lang: routing.defaultLocale,
+      limit: 50,
+      paged: 1,
+    })
+    const projects = response?.data ?? []
+
+    return routing.locales.flatMap((locale) =>
+      projects
+        .map((item) => item.slug)
+        .filter((slug): slug is string => Boolean(slug))
+        .map((slug) => ({ locale, slug })),
+    )
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  const project = getProjectDetail(slug)
-  if (!project) return {}
+  const { locale, slug } = await params
 
-  return {
-    title: `${project.title} | Bateco Group`,
-    description: project.summary,
-    openGraph: { images: [project.image] },
+  try {
+    const response = await projectsService.getDetail(slug, locale)
+    const project = mapProjectDetail(response?.data)
+    if (!project) return {}
+
+    return {
+      title: `${project.title} | Bateco Group`,
+      description: project.summary || undefined,
+      openGraph: { images: [project.image] },
+    }
+  } catch {
+    return {}
   }
 }
 
@@ -35,10 +56,43 @@ const ProjectDetailPage = async ({ params }: Props) => {
   const { locale, slug } = await params
   setRequestLocale(locale)
 
-  const project = getProjectDetail(slug)
+  const [detailResult, siteSetting] = await Promise.all([
+    projectsService.getDetail(slug, locale).catch(() => null),
+    // Cùng request với layout → fetch được dedupe
+    siteSettingService.getSiteSettings(locale).catch(() => null),
+  ])
+  const project = mapProjectDetail(detailResult?.data)
   if (!project) notFound()
 
-  return <ProjectDetailView project={project} />
+  let related =
+    (
+      await projectsService
+        .getProjectsList({
+          lang: locale,
+          limit: 7,
+          paged: 1,
+          category: project.sectorSlug,
+        })
+        .catch(() => null)
+    )?.data ?? []
+
+  // Thiếu dự án cùng lĩnh vực → lấy danh sách chung
+  if (related.filter((item) => item.slug !== project.slug).length < 3) {
+    related =
+      (
+        await projectsService
+          .getProjectsList({ lang: locale, limit: 7, paged: 1 })
+          .catch(() => null)
+      )?.data ?? related
+  }
+
+  return (
+    <ProjectDetailView
+      project={project}
+      related={related}
+      contact={siteSetting?.data?.contact}
+    />
+  )
 }
 
 export default ProjectDetailPage

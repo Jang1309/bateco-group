@@ -3,31 +3,53 @@ import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 
 import { routing } from '@/i18n/routing'
-import { ARTICLE_SLUGS, getNewsDetail } from '@/views/news/data'
+import newsService from '@/services/news'
+import siteSettingService from '@/services/site-setting'
 import NewsDetailView from '@/views/news/detail'
+import { mapPostListItems } from '@/views/news/map-post'
+import { mapPostDetail } from '@/views/news/map-post-detail'
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>
 }
 
-// CMS homepage link slug thật; mock data chỉ cover một phần → cho phép runtime notFound()
-// thay vì 404 HTML cứng (dynamicParams:false) làm prefetch RSC nổ InvariantError/500.
 export const dynamicParams = true
 
-export function generateStaticParams() {
-  return routing.locales.flatMap((locale) => ARTICLE_SLUGS.map((slug) => ({ locale, slug })))
+export async function generateStaticParams() {
+  try {
+    const response = await newsService.getPosts({
+      lang: routing.defaultLocale,
+      limit: 50,
+      paged: 1,
+    })
+    const posts = response?.data ?? []
+
+    return routing.locales.flatMap((locale) =>
+      posts
+        .map((item) => item.slug)
+        .filter((slug): slug is string => Boolean(slug))
+        .map((slug) => ({ locale, slug })),
+    )
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  // TODO: fetch SEO/content theo locale từ CMS/API
-  const article = getNewsDetail(slug)
-  if (!article) return {}
+  const { locale, slug } = await params
 
-  return {
-    title: `${article.title} | Bateco Group`,
-    description: article.excerpt,
-    openGraph: { images: [article.image] },
+  try {
+    const response = await newsService.getDetail(slug, locale)
+    const article = mapPostDetail(response?.data)
+    if (!article) return {}
+
+    return {
+      title: `${article.title} | Bateco Group`,
+      description: article.excerpt || undefined,
+      openGraph: { images: [article.image] },
+    }
+  } catch {
+    return {}
   }
 }
 
@@ -35,11 +57,40 @@ const NewsDetailPage = async ({ params }: Props) => {
   const { locale, slug } = await params
   setRequestLocale(locale)
 
-  // TODO: fetch article theo `locale` từ CMS/API
-  const article = getNewsDetail(slug)
+  const [detailResult, siteSetting] = await Promise.all([
+    newsService.getDetail(slug, locale).catch(() => null),
+    siteSettingService.getSiteSettings(locale).catch(() => null),
+  ])
+
+  const article = mapPostDetail(detailResult?.data)
   if (!article) notFound()
 
-  return <NewsDetailView article={article} />
+  let related = mapPostListItems(
+    (
+      await newsService
+        .getPosts({
+          lang: locale,
+          limit: 7,
+          paged: 1,
+          category: article.category || undefined,
+        })
+        .catch(() => null)
+    )?.data,
+  ).filter((item) => item.id !== article.id)
+
+  if (related.length < 3) {
+    related = mapPostListItems(
+      (await newsService.getPosts({ lang: locale, limit: 7, paged: 1 }).catch(() => null))?.data,
+    ).filter((item) => item.id !== article.id)
+  }
+
+  return (
+    <NewsDetailView
+      article={article}
+      related={related.slice(0, 6)}
+      contact={siteSetting?.data?.contact}
+    />
+  )
 }
 
 export default NewsDetailPage

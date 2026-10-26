@@ -1,7 +1,7 @@
 import type { HomepageAcf } from '@/interfaces/homepage.interface'
 import type { PostListItem } from '@/interfaces/postList.interface'
 import type { ProjectsResponse } from '@/interfaces/projects.interface'
-import type { SectorsResponse } from '@/interfaces/sectors.interface'
+import type { SectorItem } from '@/interfaces/sectors.interface'
 import Banner from '@/views/homepage/banner'
 import HomeBrand from '@/views/homepage/brand'
 import Footprint from '@/views/homepage/footprint'
@@ -20,7 +20,7 @@ const HomePageView = ({
 }: {
   homepage?: HomepageAcf
   postList?: PostListItem[]
-  sectors?: SectorsResponse
+  sectors?: SectorItem[]
   projects?: ProjectsResponse
 }) => {
   return (

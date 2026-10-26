@@ -43,6 +43,10 @@ export const routing = defineRouting({
       vi: '/tin-tuc/[slug]',
       en: '/news/[slug]',
     },
+    '/tin-tuc/danh-muc': {
+      vi: '/tin-tuc/danh-muc',
+      en: '/news/category',
+    },
     '/tin-tuc/danh-muc/[slug]': {
       vi: '/tin-tuc/danh-muc/[slug]',
       en: '/news/category/[slug]',

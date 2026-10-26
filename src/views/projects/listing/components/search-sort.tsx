@@ -11,14 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useRouter } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
-import type { ProjectSort } from '@/views/projects/data'
-
-import { buildProjectQuery, type ProjectQuery } from '../query'
+import type { ProjectSort } from '@/views/projects/search-params'
 
 type SearchSortProps = {
-  current: ProjectQuery
+  search: string
+  sort: ProjectSort
+  onSearch: (value?: string) => void
+  onSort: (value: ProjectSort) => void
 }
 
 const SORT_OPTIONS: { value: ProjectSort; label: string }[] = [
@@ -26,26 +26,23 @@ const SORT_OPTIONS: { value: ProjectSort; label: string }[] = [
   { value: 'cu-nhat', label: 'Cũ nhất' },
 ]
 
-const SearchSort = ({ current }: SearchSortProps) => {
-  const router = useRouter()
-  const [keyword, setKeyword] = useState(current.q ?? '')
+const SearchSort = ({ search, sort, onSearch, onSort }: SearchSortProps) => {
+  const [keyword, setKeyword] = useState(search)
+  const [prevSearch, setPrevSearch] = useState(search)
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const sort = current.sort ?? 'moi-nhat'
   const sortLabel = SORT_OPTIONS.find((option) => option.value === sort)?.label
 
-  const navigate = (next: ProjectQuery) =>
-    router.replace(
-      { pathname: '/du-an', query: buildProjectQuery({ ...current, ...next, page: 1 }) },
-      { scroll: false },
-    )
+  // Đồng bộ khi URL đổi (back/forward) — adjust state khi render, không dùng effect
+  if (search !== prevSearch) {
+    setPrevSearch(search)
+    setKeyword(search)
+  }
 
-  // Gõ xong 400ms mới tìm
   useEffect(() => {
-    if (keyword.trim() === (current.q ?? '').trim()) return
-    const timer = setTimeout(() => navigate({ q: keyword }), 400)
+    if (keyword.trim() === search.trim()) return
+    const timer = setTimeout(() => onSearch(keyword), 400)
     return () => clearTimeout(timer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- chỉ chạy lại khi từ khóa đổi
-  }, [keyword])
+  }, [keyword, onSearch, search])
 
   return (
     <div className='flex items-center gap-[0.75rem] xsm:flex-col xsm:items-stretch'>
@@ -61,11 +58,10 @@ const SearchSort = ({ current }: SearchSortProps) => {
         />
       </label>
 
-      {/* Desktop: dropdown shadcn */}
       <div className='xsm:hidden'>
         <Select
           value={sort}
-          onValueChange={(value) => navigate({ sort: value as ProjectSort })}
+          onValueChange={(value) => onSort(value as ProjectSort)}
         >
           <SelectTrigger
             aria-label='Sắp xếp'
@@ -92,7 +88,6 @@ const SearchSort = ({ current }: SearchSortProps) => {
         </Select>
       </div>
 
-      {/* Mobile: mở drawer từ dưới lên */}
       <button
         type='button'
         aria-haspopup='dialog'
@@ -132,7 +127,7 @@ const SearchSort = ({ current }: SearchSortProps) => {
                     type='button'
                     onClick={() => {
                       setDrawerOpen(false)
-                      if (!selected) navigate({ sort: option.value })
+                      if (!selected) onSort(option.value)
                     }}
                     className={cn(
                       'flex w-full items-center justify-between py-[1rem] text-left text-[1rem]',

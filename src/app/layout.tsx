@@ -6,6 +6,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { AosProvider } from '@/components/providers/aos-provider'
 import { LenisProvider } from '@/components/providers/lenis-provider'
 import { SwrProvider } from '@/components/providers/swr-provider'
+import { Toaster } from '@/components/ui/sonner'
 import '@/styles/globals.css'
 
 // const geologica = Geologica({
@@ -50,6 +51,10 @@ export default function RootLayout({
           <NuqsAdapter>
             <LenisProvider>
               <AosProvider>{children}</AosProvider>
+              <Toaster
+                richColors
+                closeButton
+              />
             </LenisProvider>
           </NuqsAdapter>
         </SwrProvider>

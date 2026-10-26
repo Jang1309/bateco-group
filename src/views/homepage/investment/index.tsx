@@ -5,14 +5,14 @@ import { useEffect, useRef, useState } from 'react'
 
 import ROUTES from '@/configs/routes'
 import { Link } from '@/i18n/navigation'
-import type { SectorsResponse } from '@/interfaces/sectors.interface'
+import type { SectorItem } from '@/interfaces/sectors.interface'
 import DetailPanel from '@/views/homepage/investment/components/detail-panel'
 import SectorList from '@/views/homepage/investment/components/sector-list'
 import { HOVER_DELAY_MS } from '@/views/homepage/investment/constants'
 import { mapSectors } from '@/views/homepage/investment/data'
 
-const Investment = ({ sectors }: { sectors?: SectorsResponse }) => {
-  const items = mapSectors(sectors?.data)
+const Investment = ({ sectors }: { sectors?: SectorItem[] }) => {
+  const items = mapSectors(sectors)
   const center = items.length ? Math.floor(items.length / 2) : 0
 
   const [{ active, prev }, setView] = useState({ active: center, prev: center })

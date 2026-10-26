@@ -2,7 +2,7 @@ import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 
 import { Link } from '@/i18n/navigation'
-import { getCategoryTitle, type NewsArticle } from '@/views/news/data'
+import { resolveCategoryTitle, type NewsArticle } from '@/views/news/data'
 
 type ArticleCardProps = {
   article: NewsArticle
@@ -27,7 +27,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
       <div className='flex flex-1 flex-col p-[1.75rem] xsm:p-[1.25rem]'>
         <p className='flex items-center gap-[0.625rem] text-[0.6875rem]'>
           <span className='truncate font-bold tracking-[0.12em] text-[#B5935E] uppercase'>
-            {getCategoryTitle(article.category)}
+            {resolveCategoryTitle(article)}
           </span>
           <span className='h-[0.625rem] w-px shrink-0 bg-[#CBD2DC]' />
           <time className='shrink-0 font-medium text-[#94A3B8] tabular-nums'>{article.date}</time>

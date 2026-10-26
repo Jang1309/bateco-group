@@ -14,7 +14,7 @@ const SectionHeading = ({ eyebrow, title, className }: SectionHeadingProps) => (
       <span className='h-px w-[2rem] bg-[#C6A15B]' />
       {eyebrow}
     </p>
-    <h2 className='mt-[1rem] max-w-[36rem] text-[2.5rem] leading-[1.25] font-bold text-[#1A2B48] xsm:text-[1.625rem]'>
+    <h2 className='mt-[1rem] max-w-[36rem] text-[2.5rem] leading-[1.25] font-bold text-[#1A2B48] text-pretty xsm:mt-[0.75rem] xsm:text-[1.375rem] xsm:leading-[1.3]'>
       {title}
     </h2>
   </div>

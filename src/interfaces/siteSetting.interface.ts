@@ -57,11 +57,41 @@ export interface Footer {
   newsletter?: FooterNewsletter
 }
 
+export interface ContactItem {
+  icon?: string
+  link?: ILink
+}
+
+export interface Contact {
+  eyebrow?: string
+  title?: string
+  desc?: string
+  button?: ILink
+  /** ACF có thể trả false khi chưa upload ảnh */
+  image?: string | false
+  contacts?: ContactItem[]
+}
+
+export interface EcosystemStat {
+  value?: string
+  label?: string
+}
+
+export interface Ecosystem {
+  title?: string
+  footnote?: string
+  stats?: EcosystemStat[]
+  /** URL logo công ty thành viên */
+  members?: string[]
+}
+
 export interface SiteSettingResponse {
   locale?: string
   option_id?: string
   data?: {
     header?: Header
     footer?: Footer
+    contact?: Contact
+    ecosystem?: Ecosystem
   }
 }

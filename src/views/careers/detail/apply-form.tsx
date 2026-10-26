@@ -1,135 +1,315 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { format } from 'date-fns'
 import { CloudUpload, Send } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
 
+import { Button } from '@/components/ui/button'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 
 type ApplyFormProps = {
   jobTitle: string
+  /** Trong drawer mobile: bỏ card/title trùng với header drawer */
+  variant?: 'card' | 'drawer'
+  onSuccess?: () => void
 }
 
-const FIELD =
-  'h-[2.875rem] w-full rounded-[0.5rem] border border-[#E2E8F0] bg-white px-[0.875rem] text-[0.875rem] text-[#1A2B48] outline-none transition-colors duration-300 placeholder:text-[#94A3B8] focus:border-[#B5935E]'
+const ACCEPT = '.pdf,.doc,.docx'
+const MAX_BYTES = 25 * 1024 * 1024
+const ALLOWED_EXT = new Set(['pdf', 'doc', 'docx'])
 
-const ApplyForm = ({ jobTitle }: ApplyFormProps) => {
-  const inputRef = useRef<HTMLInputElement>(null)
-  const [fileName, setFileName] = useState('')
+const INPUT_CLASS =
+  'h-[2.875rem] rounded-[0.5rem] border-[#E2E8F0] bg-white px-[0.875rem] text-[0.875rem] text-[#1A2B48] shadow-none placeholder:text-[#94A3B8] focus-visible:border-[#B5935E] focus-visible:ring-[#B5935E]/20 md:text-[0.875rem]'
+
+const LABEL_CLASS = 'mb-[0.375rem] text-[0.8125rem] font-semibold text-[#1A2B48]'
+
+const applySchema = z.object({
+  fullName: z
+    .string()
+    .trim()
+    .min(1, 'Vui lòng nhập họ và tên.')
+    .min(2, 'Họ và tên phải có ít nhất 2 ký tự.'),
+  email: z.email('Email không hợp lệ.'),
+  phone: z
+    .string()
+    .trim()
+    .min(1, 'Vui lòng nhập số điện thoại.')
+    .regex(/^[0-9+\s()-]{8,20}$/, 'Số điện thoại không hợp lệ.'),
+  cvFile: z
+    .instanceof(File, { message: 'Vui lòng tải lên hồ sơ ứng tuyển.' })
+    .refine((file) => file.size <= MAX_BYTES, 'CV không được vượt quá 25MB.')
+    .refine((file) => {
+      const ext = file.name.split('.').pop()?.toLowerCase() ?? ''
+      return ALLOWED_EXT.has(ext)
+    }, 'CV phải là PDF, DOC hoặc DOCX.'),
+  position: z.string().min(1),
+  pageUrl: z.string(),
+  submittedAt: z.string(),
+})
+
+type ApplyValues = z.infer<typeof applySchema>
+
+const ApplyForm = ({ jobTitle, variant = 'card', onSuccess }: ApplyFormProps) => {
+  const isDrawer = variant === 'drawer'
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = useState(false)
+
+  const form = useForm<ApplyValues>({
+    resolver: zodResolver(applySchema),
+    defaultValues: {
+      fullName: '',
+      email: '',
+      phone: '',
+      position: jobTitle,
+      pageUrl: '',
+      submittedAt: '',
+    },
+  })
+
+  const {
+    control,
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    watch,
+    formState: { errors, isSubmitting },
+  } = form
+
+  const cvFile = watch('cvFile')
+
+  useEffect(() => {
+    setValue('position', jobTitle)
+  }, [jobTitle, setValue])
+
+  const onSubmit = handleSubmit(async (values) => {
+    try {
+      const body = new FormData()
+      body.set('fullName', values.fullName)
+      body.set('email', values.email)
+      body.set('phone', values.phone)
+      body.set('cvFile', values.cvFile)
+      body.set('position', values.position || jobTitle)
+      body.set('pageUrl', window.location.href)
+      body.set('submittedAt', format(new Date(), 'dd/MM/yyyy HH:mm:ss'))
+
+      // API trả ngay; CF7 gửi mail chạy nền → không chờ SMTP
+      const response = await fetch('/api/careers/apply', {
+        method: 'POST',
+        body,
+      })
+      const result = (await response.json().catch(() => null)) as {
+        ok?: boolean
+        message?: string
+      } | null
+
+      if (!response.ok || !result?.ok) {
+        toast.error(result?.message || 'Không gửi được hồ sơ. Vui lòng thử lại.')
+        return
+      }
+
+      toast.success(result.message || 'Gửi hồ sơ thành công. Chúng tôi sẽ liên hệ sớm.')
+      reset({
+        fullName: '',
+        email: '',
+        phone: '',
+        position: jobTitle,
+        pageUrl: '',
+        submittedAt: '',
+        cvFile: undefined,
+      })
+      if (fileInputRef.current) fileInputRef.current.value = ''
+      onSuccess?.()
+    } catch {
+      toast.error('Không gửi được hồ sơ. Vui lòng thử lại.')
+    }
+  })
 
   return (
     <form
-      className='rounded-[1rem] bg-white p-[1.75rem] shadow-[0_1rem_2.5rem_-1.25rem_rgba(26,43,72,0.2)] ring-1 ring-[#1A2B48]/[0.06] xsm:p-[1.25rem]'
-      onSubmit={(event) => {
-        event.preventDefault()
-        // TODO: nối API nộp hồ sơ
-      }}
+      className={cn(
+        isDrawer
+          ? 'bg-transparent p-0'
+          : 'rounded-[1rem] bg-white p-[1.75rem] shadow-[0_1rem_2.5rem_-1.25rem_rgba(26,43,72,0.2)] ring-1 ring-[#1A2B48]/[0.06]',
+      )}
+      onSubmit={onSubmit}
+      noValidate
     >
-      <h2 className='text-[1.25rem] font-bold text-[#1A2B48]'>Ứng tuyển ngay</h2>
-      <p className='mt-[0.375rem] line-clamp-2 text-[0.8125rem] leading-[1.5] text-[#64748B]'>
-        {jobTitle}
-      </p>
+      {!isDrawer ? (
+        <>
+          <h2 className='text-[1.25rem] font-bold text-[#1A2B48]'>Ứng tuyển ngay</h2>
+          <p className='mt-[0.375rem] line-clamp-2 text-[0.8125rem] leading-[1.5] text-[#64748B]'>
+            {jobTitle}
+          </p>
+        </>
+      ) : null}
 
-      <div className='mt-[1.5rem] space-y-[1rem]'>
-        <label className='block'>
-          <span className='mb-[0.375rem] block text-[0.8125rem] font-semibold text-[#1A2B48]'>
+      <input
+        type='hidden'
+        {...register('position')}
+      />
+      <input
+        type='hidden'
+        {...register('pageUrl')}
+      />
+      <input
+        type='hidden'
+        {...register('submittedAt')}
+      />
+
+      <FieldGroup
+        className={cn('gap-[1rem]', !isDrawer && 'mt-[1.5rem]')}
+        data-disabled={isSubmitting || undefined}
+      >
+        <Field
+          data-invalid={!!errors.fullName || undefined}
+          data-disabled={isSubmitting || undefined}
+        >
+          <FieldLabel
+            htmlFor='fullName'
+            className={LABEL_CLASS}
+          >
             Họ và tên
-          </span>
-          <input
-            required
-            name='name'
-            type='text'
+          </FieldLabel>
+          <Input
+            id='fullName'
             autoComplete='name'
             placeholder='Nguyễn Văn A'
-            className={FIELD}
+            disabled={isSubmitting}
+            aria-invalid={!!errors.fullName}
+            className={INPUT_CLASS}
+            {...register('fullName')}
           />
-        </label>
+          <FieldError errors={[errors.fullName]} />
+        </Field>
 
         <div className='grid grid-cols-2 gap-[0.75rem] xsm:grid-cols-1'>
-          <label className='block'>
-            <span className='mb-[0.375rem] block text-[0.8125rem] font-semibold text-[#1A2B48]'>
+          <Field
+            data-invalid={!!errors.email || undefined}
+            data-disabled={isSubmitting || undefined}
+          >
+            <FieldLabel
+              htmlFor='email'
+              className={LABEL_CLASS}
+            >
               Email
-            </span>
-            <input
-              required
-              name='email'
+            </FieldLabel>
+            <Input
+              id='email'
               type='email'
               autoComplete='email'
               placeholder='email@example.com'
-              className={FIELD}
+              disabled={isSubmitting}
+              aria-invalid={!!errors.email}
+              className={INPUT_CLASS}
+              {...register('email')}
             />
-          </label>
-          <label className='block'>
-            <span className='mb-[0.375rem] block text-[0.8125rem] font-semibold text-[#1A2B48]'>
+            <FieldError errors={[errors.email]} />
+          </Field>
+
+          <Field
+            data-invalid={!!errors.phone || undefined}
+            data-disabled={isSubmitting || undefined}
+          >
+            <FieldLabel
+              htmlFor='phone'
+              className={LABEL_CLASS}
+            >
               Số điện thoại
-            </span>
-            <input
-              required
-              name='phone'
+            </FieldLabel>
+            <Input
+              id='phone'
               type='tel'
               autoComplete='tel'
               placeholder='09xx xxx xxx'
-              className={FIELD}
+              disabled={isSubmitting}
+              aria-invalid={!!errors.phone}
+              className={INPUT_CLASS}
+              {...register('phone')}
             />
-          </label>
+            <FieldError errors={[errors.phone]} />
+          </Field>
         </div>
 
-        <div>
-          <span className='mb-[0.375rem] block text-[0.8125rem] font-semibold text-[#1A2B48]'>
-            Hồ sơ ứng tuyển
-          </span>
-          <button
-            type='button'
-            onClick={() => inputRef.current?.click()}
-            onDragOver={(event) => {
-              event.preventDefault()
-              setDragging(true)
-            }}
-            onDragLeave={() => setDragging(false)}
-            onDrop={(event) => {
-              event.preventDefault()
-              setDragging(false)
-              const file = event.dataTransfer.files?.[0]
-              if (file) setFileName(file.name)
-            }}
-            className={cn(
-              'flex w-full flex-col items-center gap-[0.5rem] rounded-[0.75rem] border border-dashed border-[#CBD5E1] bg-[#F8FAFC] px-[1rem] py-[1.5rem] text-center transition-colors duration-300',
-              dragging && 'border-[#B5935E] bg-[#FBF8F2]',
+        <Field
+          data-invalid={!!errors.cvFile || undefined}
+          data-disabled={isSubmitting || undefined}
+        >
+          <FieldLabel className={LABEL_CLASS}>Hồ sơ ứng tuyển</FieldLabel>
+          <Controller
+            name='cvFile'
+            control={control}
+            render={({ field }) => (
+              <>
+                <button
+                  type='button'
+                  disabled={isSubmitting}
+                  onClick={() => fileInputRef.current?.click()}
+                  onDragOver={(event) => {
+                    if (isSubmitting) return
+                    event.preventDefault()
+                    setDragging(true)
+                  }}
+                  onDragLeave={() => setDragging(false)}
+                  onDrop={(event) => {
+                    event.preventDefault()
+                    setDragging(false)
+                    if (isSubmitting) return
+                    const file = event.dataTransfer.files?.[0]
+                    if (file) field.onChange(file)
+                  }}
+                  className={cn(
+                    'flex w-full flex-col items-center gap-[0.5rem] rounded-[0.75rem] border border-dashed border-[#CBD5E1] bg-[#F8FAFC] px-[1rem] py-[1.5rem] text-center transition-colors duration-300 disabled:pointer-events-none disabled:opacity-60',
+                    dragging && 'border-[#B5935E] bg-[#FBF8F2]',
+                    errors.cvFile && 'border-destructive/40',
+                  )}
+                >
+                  <CloudUpload
+                    className='size-[1.5rem] text-[#B5935E]'
+                    strokeWidth={1.5}
+                  />
+                  <span className='text-[0.875rem] font-semibold text-[#1A2B48]'>
+                    {cvFile?.name || 'Kéo thả hoặc tải CV lên'}
+                  </span>
+                  <span className='text-[0.75rem] text-[#94A3B8]'>
+                    PDF, DOC, DOCX · tối đa 25MB
+                  </span>
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type='file'
+                  accept={ACCEPT}
+                  disabled={isSubmitting}
+                  className='sr-only'
+                  onChange={(event) => {
+                    const file = event.target.files?.[0]
+                    field.onChange(file)
+                  }}
+                />
+              </>
             )}
-          >
-            <CloudUpload
-              className='size-[1.5rem] text-[#B5935E]'
-              strokeWidth={1.5}
-            />
-            <span className='text-[0.875rem] font-semibold text-[#1A2B48]'>
-              {fileName || 'Kéo thả hoặc tải CV lên'}
-            </span>
-            <span className='text-[0.75rem] text-[#94A3B8]'>PDF, DOC, DOCX · tối đa 5MB</span>
-          </button>
-          <input
-            ref={inputRef}
-            type='file'
-            name='cv'
-            accept='.pdf,.doc,.docx'
-            className='sr-only'
-            onChange={(event) => {
-              const file = event.target.files?.[0]
-              if (file) setFileName(file.name)
-            }}
           />
-        </div>
+          <FieldError errors={[errors.cvFile]} />
+        </Field>
 
-        <button
+        <Button
           type='submit'
-          className='inline-flex h-[2.875rem] w-full items-center justify-center gap-[0.5rem] rounded-[0.5rem] bg-[#1A2B48] text-[0.875rem] font-bold text-white transition-colors duration-300 hover:bg-[#243656]'
+          disabled={isSubmitting}
+          className='h-[2.875rem] w-full gap-[0.5rem] rounded-[0.5rem] bg-[#1A2B48] text-[0.875rem] font-bold text-white hover:bg-[#243656]'
         >
           <Send
             className='size-[1rem]'
             strokeWidth={1.75}
           />
-          Gửi hồ sơ ứng tuyển
-        </button>
-      </div>
+          {isSubmitting ? 'Đang gửi…' : 'Gửi hồ sơ ứng tuyển'}
+        </Button>
+      </FieldGroup>
     </form>
   )
 }

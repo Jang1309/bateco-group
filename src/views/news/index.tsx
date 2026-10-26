@@ -1,22 +1,23 @@
-import PageHero from '@/components/shared/page-hero'
+import type { NewsPageResponse } from '@/interfaces/postList.interface'
 import NewsCategories from '@/views/news/categories'
+import type { CategoryBlock } from '@/views/news/data'
 import FeaturedNews from '@/views/news/featured'
-import NewsHighlights from '@/views/news/highlights'
+import NewsHero from '@/views/news/hero'
+import { mapFeaturedPosts } from '@/views/news/map-featured-post'
 
-const NewsView = () => {
+type NewsViewProps = {
+  content?: NewsPageResponse
+  categoryBlocks?: CategoryBlock[]
+}
+
+const NewsView = ({ content, categoryBlocks = [] }: NewsViewProps) => {
+  const featuredArticles = mapFeaturedPosts(content?.featured_news?.posts)
+
   return (
     <main>
-      <PageHero
-        eyebrow='Tin tức'
-        title='Định hình phong cách'
-        highlight='sống tương lai'
-        description='Ứng dụng công nghệ hiện đại và năng lượng xanh để kiến tạo những giá trị sống chuẩn mực, cùng cơ hội đầu tư bền vững lâu dài cho cộng đồng.'
-        // TODO: thay bằng ảnh hero riêng của trang tin tức
-        image='/home/vision/d-img-1.jpg'
-      />
-      <FeaturedNews />
-      <NewsCategories />
-      <NewsHighlights />
+      <NewsHero data={content?.banner} />
+      <FeaturedNews articles={featuredArticles} />
+      <NewsCategories blocks={categoryBlocks} />
     </main>
   )
 }

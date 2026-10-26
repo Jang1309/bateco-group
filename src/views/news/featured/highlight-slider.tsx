@@ -8,7 +8,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 
 import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
-import { getCategoryTitle, type NewsArticle } from '@/views/news/data'
+import { resolveCategoryTitle, type NewsArticle } from '@/views/news/data'
 
 import 'swiper/css'
 
@@ -59,41 +59,50 @@ const HighlightSlider = ({ articles }: HighlightSliderProps) => {
         onSlideChange={syncEdge}
         onResize={syncEdge}
       >
-        {articles.map((article) => (
-          <SwiperSlide
-            key={article.id}
-            className='!h-auto'
-          >
-            <Link
-              href={{ pathname: '/tin-tuc/[slug]', params: { slug: article.id } }}
-              className='group flex h-full gap-[1.25rem] rounded-[0.875rem] bg-white p-[1rem] border border-[#1A2B48]/[0.07] transition-[border-color] duration-300 hover:border-[#B5935E]/40 outline-none focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-inset xsm:gap-[0.875rem] xsm:p-[0.75rem]'
+        {articles.map((article) => {
+          const categoryTitle = resolveCategoryTitle(article)
+
+          return (
+            <SwiperSlide
+              key={article.id}
+              className='!h-auto'
             >
-              <div className='relative aspect-[4/3] w-[11rem] shrink-0 overflow-hidden rounded-[0.5rem] xsm:w-[7.5rem]'>
-                <Image
-                  src={article.image}
-                  alt={article.title}
-                  fill
-                  sizes='(max-width: 639px) 7.5rem, 11rem'
-                  className='object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]'
-                />
-              </div>
-              <div className='flex min-w-0 flex-col py-[0.25rem]'>
-                <h3 className='line-clamp-2 text-[1rem] leading-[1.45] font-bold text-pretty text-[#1A2B48] transition-colors duration-300 group-hover:text-[#B5935E] xsm:text-[0.9375rem]'>
-                  {article.title}
-                </h3>
-                <p className='mt-[0.375rem] line-clamp-2 text-[0.8125rem] leading-[1.55] text-[#64748B] xsm:hidden'>
-                  {article.excerpt}
-                </p>
-                <p className='mt-auto flex flex-wrap items-center gap-x-[0.5rem] pt-[0.5rem] text-[0.6875rem] font-bold tracking-[0.06em] uppercase'>
-                  <span className='text-[#B5935E]'>{getCategoryTitle(article.category)}</span>
-                  <time className='font-semibold tracking-normal text-[#94A3B8] tabular-nums'>
-                    {article.date}
-                  </time>
-                </p>
-              </div>
-            </Link>
-          </SwiperSlide>
-        ))}
+              <Link
+                href={{ pathname: '/tin-tuc/[slug]', params: { slug: article.id } }}
+                className='group flex h-full gap-[1.25rem] rounded-[0.875rem] border border-[#1A2B48]/[0.07] bg-white p-[1rem] outline-none transition-[border-color] duration-300 hover:border-[#B5935E]/40 focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-inset xsm:gap-[0.875rem] xsm:p-[0.75rem]'
+              >
+                <div className='relative aspect-[4/3] w-[11rem] shrink-0 overflow-hidden rounded-[0.5rem] xsm:w-[7.5rem]'>
+                  <Image
+                    src={article.image}
+                    alt={article.title}
+                    fill
+                    unoptimized
+                    sizes='(max-width: 639px) 7.5rem, 11rem'
+                    className='object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]'
+                  />
+                </div>
+                <div className='flex min-w-0 flex-col py-[0.25rem]'>
+                  <h3 className='line-clamp-2 text-[1rem] leading-[1.45] font-bold text-pretty text-[#1A2B48] transition-colors duration-300 group-hover:text-[#B5935E] xsm:text-[0.9375rem]'>
+                    {article.title}
+                  </h3>
+                  {article.excerpt ? (
+                    <p className='mt-[0.375rem] line-clamp-2 text-[0.8125rem] leading-[1.55] text-[#64748B] xsm:hidden'>
+                      {article.excerpt}
+                    </p>
+                  ) : null}
+                  <p className='mt-auto flex flex-wrap items-center gap-x-[0.5rem] pt-[0.5rem] text-[0.6875rem] font-bold tracking-[0.06em] uppercase'>
+                    {categoryTitle ? <span className='text-[#B5935E]'>{categoryTitle}</span> : null}
+                    {article.date ? (
+                      <time className='font-semibold tracking-normal text-[#94A3B8] tabular-nums'>
+                        {article.date}
+                      </time>
+                    ) : null}
+                  </p>
+                </div>
+              </Link>
+            </SwiperSlide>
+          )
+        })}
       </Swiper>
     </div>
   )

@@ -1,0 +1,434 @@
+.project-detail-content {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(12, 94, 168, 0.07) 0%, transparent 36%),
+    linear-gradient(180deg, #fcf9f3 0%, #f8f2e9 100%);
+}
+
+.project-detail-content__inner {
+  display: block;
+  width: 100%;
+  max-width: 54rem;
+  margin-inline: auto;
+  padding: 3.5rem 1.5rem 5rem;
+}
+
+.project-detail-content__article-wrap {
+  flex: 1;
+  min-width: 0;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(0, 30, 64, 0.06);
+  background-color: #ffffff;
+  box-shadow: 0 0.875rem 2.25rem rgba(0, 30, 64, 0.08);
+}
+
+.project-detail-content__article {
+  padding: 2.25rem;
+  min-width: 0;
+}
+
+.project-detail-share {
+  padding-top: 0.9rem;
+  padding-bottom: 0.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.4rem;
+  color: rgba(51, 65, 85, 0.78);
+  margin-left: 2.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.project-detail-share__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.project-detail-share__actions > span {
+  font-weight: 600;
+  color: #475569;
+}
+
+.project-detail-share__buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.project-detail-share__icon-button {
+  width: 2.05rem;
+  height: 2.05rem;
+  border-radius: 9999px;
+  border: 1px solid #cad5e2;
+  background-color: #ffffff;
+  color: #334155;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 1px rgba(15, 23, 42, 0.04);
+  transition:
+    color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    transform 0.15s ease-in-out;
+}
+
+.project-detail-share__icon-button:hover {
+  color: #0f2a49;
+  border-color: #afc1d5;
+  background-color: #f8fbff;
+  transform: translateY(-1px);
+}
+
+.project-detail-toc {
+  width: 18.5rem;
+  flex-shrink: 0;
+  align-self: start;
+  position: sticky;
+  top: 7rem;
+}
+
+.project-detail-toc__card {
+  border: 1px solid #e6eaf0;
+  border-radius: 0.75rem;
+  background-color: #ffffff;
+  padding: 1.375rem 1rem 1.125rem;
+  box-shadow: 0 0.25rem 1rem rgba(15, 23, 42, 0.04);
+}
+
+.project-detail-toc__header {
+  padding: 0 0.375rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.project-detail-toc__eyebrow {
+  margin: 0;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1rem;
+  letter-spacing: 0.08rem;
+  text-transform: uppercase;
+  color: #bb9650;
+}
+
+.project-detail-toc__heading {
+  margin: 0.375rem 0 0;
+  font-family: Manrope, sans-serif;
+  font-size: 1.0625rem;
+  font-weight: 800;
+  line-height: 1.5rem;
+  letter-spacing: -0.02em;
+  color: #001e40;
+}
+
+.project-detail-toc__list {
+  margin: 0.875rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-detail-toc__item + .project-detail-toc__item {
+  margin-top: 0.25rem;
+}
+
+.project-detail-toc__link {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-left: 2px solid transparent;
+  background: transparent;
+  padding: 0.6875rem 0.75rem;
+  border-radius: 0 0.375rem 0.375rem 0;
+  text-align: left;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.375rem;
+  color: #596a7c;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.project-detail-toc__text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  text-wrap: pretty;
+  font-weight: 600;
+}
+
+.project-detail-toc__link.is-active {
+  border-left-color: #d97706;
+  background-color: #fffbf5;
+  color: #001e40;
+  font-weight: 600;
+}
+
+.project-detail-toc__link:hover {
+  color: #0a3a66;
+  background-color: #f8fafc;
+}
+
+.project-detail-toc__link.is-active:hover {
+  background-color: #fff7eb;
+}
+
+#project_detail {
+  font-family: 'Work Sans', sans-serif;
+  color: #3f4c5b;
+}
+
+#project_detail h1,
+#project_detail h2,
+#project_detail h3,
+#project_detail h4,
+#project_detail h5,
+#project_detail h6 {
+  font-family: Manrope, sans-serif;
+  font-weight: 700;
+  color: #0f2a49;
+  margin-top: 2.5rem;
+  text-wrap: balance;
+}
+
+#project_detail h1 {
+  font-size: 3rem;
+  line-height: 3.6rem;
+}
+
+#project_detail h2 {
+  font-size: 1.75rem;
+  line-height: 2.0625rem; /* 117.857% */
+  letter-spacing: -0.03125rem;
+}
+
+#project_detail h2:first-child {
+  margin-top: 0;
+}
+
+#project_detail h3 {
+  font-size: 1.25rem;
+}
+
+#project_detail h4 {
+  font-size: 1.125rem;
+}
+
+#project_detail h5 {
+  font-size: 1rem;
+}
+
+#project_detail h6 {
+  font-size: 0.875rem;
+}
+
+#project_detail p {
+  font-family: var(--font-project-detail-serif), Georgia, serif;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: #334155;
+  text-align: left;
+  margin-top: 1.25rem;
+}
+
+#project_detail img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0.75rem;
+}
+
+/* Đoạn chỉ chứa ảnh: tách hẳn khỏi chữ */
+#project_detail p:has(> img) {
+  margin-block: 2.25rem;
+}
+
+#project_detail table {
+  margin-top: 2.5rem;
+  border-collapse: collapse;
+}
+
+#project_detail th,
+#project_detail td {
+  font-weight: 400;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+  font-family: var(--font-project-detail-serif), Georgia, serif;
+  font-size: 0.9375rem;
+  color: #334155;
+  padding: 0.75rem 1rem;
+}
+
+#project_detail th,
+#project_detail tr:first-child td {
+  font-weight: 600;
+  color: #0f2a49;
+  background-color: #f8fafc;
+}
+
+#project_detail ul {
+  font-family: var(--font-project-detail-serif), Georgia, serif;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: #334155;
+  margin-top: 1rem;
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+
+#project_detail a {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: #005baa;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: all 0.15s ease-in-out;
+}
+
+@media (min-width: 1024px) {
+  #project_detail a:hover {
+    text-decoration-color: #338fe5;
+  }
+}
+
+@media (max-width: 639px) {
+  .project-detail-content__inner {
+    padding: 1.25rem 1rem 2.25rem;
+  }
+
+  .project-detail-content__article-wrap {
+    width: 100%;
+    border-radius: 0.9rem;
+  }
+
+  .project-detail-content__article {
+    padding: 1rem;
+  }
+
+  .project-detail-share {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    padding-top: 0.5rem;
+    font-size: 0.82rem;
+  }
+
+  .project-detail-toc {
+    display: none;
+  }
+
+  #project_detail h1,
+  #project_detail h2,
+  #project_detail h3,
+  #project_detail h4,
+  #project_detail h5,
+  #project_detail h6 {
+    margin-top: 1.25rem;
+  }
+
+  #project_detail h1 {
+    font-size: 1.25rem;
+    line-height: normal;
+  }
+
+  #project_detail h2 {
+    font-size: 1.25rem;
+  }
+
+  #project_detail h3 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 110%; /* 1.2375rem */
+  }
+
+  #project_detail h4 {
+    font-size: 1rem;
+  }
+
+  #project_detail h5 {
+    font-size: 0.875rem;
+  }
+
+  #project_detail h6 {
+    font-size: 0.75rem;
+  }
+
+  #project_detail p {
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    margin-top: 0.875rem;
+  }
+
+  #project_detail img {
+    height: 13.75rem;
+    border-radius: 0.625rem;
+  }
+
+  #project_detail p:has(> img) {
+    margin-block: 1.5rem;
+  }
+
+  #project_detail .wp-caption,
+  #project_detail div:has(img) {
+    border-radius: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  #project_detail .wp-caption-text,
+  #project_detail div:has(p) p {
+    font-size: 0.625rem;
+    font-style: italic;
+    letter-spacing: -0.00625rem;
+    padding: 0.5rem 1rem;
+  }
+
+  #project_detail .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    scrollbar-width: none;
+  }
+
+  #project_detail table {
+    width: 100%;
+    margin-top: 1.125rem;
+  }
+
+  #project_detail th,
+  #project_detail td {
+    white-space: nowrap; /* giữ cột không bị xuống dòng */
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+
+  #project_detail ul {
+    font-size: 0.9375rem;
+    line-height: 1.65rem;
+    margin-top: 0.875rem;
+  }
+
+  #project_detail a {
+    font-size: 0.9375rem;
+    margin-top: 0.875rem;
+    text-decoration-color: #338fe5;
+  }
+}
+
+.related-projects-swiper .swiper-wrapper {
+  align-items: stretch;
+}
+
+.related-projects-swiper .swiper-slide {
+  box-sizing: border-box;
+  display: flex;
+  height: auto;
+}

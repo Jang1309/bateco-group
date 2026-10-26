@@ -85,6 +85,32 @@ body {
   display: none !important;
 }
 
+/* Scrollbar của trang — dùng px vì html font-size theo vw */
+html::-webkit-scrollbar {
+  width: 8px;
+}
+
+html::-webkit-scrollbar-track {
+  background: #eef1f5;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #b5935e;
+  border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: #1a2b48;
+}
+
+/* Firefox; trình duyệt có ::-webkit-scrollbar thì bỏ qua để không bị scrollbar-color ghi đè */
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #b5935e #eef1f5;
+  }
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

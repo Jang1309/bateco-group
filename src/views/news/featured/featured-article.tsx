@@ -2,13 +2,15 @@ import { ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
 
 import { Link } from '@/i18n/navigation'
-import { getCategoryTitle, type NewsArticle } from '@/views/news/data'
+import { resolveCategoryTitle, type NewsArticle } from '@/views/news/data'
 
 type FeaturedArticleProps = {
   article: NewsArticle
 }
 
 const FeaturedArticle = ({ article }: FeaturedArticleProps) => {
+  const categoryTitle = resolveCategoryTitle(article)
+
   return (
     <article className='group relative isolate grid grid-cols-[1.35fr_1fr] overflow-hidden rounded-[1.25rem] bg-white shadow-[0_2rem_4rem_-2rem_rgba(26,43,72,0.25)] ring-1 ring-[#1A2B48]/[0.06] xsm:grid-cols-1 xsm:rounded-[0.875rem]'>
       <span
@@ -22,6 +24,7 @@ const FeaturedArticle = ({ article }: FeaturedArticleProps) => {
           alt={article.title}
           fill
           priority
+          unoptimized
           sizes='(max-width: 639px) 100vw, 57vw'
           className='object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]'
         />
@@ -35,13 +38,21 @@ const FeaturedArticle = ({ article }: FeaturedArticleProps) => {
       </div>
 
       <div className='flex flex-col p-[3rem] xsm:p-[1.25rem]'>
-        <p className='flex flex-wrap items-center gap-x-[0.75rem] gap-y-[0.25rem] text-[0.75rem]'>
-          <span className='font-bold tracking-[0.12em] text-[#B5935E] uppercase'>
-            {getCategoryTitle(article.category)}
-          </span>
-          <span className='h-[0.75rem] w-px bg-[#CBD2DC]' />
-          <time className='font-medium text-[#94A3B8] tabular-nums'>{article.date}</time>
-        </p>
+        {(categoryTitle || article.date) && (
+          <p className='flex flex-wrap items-center gap-x-[0.75rem] gap-y-[0.25rem] text-[0.75rem]'>
+            {categoryTitle ? (
+              <span className='font-bold tracking-[0.12em] text-[#B5935E] uppercase'>
+                {categoryTitle}
+              </span>
+            ) : null}
+            {categoryTitle && article.date ? (
+              <span className='h-[0.75rem] w-px bg-[#CBD2DC]' />
+            ) : null}
+            {article.date ? (
+              <time className='font-medium text-[#94A3B8] tabular-nums'>{article.date}</time>
+            ) : null}
+          </p>
+        )}
 
         <h3 className='mt-[1.25rem] text-[1.75rem] leading-[1.3] font-bold tracking-[-0.015em] text-balance text-[#1A2B48] xsm:mt-[0.875rem] xsm:text-[1.25rem]'>
           <Link
@@ -52,9 +63,11 @@ const FeaturedArticle = ({ article }: FeaturedArticleProps) => {
           </Link>
         </h3>
 
-        <p className='mt-[1rem] line-clamp-3 text-[0.9375rem] leading-[1.75] text-pretty text-[#64748B] xsm:text-[0.875rem]'>
-          {article.excerpt}
-        </p>
+        {article.excerpt ? (
+          <p className='mt-[1rem] line-clamp-3 text-[0.9375rem] leading-[1.75] text-pretty text-[#64748B] xsm:text-[0.875rem]'>
+            {article.excerpt}
+          </p>
+        ) : null}
 
         <div className='mt-auto flex items-center justify-between gap-[1rem] border-t border-[#EEF1F5] pt-[1.5rem] xsm:mt-[1.5rem] xsm:pt-[1rem]'>
           <span className='text-[0.8125rem] font-semibold text-[#1A2B48]'>Xem chi tiết</span>

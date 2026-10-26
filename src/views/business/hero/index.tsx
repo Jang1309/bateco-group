@@ -1,7 +1,10 @@
 import Image from 'next/image'
 
 import BannerTopOverlay from '@/components/shared/banner-top-overlay'
-import type { BusinessFieldBanner } from '@/interfaces/businessField.interface'
+import {
+  type BusinessFieldBanner,
+  resolveBusinessFieldImage,
+} from '@/interfaces/businessField.interface'
 
 import HeroContent from './components/content'
 
@@ -12,37 +15,57 @@ type BusinessHeroProps = {
 }
 
 const BusinessHero = ({ data }: BusinessHeroProps) => {
-  const desktop = data?.desktop || FALLBACK
-  const mobile = typeof data?.mobile === 'string' && data.mobile ? data.mobile : desktop
+  const desktop = resolveBusinessFieldImage(data?.desktop) || FALLBACK
+  const mobile = resolveBusinessFieldImage(data?.mobile) || desktop
 
   return (
-    <section className='relative overflow-hidden pt-[9.5rem] pb-[6rem] xsm:pt-[7rem] xsm:pb-[3.5rem]'>
-      <div className='absolute inset-0 overflow-hidden'>
-        <Image
-          src={desktop}
-          alt=''
-          fill
-          priority
-          unoptimized
-          sizes='100vw'
-          className='object-cover object-center xsm:hidden'
-        />
-        <Image
-          src={mobile}
-          alt=''
-          fill
-          priority
-          unoptimized
-          sizes='100vw'
-          className='hidden object-cover object-center xsm:block'
-        />
-        <div
-          aria-hidden
-          className='absolute inset-0 bg-white/35'
-        />
+    <section className='relative overflow-hidden bg-white xsm:flex xsm:flex-col'>
+      {/* Desktop: chữ overlay trên ảnh */}
+      <div className='relative overflow-hidden pt-[9.5rem] pb-[6rem] xsm:hidden'>
+        <div className='absolute inset-0 overflow-hidden'>
+          <Image
+            src={desktop}
+            alt=''
+            fill
+            priority
+            unoptimized
+            sizes='100vw'
+            className='object-cover object-center'
+          />
+          <div
+            aria-hidden
+            className='absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.72)_0%,rgba(255,255,255,0.45)_42%,rgba(255,255,255,0.55)_100%)]'
+          />
+        </div>
+        <BannerTopOverlay />
+        <HeroContent data={data} />
       </div>
-      <BannerTopOverlay />
-      <HeroContent data={data} />
+
+      {/* Mobile: chữ trên nền trắng → ảnh mobile full-bleed bên dưới */}
+      <div className='relative hidden xsm:block'>
+        <BannerTopOverlay />
+        <div className='px-0 pt-[5.5rem] pb-[1.25rem]'>
+          <HeroContent
+            data={data}
+            stacked
+          />
+        </div>
+        <div className='relative aspect-[5/4] w-full overflow-hidden'>
+          <Image
+            src={mobile}
+            alt=''
+            fill
+            priority
+            unoptimized
+            sizes='100vw'
+            className='object-cover object-center'
+          />
+          <div
+            aria-hidden
+            className='pointer-events-none absolute inset-x-0 top-0 h-[3rem] bg-[linear-gradient(180deg,#fff_0%,transparent_100%)]'
+          />
+        </div>
+      </div>
     </section>
   )
 }

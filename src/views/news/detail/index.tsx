@@ -24,9 +24,10 @@ const NewsDetailView = async ({ article, related = [], contact }: NewsDetailView
   const t = await getTranslations('News')
   const tc = await getTranslations('Common')
   const categoryTitle = resolveCategoryTitle(article)
+  const categoryKey = locale === 'en' ? 'category' : 'chuyen-muc'
   const categoryHref = toAppHref(
     article.category
-      ? `${pathFor('newsCategory', locale)}?danh-muc=${encodeURIComponent(article.category)}`
+      ? `${pathFor('newsCategory', locale)}?${categoryKey}=${encodeURIComponent(article.category)}`
       : pathFor('newsCategory', locale),
   )
 

@@ -1,4 +1,5 @@
 import SiteJsonLd from '@/components/shared/site-json-ld'
+import CTA from '@/layouts/cta'
 import Footer from '@/layouts/footer'
 import Header from '@/layouts/header'
 import siteSettingService from '@/services/site-setting'
@@ -22,6 +23,7 @@ export default async function SiteLayout({ children, params }: Props) {
       <Header header={header} />
       {children}
       <Footer footer={siteSettingResponse?.data?.footer} />
+      <CTA data={siteSettingResponse?.data?.cta ?? []} />
     </>
   )
 }

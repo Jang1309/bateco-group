@@ -141,7 +141,7 @@ const Banner = ({
   )
 
   return (
-    <section className='relative h-dvh w-full overflow-hidden xsm:flex xsm:h-auto xsm:min-h-[100dvh] xsm:flex-col xsm:overflow-visible'>
+    <section className='relative h-dvh w-full overflow-hidden tablet:h-[60vh] xsm:flex xsm:h-auto xsm:min-h-[100dvh] xsm:flex-col xsm:overflow-visible'>
       {srTitle ? <h1 className='sr-only'>{srTitle}</h1> : null}
 
       {/* Desktop: full-bleed cover */}

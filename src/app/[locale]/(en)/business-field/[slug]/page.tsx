@@ -5,9 +5,11 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import JsonLd from '@/components/shared/json-ld'
 import endpoints from '@/configs/endpoints'
 import ENV from '@/configs/env'
-import { hrefFor, localePathsFor } from '@/configs/routes'
+import { hrefFor } from '@/configs/routes'
 import { getMetaDataSeoApi } from '@/fetches/getMetaDataRankMath'
 import { assertPageLocale } from '@/i18n/assert-locale'
+import { LocaleAlternateSync } from '@/i18n/locale-alternate'
+import { detailLocalePaths } from '@/i18n/translated-paths'
 import { breadcrumbSchema, schemaGraph, serviceSchema } from '@/lib/schema'
 import businessFieldService from '@/services/business-field'
 import siteSettingService from '@/services/site-setting'
@@ -36,8 +38,17 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
+  const detail = await businessFieldService.getDetail(slug, locale).catch(() => null)
+  const currentSlug = detail?.data?.slug || slug
+  const { path, alternatePath } = detailLocalePaths({
+    detailKey: 'businessDetail',
+    listingKey: 'business',
+    locale,
+    slug: currentSlug,
+    translations: detail?.data?.translations,
+  })
   const res = await getMetaDataSeoApi(endpoints.businessField.rank_math_detail(slug, locale))
-  return metadataValues(res, { locale, ...localePathsFor('businessDetail', locale, { slug }) })
+  return metadataValues(res, { locale, path, alternatePath })
 }
 
 const BusinessDetailPage = async ({ params }: Props) => {
@@ -56,7 +67,13 @@ const BusinessDetailPage = async ({ params }: Props) => {
 
   const t = await getTranslations({ locale, namespace: 'Meta' })
   const slugValue = sector.slug || slug
-  const path = hrefFor('businessDetail', locale, { slug: slugValue })
+  const { path, paths } = detailLocalePaths({
+    detailKey: 'businessDetail',
+    listingKey: 'business',
+    locale,
+    slug: slugValue,
+    translations: sector.translations,
+  })
   const businessPath = hrefFor('business', locale)
   const projects = projectsResult.status === 'fulfilled' ? (projectsResult.value?.data ?? []) : []
   const siteData =
@@ -64,6 +81,7 @@ const BusinessDetailPage = async ({ params }: Props) => {
 
   return (
     <>
+      <LocaleAlternateSync paths={paths} />
       <JsonLd
         data={schemaGraph(
           serviceSchema({

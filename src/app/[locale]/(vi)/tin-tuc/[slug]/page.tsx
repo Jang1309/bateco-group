@@ -5,9 +5,11 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import JsonLd from '@/components/shared/json-ld'
 import endpoints from '@/configs/endpoints'
 import ENV from '@/configs/env'
-import { hrefFor, localePathsFor } from '@/configs/routes'
+import { resolveTranslatedDetail } from '@/configs/resolve-translated-detail'
+import { detailLocalePaths, hrefFor } from '@/configs/routes'
 import getMetaDataRankMath from '@/fetches/getMetaDataRankMath'
 import { assertPageLocale } from '@/i18n/assert-locale'
+import { LocaleAlternateSync } from '@/i18n/locale-alternate'
 import { routing } from '@/i18n/routing'
 import { breadcrumbSchema, newsArticleSchema, schemaGraph } from '@/lib/schema'
 import newsService from '@/services/news'
@@ -43,10 +45,19 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
-  const pathFor =
+  const detail = await newsService.getDetail(slug, locale).catch(() => null)
+  const currentSlug = detail?.data?.slug || slug
+  const { path, alternatePath } = detailLocalePaths({
+    detailKey: 'newsDetail',
+    listingKey: 'news',
+    locale,
+    slug: currentSlug,
+    translations: detail?.data?.translations,
+  })
+  const rankPath =
     endpoints.news.rank_math_detail[locale as keyof typeof endpoints.news.rank_math_detail]
-  const res = await getMetaDataRankMath(pathFor(slug))
-  return metadataValues(res, { locale, ...localePathsFor('newsDetail', locale, { slug }) })
+  const res = await getMetaDataRankMath(rankPath(slug))
+  return metadataValues(res, { locale, path, alternatePath })
 }
 
 const NewsDetailPage = async ({ params }: Props) => {
@@ -55,7 +66,13 @@ const NewsDetailPage = async ({ params }: Props) => {
   setRequestLocale(locale)
 
   const [detailResult, siteSetting] = await Promise.all([
-    newsService.getDetail(slug, locale).catch(() => null),
+    resolveTranslatedDetail({
+      slug,
+      locale,
+      detailKey: 'newsDetail',
+      listingKey: 'news',
+      fetchDetail: (s, lang) => newsService.getDetail(s, lang),
+    }),
     siteSettingService.getSiteSettings(locale).catch(() => null),
   ])
 
@@ -63,7 +80,13 @@ const NewsDetailPage = async ({ params }: Props) => {
   if (!article) notFound()
 
   const t = await getTranslations({ locale, namespace: 'Meta' })
-  const path = hrefFor('newsDetail', locale, { slug: article.id })
+  const { path, paths } = detailLocalePaths({
+    detailKey: 'newsDetail',
+    listingKey: 'news',
+    locale,
+    slug: article.id,
+    translations: detailResult?.data?.translations,
+  })
   const newsPath = hrefFor('news', locale)
 
   let related = mapPostListItems(
@@ -89,6 +112,7 @@ const NewsDetailPage = async ({ params }: Props) => {
 
   return (
     <>
+      <LocaleAlternateSync paths={paths} />
       <JsonLd
         data={schemaGraph(
           newsArticleSchema({

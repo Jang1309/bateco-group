@@ -392,5 +392,15 @@
     "contactDesc": "Contact Bateco Group — Hanoi headquarters and branches. Reach our team for fast consultation.",
     "businessTitle": "Business Sectors | Bateco Group",
     "businessDesc": "Bateco Group’s multi-sector ecosystem: industrial services, industrial real estate & infrastructure, defense & security, green economy, and advanced materials."
+  },
+  "Preloader": {
+    "loading": "Loading",
+    "titles": {
+      "industrial-services": ["Industrial", "Services"],
+      "real-estate": ["Industrial Real Estate &", "Infrastructure"],
+      "defense": ["Defense", "& Security"],
+      "green-economy": ["Green", "Economy"],
+      "materials": ["Advanced", "Materials"]
+    }
   }
 }

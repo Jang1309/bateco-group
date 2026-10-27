@@ -37,6 +37,8 @@ const Investment = ({ sectors }: { sectors?: SectorItem[] }) => {
 
   const preview = (index: number) => {
     clearHoverTimer()
+    // Visual hover ngay; panel đổi sau delay ngắn để tránh flicker khi rê nhanh
+    setHovered(index)
     hoverTimer.current = setTimeout(() => select(index), HOVER_DELAY_MS)
   }
 

@@ -138,8 +138,8 @@ const ProjectsHero = ({ data }: ProjectsHeroProps) => {
             alt=''
             fill
             priority
-            unoptimized
             sizes='70vw'
+            quality={75}
             className='object-cover object-center'
           />
           <div
@@ -165,8 +165,8 @@ const ProjectsHero = ({ data }: ProjectsHeroProps) => {
             alt=''
             fill
             priority
-            unoptimized
             sizes='100vw'
+            quality={75}
             className='object-cover object-center'
           />
           <div

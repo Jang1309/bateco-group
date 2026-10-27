@@ -12,6 +12,7 @@ import { routing } from '@/i18n/routing'
 import type { Header, HeaderMenuItem, HeaderNavGroup } from '@/interfaces/siteSetting.interface'
 import { MEGA_ACCENTS } from '@/layouts/header/mega-menu-data'
 import { cn } from '@/lib/utils'
+import { decodeHtmlEntities } from '@/utils/decodeHtmlEntities'
 
 import { Flag, LOCALE_META, useSwitchLocale } from './locale-switcher'
 
@@ -43,13 +44,13 @@ const MobileMegaList = ({ columns, onNavigate }: MobileMegaListProps) => {
                   aria-hidden
                   className={cn('h-[0.75rem] w-[0.1875rem] rounded-full', accent.bar)}
                 />
-                {column.title}
+                {decodeHtmlEntities(column.title)}
               </p>
             ) : null}
             <ul>
               {column.menu?.map((entry, index) => {
                 const href = toAppHref(entry.link?.url || '/')
-                const label = entry.link?.title
+                const label = decodeHtmlEntities(entry.link?.title)
                 if (!label) return null
 
                 const active = pathname === href
@@ -206,7 +207,7 @@ export default function MobileMenu({ header }: { header?: Header }) {
                   >
                     {String(index + 1).padStart(2, '0')}
                   </span>
-                  {item.link?.title}
+                  {decodeHtmlEntities(item.link?.title)}
                 </span>
               )
 

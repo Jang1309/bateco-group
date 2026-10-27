@@ -9,7 +9,13 @@ import { sectionId } from '@/configs/section-ids'
 import { useDocuments } from '@/hooks/use-documents'
 import type { AdministrativeDocumentCategoryItem } from '@/interfaces/administrativeDocument.interface'
 import { scrollToSection } from '@/utils/scrollToSection'
-import { aboutGovernanceSearchParams } from '@/views/about-governance/search-params'
+import {
+  documentFilterParams,
+  getDocumentFilter,
+  setDocumentCategory,
+  setDocumentCategoryOnly,
+  setDocumentPage,
+} from '@/views/governance/document-filter-params'
 
 import DocumentList from './components/document-list'
 import DocumentsSidebar from './components/sidebar'
@@ -30,20 +36,21 @@ const AboutGovernanceDocuments = ({ locale, categories }: AboutGovernanceDocumen
   const t = useTranslations('AboutGovernance')
   const lenis = useLenis()
   const list = normalizeCategories(categories)
-  const [{ 'danh-muc': categorySlug, trang: page }, setQuery] = useQueryStates(
-    aboutGovernanceSearchParams,
-    { history: 'push', shallow: true },
-  )
+  const [query, setQuery] = useQueryStates(documentFilterParams(locale), {
+    history: 'push',
+    shallow: true,
+  })
+  const { categorySlug, page } = getDocumentFilter(locale, query)
 
   const active = list.find((item) => item.slug === categorySlug) ?? list[0]
   const category = active?.slug
 
-  // Lần đầu vào trang: ghi danh-muc mặc định lên URL
+  // Lần đầu vào trang: ghi category mặc định lên URL
   useEffect(() => {
     if (active && !categorySlug) {
-      void setQuery({ 'danh-muc': active.slug })
+      void setQuery(setDocumentCategoryOnly(locale, active.slug))
     }
-  }, [active, categorySlug, setQuery])
+  }, [active, categorySlug, locale, setQuery])
 
   const { data, isLoading } = useDocuments({
     lang: locale,
@@ -65,12 +72,12 @@ const AboutGovernanceDocuments = ({ locale, categories }: AboutGovernanceDocumen
   }
 
   const selectCategory = (slug: string) => {
-    void setQuery({ 'danh-muc': slug, trang: 1 })
+    void setQuery(setDocumentCategory(locale, slug))
     scrollToDocs()
   }
 
   const goToPage = (nextPage: number) => {
-    void setQuery({ trang: nextPage <= 1 ? 1 : nextPage })
+    void setQuery(setDocumentPage(locale, nextPage))
     scrollToDocs()
   }
 

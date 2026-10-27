@@ -16,7 +16,8 @@ const CategoryBlock = async ({ block }: CategoryBlockProps) => {
   const locale = await getLocale()
   const t = await getTranslations('News')
   const title = block.categoryTitle || block.category
-  const categoryHref = `${pathFor('newsCategory', locale)}?danh-muc=${encodeURIComponent(block.category)}`
+  const categoryKey = locale === 'en' ? 'category' : 'chuyen-muc'
+  const categoryHref = `${pathFor('newsCategory', locale)}?${categoryKey}=${encodeURIComponent(block.category)}`
 
   return (
     <div className='flex w-full flex-col'>

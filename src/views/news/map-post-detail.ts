@@ -9,7 +9,8 @@ export const mapPostDetail = (
   item?: NewsPostDetailItem | null,
   locale: string = 'vi',
 ): NewsArticleDetail | null => {
-  if (!item?.slug && !item?.id) return null
+  // CMS 404 body still echoes `slug` — require a real post id
+  if (!item?.id || !item?.slug) return null
 
   const category = item.taxonomies?.category?.[0]
   const slug = item.slug || String(item.id)

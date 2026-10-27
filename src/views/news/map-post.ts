@@ -1,6 +1,9 @@
 import { hrefFor } from '@/configs/routes'
 import type { PostListItem } from '@/interfaces/postList.interface'
+import { decodeHtmlEntities } from '@/utils/decodeHtmlEntities'
 import type { NewsArticle } from '@/views/news/data'
+
+export { decodeHtmlEntities }
 
 const FALLBACK_IMAGE = '/home/news/card-1.jpg'
 
@@ -9,15 +12,6 @@ export const stripHtml = (value?: string) =>
     ?.replace(/<[^>]+>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim() || ''
-
-export const decodeHtmlEntities = (value?: string) =>
-  value
-    ?.replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#039;/g, "'")
-    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code))) || ''
 
 export const formatNewsDate = (value?: string) => {
   if (!value) return ''

@@ -5,9 +5,11 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import JsonLd from '@/components/shared/json-ld'
 import endpoints from '@/configs/endpoints'
 import ENV from '@/configs/env'
-import { hrefFor, localePathsFor } from '@/configs/routes'
+import { resolveTranslatedDetail } from '@/configs/resolve-translated-detail'
+import { detailLocalePaths, hrefFor } from '@/configs/routes'
 import getMetaDataRankMath from '@/fetches/getMetaDataRankMath'
 import { assertPageLocale } from '@/i18n/assert-locale'
+import { LocaleAlternateSync } from '@/i18n/locale-alternate'
 import { routing } from '@/i18n/routing'
 import { breadcrumbSchema, projectSchema, schemaGraph } from '@/lib/schema'
 import projectsService from '@/services/projects'
@@ -42,10 +44,19 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
-  const pathFor =
+  const detail = await projectsService.getDetail(slug, locale).catch(() => null)
+  const currentSlug = detail?.data?.slug || slug
+  const { path, alternatePath } = detailLocalePaths({
+    detailKey: 'projectDetail',
+    listingKey: 'projects',
+    locale,
+    slug: currentSlug,
+    translations: detail?.data?.translations,
+  })
+  const rankPath =
     endpoints.projects.rank_math_detail[locale as keyof typeof endpoints.projects.rank_math_detail]
-  const res = await getMetaDataRankMath(pathFor(slug))
-  return metadataValues(res, { locale, ...localePathsFor('projectDetail', locale, { slug }) })
+  const res = await getMetaDataRankMath(rankPath(slug))
+  return metadataValues(res, { locale, path, alternatePath })
 }
 
 const ProjectDetailPage = async ({ params }: Props) => {
@@ -54,7 +65,13 @@ const ProjectDetailPage = async ({ params }: Props) => {
   setRequestLocale(locale)
 
   const [detailResult, siteSetting] = await Promise.all([
-    projectsService.getDetail(slug, locale).catch(() => null),
+    resolveTranslatedDetail({
+      slug,
+      locale,
+      detailKey: 'projectDetail',
+      listingKey: 'projects',
+      fetchDetail: (s, lang) => projectsService.getDetail(s, lang),
+    }),
     // Cùng request với layout → fetch được dedupe
     siteSettingService.getSiteSettings(locale).catch(() => null),
   ])
@@ -62,7 +79,13 @@ const ProjectDetailPage = async ({ params }: Props) => {
   if (!project) notFound()
 
   const t = await getTranslations({ locale, namespace: 'Meta' })
-  const path = hrefFor('projectDetail', locale, { slug: project.slug })
+  const { path, paths } = detailLocalePaths({
+    detailKey: 'projectDetail',
+    listingKey: 'projects',
+    locale,
+    slug: project.slug,
+    translations: detailResult?.data?.translations,
+  })
   const projectsPath = hrefFor('projects', locale)
 
   let related =
@@ -89,6 +112,7 @@ const ProjectDetailPage = async ({ params }: Props) => {
 
   return (
     <>
+      <LocaleAlternateSync paths={paths} />
       <JsonLd
         data={schemaGraph(
           projectSchema({

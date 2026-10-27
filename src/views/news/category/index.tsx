@@ -12,7 +12,12 @@ import ArticleCard from '@/views/news/components/article-card'
 import type { NewsCategory } from '@/views/news/data'
 import NewsHero from '@/views/news/hero'
 import { mapPostListItems } from '@/views/news/map-post'
-import { newsSearchParams } from '@/views/news/search-params'
+import {
+  getNewsFilter,
+  newsSearchParams,
+  setNewsCategory,
+  setNewsPage,
+} from '@/views/news/search-params'
 import ProjectPagination from '@/views/projects/listing/components/pagination'
 
 import { ArticleListSkeleton } from './components/article-card-skeleton'
@@ -29,10 +34,11 @@ type NewsCategoryViewProps = {
 
 const NewsCategoryListing = ({ locale, categories, banner }: NewsCategoryViewProps) => {
   const lenis = useLenis()
-  const [{ 'danh-muc': categorySlug, trang: page }, setQuery] = useQueryStates(newsSearchParams, {
+  const [query, setQuery] = useQueryStates(newsSearchParams(locale), {
     history: 'push',
     shallow: true,
   })
+  const { categorySlug, page } = getNewsFilter(locale, query)
 
   const activeCategory = categories.find((item) => item.id === categorySlug)
   const category = activeCategory?.id
@@ -57,12 +63,12 @@ const NewsCategoryListing = ({ locale, categories, banner }: NewsCategoryViewPro
   }
 
   const selectCategory = (next?: string) => {
-    void setQuery({ 'danh-muc': next ?? null, trang: 1 })
+    void setQuery(setNewsCategory(locale, next))
     scrollToListing()
   }
 
   const goToPage = (nextPage: number) => {
-    void setQuery({ trang: nextPage <= 1 ? 1 : nextPage })
+    void setQuery(setNewsPage(locale, nextPage))
     scrollToListing()
   }
 

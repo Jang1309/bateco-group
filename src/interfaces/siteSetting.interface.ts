@@ -85,6 +85,11 @@ export interface Ecosystem {
   members?: string[]
 }
 
+export interface CtaItem {
+  icon?: string
+  link?: ILink
+}
+
 export interface SiteSettingResponse {
   locale?: string
   option_id?: string
@@ -93,5 +98,6 @@ export interface SiteSettingResponse {
     footer?: Footer
     contact?: Contact
     ecosystem?: Ecosystem
+    cta?: CtaItem[]
   }
 }

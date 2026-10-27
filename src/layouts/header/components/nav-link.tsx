@@ -3,6 +3,7 @@
 import { Link, toAppHref, usePathname } from '@/i18n/navigation'
 import type { ILink } from '@/interfaces/link.interface'
 import { cn } from '@/lib/utils'
+import { decodeHtmlEntities } from '@/utils/decodeHtmlEntities'
 
 type NavLinkProps = {
   link?: ILink
@@ -34,7 +35,7 @@ export default function NavLink({
         className,
       )}
     >
-      {link?.title}
+      {decodeHtmlEntities(link?.title)}
     </Link>
   )
 }

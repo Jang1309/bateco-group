@@ -10,7 +10,15 @@ import { useProjects } from '@/hooks/use-projects'
 import type { SectorItem } from '@/interfaces/projects.interface'
 import { scrollToSection } from '@/utils/scrollToSection'
 import { mapProjectListItem } from '@/views/projects/map-project'
-import { projectsSearchParams } from '@/views/projects/search-params'
+import {
+  getProjectsFilter,
+  projectsSearchParams,
+  setProjectsPage,
+  setProjectsSearch,
+  setProjectsSector,
+  setProjectsSort,
+  type ProjectSort,
+} from '@/views/projects/search-params'
 
 import FilterTabs from './components/filter-tabs'
 import ProjectPagination from './components/pagination'
@@ -34,10 +42,11 @@ const ProjectListing = ({ locale, sectors }: ProjectListingProps) => {
   const t = useTranslations('Projects')
   const lenis = useLenis()
   const list = normalizeSectors(sectors)
-  const [{ 'linh-vuc': sector, q, 'sap-xep': sort, trang: page }, setQuery] = useQueryStates(
-    projectsSearchParams,
-    { history: 'push', shallow: true },
-  )
+  const [query, setQuery] = useQueryStates(projectsSearchParams(locale), {
+    history: 'push',
+    shallow: true,
+  })
+  const { sector, q, sort, page } = getProjectsFilter(locale, query)
 
   const category = list.some((item) => item.slug === sector) ? (sector ?? undefined) : undefined
   const order = sort === 'cu-nhat' ? 'ASC' : 'DESC'
@@ -67,21 +76,21 @@ const ProjectListing = ({ locale, sectors }: ProjectListingProps) => {
   }
 
   const selectSector = (next?: string) => {
-    void setQuery({ 'linh-vuc': next ?? null, trang: 1 })
+    void setQuery(setProjectsSector(locale, next))
     scrollToListing()
   }
 
   const setSearch = (next?: string) => {
-    void setQuery({ q: next?.trim() ? next.trim() : null, trang: 1 })
+    void setQuery(setProjectsSearch(locale, next))
   }
 
-  const setSort = (next: 'moi-nhat' | 'cu-nhat') => {
-    void setQuery({ 'sap-xep': next, trang: 1 })
+  const setSort = (next: ProjectSort) => {
+    void setQuery(setProjectsSort(locale, next))
     scrollToListing()
   }
 
   const goToPage = (nextPage: number) => {
-    void setQuery({ trang: nextPage <= 1 ? 1 : nextPage })
+    void setQuery(setProjectsPage(locale, nextPage))
     scrollToListing()
   }
 

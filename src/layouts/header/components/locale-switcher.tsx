@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import type { AppLocale } from '@/configs/routes'
+import { useLocaleAlternate } from '@/i18n/locale-alternate'
 import { switchLocalePath } from '@/i18n/locale-path'
 import { usePathname, useRouter } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
@@ -39,11 +40,13 @@ export function useSwitchLocale() {
   const locale = useLocale() as Locale
   const router = useRouter()
   const pathname = usePathname()
+  const { paths: alternatePaths } = useLocaleAlternate()
 
   const switchLocale = (next: Locale) => {
     if (next === locale) return
-    // Dual trees: map /gioi-thieu ↔ /introduction (và slug tương ứng) rồi đổi locale
-    const nextPath = switchLocalePath(pathname, next as AppLocale)
+    // Detail pages register translated slugs; otherwise map path prefixes only
+    const nextPath =
+      alternatePaths?.[next as AppLocale] ?? switchLocalePath(pathname, next as AppLocale)
     router.replace(nextPath, { locale: next })
   }
 

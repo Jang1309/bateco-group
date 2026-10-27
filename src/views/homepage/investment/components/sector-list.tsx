@@ -56,75 +56,66 @@ const SectorList = ({
             onFocus={() => onSelect(index)}
             onBlur={onBlur}
             onClick={() => onSelect(index)}
-            className={`relative flex h-[4rem] w-full -skew-x-[16deg] cursor-pointer items-center overflow-hidden rounded-[0.3125rem] border text-left transition-all duration-500 ease-out ${isActive ? 'border-[#E5BE7D] shadow-[0_0_0_1px_rgba(197,154,82,0.40),0_10px_15px_-3px_rgba(0,0,0,0.10),0_4px_6px_-4px_rgba(0,0,0,0.10)]' : 'border-[rgba(39,43,48,0.50)] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.10)] hover:brightness-110'}`}
+            className={`relative flex h-[4rem] w-full -skew-x-[16deg] cursor-pointer items-center overflow-hidden rounded-[0.3125rem] border text-left transition-[border-color,box-shadow,filter] duration-500 ease-out ${isActive ? 'border-[#E5BE7D] shadow-[0_0_0_1px_rgba(197,154,82,0.40),0_10px_15px_-3px_rgba(0,0,0,0.10),0_4px_6px_-4px_rgba(0,0,0,0.10)]' : 'border-[rgba(39,43,48,0.50)] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.10),0_2px_4px_-2px_rgba(0,0,0,0.10)] hover:brightness-110'}`}
           >
             <span
               aria-hidden
               className='absolute inset-0'
               style={{ background: IDLE_BG }}
             />
+
+            {/* Photo stays under the gold sweep — no separate clip */}
+            <span className='absolute inset-y-0 left-0 w-[7rem] overflow-hidden xsm:w-[4.5rem]'>
+              <span className='absolute inset-y-0 -inset-x-[0.6rem] skew-x-[16deg]'>
+                <Image
+                  src={item.image}
+                  alt=''
+                  fill
+                  sizes='10vw'
+                  className='object-cover'
+                />
+              </span>
+            </span>
+
             <motion.span
               aria-hidden
-              className='absolute inset-0'
+              className='absolute inset-0 z-[1]'
               initial={false}
               animate={{ scaleX: isActive ? 1 : 0 }}
               transition={SWEEP_TRANSITION}
               style={{ background: ACTIVE_BG, originX: isActive ? 0 : 1 }}
             />
 
-            <span className='relative h-full w-[7rem] shrink-0 overflow-hidden border-r border-[#8a6a2f]/30 xsm:w-[4.5rem]'>
+            <span className='relative z-[2] flex h-full w-[7rem] shrink-0 items-center justify-center xsm:w-[4.5rem]'>
               <motion.span
-                className='absolute inset-0'
+                className='flex skew-x-[16deg]'
                 initial={false}
-                animate={{
-                  clipPath: isActive
-                    ? 'inset(0% 0% 0% 100%)'
-                    : ['inset(0% 100% 0% 0%)', 'inset(0% 0% 0% 0%)'],
-                }}
-                transition={SWEEP_TRANSITION}
+                animate={
+                  isActive
+                    ? { opacity: 1, x: 0, filter: 'blur(0px)' }
+                    : { opacity: 0, x: -12, filter: 'blur(4px)' }
+                }
+                transition={{ ...SWEEP_TRANSITION, delay: isActive ? 0.12 : 0 }}
               >
-                <span className='absolute inset-y-0 -inset-x-[0.6rem] skew-x-[16deg]'>
-                  <Image
-                    src={item.image}
-                    alt=''
-                    fill
-                    sizes='10vw'
-                    className='object-cover'
-                  />
-                </span>
+                <Image
+                  src='/home/investment/logo.svg'
+                  alt='Bateco Group'
+                  width={62}
+                  height={15}
+                  className='h-[0.9375rem] w-auto object-contain'
+                />
               </motion.span>
-
-              <span className='absolute inset-y-0 -inset-x-[0.6rem] flex skew-x-[16deg] items-center justify-center'>
-                <motion.span
-                  className='flex'
-                  initial={false}
-                  animate={
-                    isActive
-                      ? { opacity: 1, x: 0, filter: 'blur(0px)' }
-                      : { opacity: 0, x: -12, filter: 'blur(4px)' }
-                  }
-                  transition={{ ...SWEEP_TRANSITION, delay: isActive ? 0.2 : 0 }}
-                >
-                  <Image
-                    src='/home/investment/logo.svg'
-                    alt='Bateco Group'
-                    width={62}
-                    height={15}
-                    className='h-[0.9375rem] w-auto object-contain'
-                  />
-                </motion.span>
-              </span>
             </span>
 
             <span
-              className={`relative skew-x-[16deg] truncate px-[1.25rem] text-[0.875rem] font-semibold transition-colors duration-500 ${isActive ? 'text-[#1f1a10]' : 'text-white'}`}
+              className={`relative z-[2] min-w-0 flex-1 skew-x-[16deg] truncate px-[1.25rem] text-[0.875rem] font-semibold transition-colors duration-500 ${isActive ? 'text-[#1f1a10]' : 'text-white'}`}
             >
               {item.label}
             </span>
 
             <motion.span
               aria-hidden
-              className={`pointer-events-none absolute inset-0 rounded-[inherit] transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0'}`}
+              className={`pointer-events-none absolute inset-0 z-[3] rounded-[inherit] transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0'}`}
               style={SHIMMER_BORDER}
               animate={isActive ? { backgroundPosition: ['200% 0%', '0% 0%'] } : undefined}
               transition={{ duration: 2, ease: 'linear', repeat: Infinity }}

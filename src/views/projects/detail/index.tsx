@@ -79,8 +79,8 @@ const ProjectDetailView = ({ project, related = [], contact }: ProjectDetailView
                   src={project.image}
                   alt=''
                   fill
-                  unoptimized
                   sizes='22rem'
+                  quality={70}
                   className='object-cover'
                 />
                 <div

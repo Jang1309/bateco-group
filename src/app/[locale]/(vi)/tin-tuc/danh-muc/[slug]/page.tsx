@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 
+import { newsCategoryListingHref } from '@/configs/routes'
 import { assertPageLocale } from '@/i18n/assert-locale'
 
 type Props = {
@@ -13,7 +14,7 @@ const NewsCategoryRedirectPage = async ({ params }: Props) => {
   assertPageLocale(locale, 'vi')
   setRequestLocale(locale)
 
-  redirect(`/tin-tuc/danh-muc?danh-muc=${encodeURIComponent(slug)}`)
+  redirect(newsCategoryListingHref('vi', slug))
 }
 
 export default NewsCategoryRedirectPage

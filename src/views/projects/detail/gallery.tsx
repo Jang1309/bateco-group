@@ -70,10 +70,10 @@ const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
                   src={src}
                   alt={t('galleryAlt', { title, n: i + 1 })}
                   fill
-                  unoptimized
                   sizes={
                     i === 0 ? '(max-width: 639px) 92vw, 46vw' : '(max-width: 639px) 46vw, 23vw'
                   }
+                  quality={70}
                   className='object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06] xsm:transition-none xsm:group-hover:scale-100'
                 />
                 {isLastPreview ? (
@@ -160,8 +160,8 @@ const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
                         src={src}
                         alt={t('galleryAlt', { title, n: i + 1 })}
                         fill
-                        unoptimized
                         sizes='(max-width: 639px) 94vw, 58rem'
+                        quality={80}
                         className='object-cover'
                         priority={i === active}
                       />
@@ -195,9 +195,8 @@ const ProjectGallery = ({ title, images }: ProjectGalleryProps) => {
                     src={src}
                     alt=''
                     fill
-                    unoptimized
-                    sizes='(max-width: 639px) 56px, 72px'
-                    quality={90}
+                    sizes='72px'
+                    quality={50}
                     className='object-cover'
                   />
                 </button>

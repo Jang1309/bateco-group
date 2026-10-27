@@ -392,5 +392,15 @@
     "contactDesc": "Liên hệ Bateco Group — trụ sở Hà Nội và các chi nhánh. Kết nối với đội ngũ để được tư vấn nhanh chóng.",
     "businessTitle": "Lĩnh vực kinh doanh | Bateco Group",
     "businessDesc": "Hệ sinh thái đa ngành của Bateco Group: Dịch vụ công nghiệp, Bất động sản - Hạ tầng công nghiệp, An ninh - Quốc phòng, Kinh tế xanh và Sản xuất - Vật liệu mới."
+  },
+  "Preloader": {
+    "loading": "Đang tải",
+    "titles": {
+      "industrial-services": ["Dịch vụ", "Công nghiệp"],
+      "real-estate": ["BĐS - Hạ tầng", "Công nghiệp"],
+      "defense": ["An ninh", "Quốc phòng"],
+      "green-economy": ["Kinh tế", "Xanh"],
+      "materials": ["Sản xuất", "Vật liệu mới"]
+    }
   }
 }

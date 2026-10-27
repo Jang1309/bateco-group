@@ -31,7 +31,7 @@ const FilterTabs = ({ categories, current, onSelect }: FilterTabsProps) => {
                 className={cn(
                   'inline-flex cursor-pointer items-center rounded-full border px-[1.125rem] py-[0.625rem] text-[0.8125rem] font-semibold whitespace-nowrap transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#B5935E] focus-visible:ring-offset-2',
                   active
-                    ? 'border-[#1A2B48] bg-[#1A2B48] text-white shadow-[0_0.75rem_1.5rem_-0.75rem_rgba(26,43,72,0.6)]'
+                    ? 'border-[#1A2B48] bg-[#1A2B48] text-white'
                     : 'border-[#E2E8F0] bg-white text-[#1A2B48] hover:border-[#B5935E] hover:text-[#B5935E]',
                 )}
               >

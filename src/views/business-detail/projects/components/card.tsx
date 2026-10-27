@@ -37,8 +37,8 @@ const ProjectCard = ({ project, index, featured, className }: ProjectCardProps) 
         src={project.image}
         alt={project.title}
         fill
-        unoptimized={project.image.startsWith('http')}
         sizes={featured ? '55vw' : '40vw'}
+        quality={70}
         className='object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.06]'
       />
       <div
@@ -98,8 +98,8 @@ const ProjectCard = ({ project, index, featured, className }: ProjectCardProps) 
           src={project.image}
           alt={project.title}
           fill
-          unoptimized={project.image.startsWith('http')}
           sizes='92vw'
+          quality={70}
           className='object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]'
         />
         <span className='absolute top-[0.875rem] left-[0.875rem] text-[0.75rem] font-bold tracking-[0.12em] text-white'>

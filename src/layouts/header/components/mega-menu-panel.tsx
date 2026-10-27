@@ -8,6 +8,7 @@ import { Link, toAppHref, usePathname } from '@/i18n/navigation'
 import type { HeaderMenuItem, HeaderNavGroup } from '@/interfaces/siteSetting.interface'
 import { MEGA_ACCENTS, type MegaAccent } from '@/layouts/header/mega-menu-data'
 import { cn } from '@/lib/utils'
+import { decodeHtmlEntities } from '@/utils/decodeHtmlEntities'
 
 type MegaMenuPanelProps = {
   item: HeaderMenuItem
@@ -68,7 +69,7 @@ const Column = ({ column, accent, onNavigate, split }: ColumnProps) => {
             className={cn('h-[1rem] w-[0.25rem] rounded-full', accent.bar)}
           />
           <span className='text-[0.875rem] font-bold tracking-[0.04em] text-[#1A2B48] uppercase'>
-            {column.title}
+            {decodeHtmlEntities(column.title)}
           </span>
         </motion.p>
       ) : null}
@@ -81,7 +82,7 @@ const Column = ({ column, accent, onNavigate, split }: ColumnProps) => {
       <ul className={cn('mt-[1rem] grid gap-[0.25rem]', split && 'grid-cols-2 gap-x-[1.5rem]')}>
         {column.menu?.map((entry, index) => {
           const href = toAppHref(entry.link?.url || '/')
-          const label = entry.link?.title
+          const label = decodeHtmlEntities(entry.link?.title)
           if (!label) return null
 
           const active = pathname === href
@@ -160,7 +161,9 @@ const MegaMenuPanel = ({ item, columns, onNavigate }: MegaMenuPanelProps) => {
           className='h-[0.1875rem] w-[2.5rem] rounded-full bg-[#D4A017]'
         />
         {item.link?.title ? (
-          <p className='mt-[1.25rem] text-[1.5rem] leading-[1.2] font-bold'>{item.link.title}</p>
+          <p className='mt-[1.25rem] text-[1.5rem] leading-[1.2] font-bold'>
+            {decodeHtmlEntities(item.link.title)}
+          </p>
         ) : null}
         {item.submenu?.description ? (
           <p className='mt-[0.75rem] text-[0.875rem] leading-[1.6] text-white/70'>

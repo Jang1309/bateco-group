@@ -30,7 +30,14 @@ import { scrollToSection } from '@/utils/scrollToSection'
 import { JOBS_PER_PAGE } from '@/views/careers/data'
 import JobCard from '@/views/careers/job-card'
 import { mapCareerListItem, type CareerCardModel } from '@/views/careers/map-career'
-import { careersSearchParams } from '@/views/careers/search-params'
+import {
+  careersSearchParams,
+  getCareersFilter,
+  setCareersDepartment,
+  setCareersLocation,
+  setCareersPage,
+  setCareersSearch,
+} from '@/views/careers/search-params'
 
 const ALL = 'all'
 
@@ -49,7 +56,6 @@ type TaxOption = { slug: string; name: string }
 
 type FilterConfig = {
   key: FilterKey
-  queryKey: 'phong-ban' | 'dia-diem'
   label: string
   allLabel: string
   options: TaxOption[]
@@ -87,10 +93,11 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
   const tp = useTranslations('Common.pagination')
   const lenis = useLenis()
   const jobsSectionId = sectionId('careersJobs', locale)
-  const [{ 'phong-ban': deptSlug, 'dia-diem': locSlug, q, trang: page }, setQuery] = useQueryStates(
-    careersSearchParams,
-    { history: 'push', shallow: true },
-  )
+  const [query, setQuery] = useQueryStates(careersSearchParams(locale), {
+    history: 'push',
+    shallow: true,
+  })
+  const { department: deptSlug, location: locSlug, q, page } = getCareersFilter(locale, query)
 
   const departmentOptions = flattenTaxonomies(departments)
   const locationOptions = flattenTaxonomies(locations)
@@ -118,10 +125,10 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
     const current = searchFromUrl.trim()
     if (next === current) return
     const timer = setTimeout(() => {
-      void setQuery({ q: next || null, trang: 1 })
+      void setQuery(setCareersSearch(locale, next || null))
     }, 400)
     return () => clearTimeout(timer)
-  }, [keyword, searchFromUrl, setQuery])
+  }, [keyword, locale, searchFromUrl, setQuery])
 
   const { data, isLoading, isValidating } = useCareers({
     lang: locale,
@@ -144,7 +151,6 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
   const filters: FilterConfig[] = [
     {
       key: 'department',
-      queryKey: 'phong-ban',
       label: t('department'),
       allLabel: t('allDepartments'),
       options: departmentOptions,
@@ -153,7 +159,6 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
     },
     {
       key: 'location',
-      queryKey: 'dia-diem',
       label: t('location'),
       allLabel: t('allLocations'),
       options: locationOptions,
@@ -169,8 +174,8 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
 
   const setFilter = (key: FilterKey, value: string) => {
     const next = value === ALL ? null : value
-    if (key === 'department') void setQuery({ 'phong-ban': next, trang: 1 })
-    else void setQuery({ 'dia-diem': next, trang: 1 })
+    if (key === 'department') void setQuery(setCareersDepartment(locale, next))
+    else void setQuery(setCareersLocation(locale, next))
   }
 
   const scrollToJobs = () => {
@@ -181,7 +186,7 @@ const CareersJobs = ({ locale, departments = [], locations = [] }: CareersJobsPr
   }
 
   const goToPage = (nextPage: number) => {
-    void setQuery({ trang: nextPage <= 1 ? 1 : nextPage })
+    void setQuery(setCareersPage(locale, nextPage))
     scrollToJobs()
   }
 

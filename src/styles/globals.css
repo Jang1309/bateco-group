@@ -87,7 +87,7 @@ body {
 
 /* Scrollbar của trang — dùng px vì html font-size theo vw */
 html::-webkit-scrollbar {
-  width: 8px;
+  width: 5px;
 }
 
 html::-webkit-scrollbar-track {
@@ -711,4 +711,9 @@ html > body[data-scroll-locked] {
     width: 1rem;
     height: 1rem;
   }
+}
+
+/* Preloader đã xem — ẩn trước paint (script set data-bateco-preloader=seen) */
+html[data-bateco-preloader='seen'] #bateco-preloader {
+  display: none !important;
 }

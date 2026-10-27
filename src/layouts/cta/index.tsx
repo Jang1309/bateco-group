@@ -5,6 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 
+import type { CtaItem } from '@/interfaces/siteSetting.interface'
+
 const BTN =
   'relative flex size-10 shrink-0 items-center justify-center overflow-visible rounded-full xsm:size-8'
 
@@ -50,7 +52,7 @@ const ScrollToTopIcon = ({
   </svg>
 )
 
-const CTA = ({ data }: { data: { icon: string; link: string }[] }) => {
+const CTA = ({ data }: { data: CtaItem[] }) => {
   const circleRef = useRef<SVGCircleElement | null>(null)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const isVisibleRef = useRef(false)
@@ -158,35 +160,41 @@ const CTA = ({ data }: { data: { icon: string; link: string }[] }) => {
       ref={containerRef}
       className='fixed right-8 bottom-16 z-40 flex flex-col items-center gap-4 will-change-transform xsm:right-4 xsm:bottom-20 xsm:gap-3'
     >
-      {data.map((item, index) => (
-        <Link
-          key={item.link}
-          href={item.link}
-          target='_blank'
-          rel='noopener noreferrer'
-          aria-label={`CTA ${index + 1}`}
-          className={`${BTN} transition-transform duration-300 hover:scale-105`}
-        >
-          <span
-            className='ripple_video'
-            aria-hidden
-          />
-          <span
-            className={GLASS}
-            aria-hidden
-          />
-          <span className='relative z-[1] block size-[1.25rem] xsm:size-[0.875rem]'>
-            <Image
-              src={item.icon}
-              alt=''
-              fill
-              unoptimized
-              sizes='24px'
-              className='object-contain'
+      {data.map((item, index) => {
+        const href = item.link?.url
+        const icon = item.icon
+        if (!href || !icon) return null
+
+        return (
+          <Link
+            key={`${href}-${index}`}
+            href={href}
+            target={item.link?.target || '_blank'}
+            rel='noopener noreferrer'
+            aria-label={item.link?.title || `CTA ${index + 1}`}
+            className={`${BTN} transition-transform duration-300 hover:scale-105`}
+          >
+            <span
+              className='ripple_video'
+              aria-hidden
             />
-          </span>
-        </Link>
-      ))}
+            <span
+              className={GLASS}
+              aria-hidden
+            />
+            <span className='relative z-[1] block size-[1.25rem] xsm:size-[0.875rem]'>
+              <Image
+                src={icon}
+                alt=''
+                fill
+                unoptimized
+                sizes='24px'
+                className='object-contain'
+              />
+            </span>
+          </Link>
+        )
+      })}
 
       <button
         type='button'

@@ -14,7 +14,8 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ['192.168.*.*', '10.*.*.*', '172.*.*.*'],
 
   images: {
-    formats: ['image/webp'],
+    // AVIF trước WebP — browser chọn format nhỏ hơn (~30–50% so với PNG gốc CMS)
+    formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 2678400,
     // Trên server IIS, cms.bateco-investment.vn trỏ về 127.0.0.1 (file hosts)
     // → phải cho phép IP nội bộ cả ở production, nếu không ảnh WordPress bị chặn
@@ -29,7 +30,10 @@ const nextConfig: NextConfig = {
       { protocol: 'http', hostname: 'localhost' },
       { protocol: 'http', hostname: '127.0.0.1' },
     ],
-    deviceSizes: [430, 768, 1080, 1280, 1600, 1920],
+    // Card / thumb / sidebar — tránh upscale không cần thiết
+    imageSizes: [64, 96, 128, 256, 384, 640],
+    // Hero / full-bleed — khớp breakpoints layout
+    deviceSizes: [430, 640, 768, 1080, 1280, 1600, 1920],
   },
 
   reactStrictMode: false,

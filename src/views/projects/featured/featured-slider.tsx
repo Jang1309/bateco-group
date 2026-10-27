@@ -58,8 +58,8 @@ const FeaturedSlider = ({ projects }: FeaturedSliderProps) => {
                   alt={project.title}
                   fill
                   priority={index === 0}
-                  unoptimized
                   sizes='(max-width: 639px) 100vw, 88vw'
+                  quality={75}
                   className={cn(
                     'object-cover transition-transform ease-out',
                     isActive ? 'scale-[1.04] duration-[8s]' : 'scale-100 delay-1000 duration-0',

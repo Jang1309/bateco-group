@@ -1,7 +1,6 @@
-import { parseAsInteger, parseAsString } from 'nuqs'
-
-/** Query URL: ?danh-muc=slug&trang=2 — trang=1 bị clear khỏi URL */
-export const aboutGovernanceSearchParams = {
-  'danh-muc': parseAsString,
-  trang: parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
-}
+/** @deprecated Prefer `@/views/governance/document-filter-params` */
+export {
+  documentFilterParams as aboutGovernanceSearchParams,
+  documentFilterParamsEn,
+  documentFilterParamsVi,
+} from '@/views/governance/document-filter-params'

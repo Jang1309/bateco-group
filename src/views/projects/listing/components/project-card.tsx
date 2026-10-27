@@ -24,8 +24,8 @@ const ProjectCard = ({ project, number }: ProjectCardProps) => {
         src={project.image}
         alt={project.title}
         fill
-        unoptimized
         sizes='(max-width: 639px) 92vw, 30vw'
+        quality={70}
         className='object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]'
       />
       <div

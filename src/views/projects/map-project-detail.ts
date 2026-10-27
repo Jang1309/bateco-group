@@ -67,7 +67,8 @@ export type ProjectDetailModel = {
 }
 
 export const mapProjectDetail = (item?: ProjectDetailItem | null): ProjectDetailModel | null => {
-  if (!item?.slug && !item?.id) return null
+  // CMS 404 body still echoes `slug` — require a real post id
+  if (!item?.id || !item?.slug) return null
 
   const sector = item.taxonomies?.sectors?.[0]
   const content = item.content || item.post_content || ''

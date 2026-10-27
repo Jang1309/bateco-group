@@ -8,6 +8,7 @@ import { Link, toAppHref, usePathname } from '@/i18n/navigation'
 import type { HeaderMenuItem } from '@/interfaces/siteSetting.interface'
 import MegaMenuPanel from '@/layouts/header/components/mega-menu-panel'
 import { cn } from '@/lib/utils'
+import { decodeHtmlEntities } from '@/utils/decodeHtmlEntities'
 
 const CLOSE_DELAY_MS = 160
 const EASE = [0.22, 1, 0.36, 1] as const
@@ -107,7 +108,7 @@ export const MegaTrigger = ({ item, open, panelId, onShow, onHide }: MegaTrigger
               : 'text-[#2a2a2a] hover:text-[#1e3a6e]',
         )}
       >
-        {item.link?.title}
+        {decodeHtmlEntities(item.link?.title)}
         <motion.span
           aria-hidden
           animate={{ rotate: open ? 180 : 0 }}

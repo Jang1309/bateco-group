@@ -30,8 +30,8 @@ const DetailHero = ({
           alt=''
           fill
           priority
-          unoptimized
           sizes='(max-width: 639px) 100vw, 56vw'
+          quality={75}
           className='object-cover object-center'
         />
         <div

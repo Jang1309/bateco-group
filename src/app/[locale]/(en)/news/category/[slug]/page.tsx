@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 
-import { pathFor } from '@/configs/routes'
+import { newsCategoryListingHref } from '@/configs/routes'
 import { assertPageLocale } from '@/i18n/assert-locale'
 
 type Props = {
@@ -14,7 +14,7 @@ const NewsCategoryRedirectPage = async ({ params }: Props) => {
   assertPageLocale(locale, 'en')
   setRequestLocale(locale)
 
-  redirect(`${pathFor('newsCategory', 'en')}?danh-muc=${encodeURIComponent(slug)}`)
+  redirect(newsCategoryListingHref('en', slug))
 }
 
 export default NewsCategoryRedirectPage

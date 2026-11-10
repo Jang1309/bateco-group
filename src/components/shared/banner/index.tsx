@@ -151,7 +151,6 @@ const Banner = ({
         fill
         priority
         sizes='100vw'
-        unoptimized
         className={`object-cover object-center xsm:hidden ${animated ? 'banner-reveal-image' : ''}`}
       />
       <div
@@ -178,7 +177,6 @@ const Banner = ({
           fill
           priority
           sizes='100vw'
-          unoptimized
           className='object-cover object-[center_42%]'
         />
       </div>

@@ -2,6 +2,7 @@ import Image from 'next/image'
 import type { ReactNode } from 'react'
 
 import BannerTopOverlay from '@/components/shared/banner-top-overlay'
+import { cn } from '@/lib/utils'
 
 type DetailHeroProps = {
   image: string
@@ -11,6 +12,7 @@ type DetailHeroProps = {
   /** Meta cạnh eyebrow (ngày, địa điểm, phòng ban…) */
   meta?: ReactNode
   titleClassName?: string
+  className?: string
 }
 
 /** Banner chi tiết: chữ trái, ảnh phải (~56%, không đè lên cột chữ để ảnh giữ nét) */
@@ -21,9 +23,15 @@ const DetailHero = ({
   description,
   meta,
   titleClassName,
+  className,
 }: DetailHeroProps) => {
   return (
-    <section className='business-hero-fade relative overflow-hidden bg-white pt-[9.5rem] pb-[5.5rem] xsm:pt-[25rem] xsm:pb-[3rem]'>
+    <section
+      className={cn(
+        'business-hero-fade relative overflow-hidden bg-white pt-[9.5rem] pb-[5.5rem] xsm:pt-[25rem] xsm:pb-[3rem]',
+        className,
+      )}
+    >
       <div className='absolute inset-y-0 right-0 w-[56%] xsm:inset-x-0 xsm:bottom-auto xsm:h-[24rem] xsm:w-full'>
         <Image
           src={image}

@@ -7,8 +7,11 @@ import { LogoCell, LogoRow } from '@/views/homepage/partners/components/logo-row
 
 const Partners = ({ data }: { data?: HomepagePartners }) => {
   const t = useTranslations('HomePartners')
-  const ecosystem = data?.ecosystem?.gallery?.filter(Boolean) || []
-  const partners = data?.partners?.gallery?.filter(Boolean) || []
+  // ACF trả `false` khi gallery trống, không phải mảng rỗng
+  const toList = (gallery?: string[] | false) =>
+    Array.isArray(gallery) ? gallery.filter(Boolean) : []
+  const ecosystem = toList(data?.ecosystem?.gallery)
+  const partners = toList(data?.partners?.gallery)
   const ecosystemTitle = data?.ecosystem?.ecosystem_title || data?.ecosystem?.partners_title
   const partnersTitle = data?.partners?.partners_title || data?.partners?.ecosystem_title
 

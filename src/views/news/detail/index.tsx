@@ -41,10 +41,14 @@ const NewsDetailView = async ({ article, related = [], contact }: NewsDetailView
         image={article.image}
         eyebrow={categoryTitle || t('eyebrow')}
         title={article.title}
-        description={article.excerpt || undefined}
+        // Excerpt WP trùng đoạn mở đầu bài viết nên không hiện; min-h giữ ảnh đủ cao khi thiếu mô tả
+        className='grid min-h-[38rem] content-center xsm:block xsm:min-h-0 [&>div:last-child]:w-full'
+        titleClassName='business-hero-rise mt-[1.25rem] text-[1.875rem] leading-[1.32] font-bold tracking-[-0.01em] text-pretty text-[#1A2B48] xsm:mt-[1rem] xsm:text-[1.375rem]'
         meta={
           article.date ? (
-            <time className='font-medium text-[#475569] tabular-nums'>{article.date}</time>
+            <time className='text-[0.875rem] font-medium text-[#475569] tabular-nums'>
+              {article.date}
+            </time>
           ) : undefined
         }
       />

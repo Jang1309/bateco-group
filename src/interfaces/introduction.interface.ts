@@ -76,7 +76,7 @@ export interface IntroductionEcosystem {
   title?: string
   stats?: IntroductionEcosystemStat[]
   groups?: IntroductionEcosystemGroup[]
-  gallery?: string[]
+  gallery?: string[] | false
 }
 
 export interface IntroductionResponse {

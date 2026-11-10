@@ -68,7 +68,11 @@ const MilestoneCard = ({
               src={item.icon}
               alt=''
               fill
-              className='object-contain'
+              // Icon là ảnh từ CMS → không đổi màu bằng `color` được, dùng filter để thành trắng
+              className={cn(
+                'object-contain transition-[filter] duration-300',
+                isActive && 'brightness-0 invert',
+              )}
             />
           </motion.span>
         ) : null}

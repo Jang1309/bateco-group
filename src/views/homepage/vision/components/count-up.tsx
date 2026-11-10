@@ -12,10 +12,15 @@ type CountUpProps = {
 const CountUp = ({ value, start, delay }: CountUpProps) => {
   const ref = useRef<HTMLSpanElement>(null)
   const target = Number(value.replace(/\./g, ''))
-  const format = (n: number) =>
-    Math.round(n)
-      .toLocaleString('de-DE')
-      .padStart(value.startsWith('0') ? value.length : 0, '0')
+  // Chỉ chèn dấu . khi CMS nhập sẵn (vd "1.000"); "2032" là năm → giữ nguyên
+  const grouped = value.includes('.')
+  const format = (n: number) => {
+    const rounded = Math.round(n)
+    return (grouped ? rounded.toLocaleString('de-DE') : String(rounded)).padStart(
+      value.startsWith('0') ? value.length : 0,
+      '0',
+    )
+  }
 
   useEffect(() => {
     if (!start || !ref.current) return

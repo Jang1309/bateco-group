@@ -120,6 +120,7 @@ export interface CareersDetailItem extends CareersListItem {
   modified?: string
   content?: string
   post_content?: string
+  translations?: Record<string, { id?: number; slug?: string; link?: string }>
 }
 
 export interface CareersDetailResponse {

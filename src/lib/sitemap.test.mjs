@@ -81,6 +81,16 @@ describe('pairTranslatedSlugs', () => {
       ['only-en'],
     )
   })
+
+  it('treats trashed translations as untranslated', () => {
+    const { paired, viOnly } = pairTranslatedSlugs(
+      [{ slug: 'du-an', translations: { en: { slug: 'project__trashed' } } }],
+      [],
+    )
+
+    assert.deepEqual(paired, [])
+    assert.deepEqual(viOnly, [{ slug: 'du-an' }])
+  })
 })
 
 describe('collectPaginatedItems', () => {

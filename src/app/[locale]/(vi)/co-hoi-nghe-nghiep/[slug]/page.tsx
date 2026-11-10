@@ -5,9 +5,11 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import JsonLd from '@/components/shared/json-ld'
 import endpoints from '@/configs/endpoints'
 import ENV from '@/configs/env'
-import { hrefFor, localePathsFor } from '@/configs/routes'
+import { resolveTranslatedDetail } from '@/configs/resolve-translated-detail'
+import { detailLocalePaths, hrefFor } from '@/configs/routes'
 import getMetaDataRankMath from '@/fetches/getMetaDataRankMath'
 import { assertPageLocale } from '@/i18n/assert-locale'
+import { LocaleAlternateSync } from '@/i18n/locale-alternate'
 import { routing } from '@/i18n/routing'
 import { breadcrumbSchema, jobPostingSchema, schemaGraph } from '@/lib/schema'
 import careersService from '@/services/careers'
@@ -43,8 +45,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
   const pathFor =
     endpoints.careers.rank_math_detail[locale as keyof typeof endpoints.careers.rank_math_detail]
-  const res = await getMetaDataRankMath(pathFor(slug))
-  return metadataValues(res, { locale, ...localePathsFor('careerDetail', locale, { slug }) })
+  const [res, detail] = await Promise.all([
+    getMetaDataRankMath(pathFor(slug)),
+    careersService.getDetail(slug, locale).catch(() => null),
+  ])
+  const { path, alternatePath } = detailLocalePaths({
+    detailKey: 'careerDetail',
+    listingKey: 'careers',
+    locale,
+    slug: detail?.data?.slug || slug,
+    translations: detail?.data?.translations,
+  })
+  return metadataValues(res, { locale, path, alternatePath })
 }
 
 const FALLBACK_BANNER = '/home/vision/d-img-2.jpg'
@@ -55,7 +67,13 @@ const CareersDetailPage = async ({ params }: Props) => {
   setRequestLocale(locale)
 
   const [detailResult, pageResult] = await Promise.all([
-    careersService.getDetail(slug, locale).catch(() => null),
+    resolveTranslatedDetail({
+      slug,
+      locale,
+      detailKey: 'careerDetail',
+      listingKey: 'careers',
+      fetchDetail: (s, lang) => careersService.getDetail(s, lang),
+    }),
     careersService.getCareersPage(locale).catch(() => null),
   ])
 
@@ -63,13 +81,20 @@ const CareersDetailPage = async ({ params }: Props) => {
   if (!job) notFound()
 
   const t = await getTranslations({ locale, namespace: 'Meta' })
-  const path = hrefFor('careerDetail', locale, { slug: job.slug })
+  const { path, paths } = detailLocalePaths({
+    detailKey: 'careerDetail',
+    listingKey: 'careers',
+    locale,
+    slug: job.slug,
+    translations: detailResult?.data?.translations,
+  })
   const careersPath = hrefFor('careers', locale)
   const bannerImage =
     pageResult?.acf?.banner?.desktop || pageResult?.acf?.featured_image || FALLBACK_BANNER
 
   return (
     <>
+      <LocaleAlternateSync paths={paths} />
       <JsonLd
         data={schemaGraph(
           jobPostingSchema({

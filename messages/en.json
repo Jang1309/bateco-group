@@ -391,7 +391,102 @@
     "contactTitle": "Contact | Bateco Group",
     "contactDesc": "Contact Bateco Group — Hanoi headquarters and branches. Reach our team for fast consultation.",
     "businessTitle": "Business Sectors | Bateco Group",
-    "businessDesc": "Bateco Group’s multi-sector ecosystem: industrial services, industrial real estate & infrastructure, defense & security, green economy, and advanced materials."
+    "businessDesc": "Bateco Group’s multi-sector ecosystem: industrial services, industrial real estate & infrastructure, defense & security, green economy, and advanced materials.",
+    "privacyTitle": "Privacy Policy | Bateco Group",
+    "privacyDesc": "Bateco Group's privacy policy: how we collect, use, store and protect the personal data of our website visitors."
+  },
+  "Privacy": {
+    "eyebrow": "Legal",
+    "title": "Privacy Policy",
+    "intro": "Bateco Group respects your privacy and is committed to protecting your personal data when you visit and use our website.",
+    "updated": "Updated: 10 November 2026",
+    "tocLabel": "Contents",
+    "ctaTitle": "Questions about your personal data?",
+    "ctaDesc": "Get in touch with us for answers or to submit a request about your data.",
+    "ctaButton": "Contact us",
+    "sections": [
+      {
+        "id": "scope",
+        "title": "Scope",
+        "paragraphs": [
+          "This policy applies to all personal data Bateco Group (\"we\", \"us\") collects through this website, including when you subscribe to our newsletter, submit a job application or contact us.",
+          "By using the website, you confirm that you have read and agree to this Privacy Policy."
+        ]
+      },
+      {
+        "id": "data-we-collect",
+        "title": "Data we collect",
+        "items": [
+          "Contact details: name, email address and phone number that you provide.",
+          "Job applications: CV, cover letter and information about your education and work experience.",
+          "Technical data: IP address, browser type, device, pages viewed and time of visit.",
+          "Cookies and similar technologies used to operate the website and analyse traffic."
+        ]
+      },
+      {
+        "id": "purposes",
+        "title": "How we use your data",
+        "items": [
+          "To respond to your enquiries, questions and partnership proposals.",
+          "To review applications and contact you during recruitment.",
+          "To send newsletters, project updates and event information you signed up for.",
+          "To analyse and improve website content and experience.",
+          "To comply with our legal obligations."
+        ]
+      },
+      {
+        "id": "cookies",
+        "title": "Cookies and analytics",
+        "paragraphs": [
+          "We use cookies and Google Analytics to measure traffic and understand how visitors interact with our content. This data is aggregated and is not used to identify you directly.",
+          "You can disable or delete cookies in your browser settings. Some website features may not work fully when cookies are disabled."
+        ]
+      },
+      {
+        "id": "sharing",
+        "title": "Data sharing",
+        "paragraphs": ["We do not sell or rent your personal data. Data is shared only:"],
+        "items": [
+          "With Bateco Group member companies where needed for the purposes above.",
+          "With service providers (hosting, email, analytics) under confidentiality agreements.",
+          "When required by competent authorities in accordance with the law."
+        ]
+      },
+      {
+        "id": "retention-security",
+        "title": "Retention and security",
+        "paragraphs": [
+          "We keep data only as long as needed for the purpose it was collected or as required by law, after which it is deleted or anonymised.",
+          "We apply appropriate technical and organisational measures such as encrypted connections, access control and system monitoring to prevent unauthorised access, loss or disclosure."
+        ]
+      },
+      {
+        "id": "your-rights",
+        "title": "Your rights",
+        "paragraphs": ["Under Vietnamese personal data protection law, you have the right to:"],
+        "items": [
+          "Be informed about and access your personal data.",
+          "Request correction or completion of inaccurate data.",
+          "Withdraw consent and request deletion of your data.",
+          "Unsubscribe from our newsletter at any time.",
+          "Lodge a complaint about how your personal data is processed."
+        ]
+      },
+      {
+        "id": "changes",
+        "title": "Changes to this policy",
+        "paragraphs": [
+          "We may update this Privacy Policy to reflect changes in our operations or the law. The new version takes effect once published on this page with its update date."
+        ]
+      },
+      {
+        "id": "contact",
+        "title": "Contact",
+        "paragraphs": [
+          "For any questions or requests about your personal data, please reach Bateco Group via the details on our Contact page. We will respond as soon as possible."
+        ]
+      }
+    ]
   },
   "Preloader": {
     "loading": "Loading",

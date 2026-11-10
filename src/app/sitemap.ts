@@ -25,6 +25,7 @@ const STATIC_ROUTES: RouteKey[] = [
   'news',
   'careers',
   'contact',
+  'privacy',
 ]
 
 const PAGE_SIZE = 100

@@ -27,6 +27,7 @@ export const PATHS = {
     en: '/careers/[slug]',
   },
   contact: { vi: '/lien-he', en: '/contact' },
+  privacy: { vi: '/chinh-sach-bao-mat', en: '/privacy' },
 } as const
 
 export type AppLocale = 'vi' | 'en'

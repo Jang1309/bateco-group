@@ -57,6 +57,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           height={3}
           crawl
           showSpinner={false}
+          showForHashAnchor={false}
           easing='ease'
           speed={220}
           shadow='0 0 10px #2563eb,0 0 5px #2563eb'

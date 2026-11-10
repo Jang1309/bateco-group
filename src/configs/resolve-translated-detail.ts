@@ -18,25 +18,25 @@ export function isUsableDetail(payload: DetailPayload): boolean {
   return Boolean(payload?.success && payload.data?.id && payload.data?.slug)
 }
 
-type ResolveArgs = {
+type ResolveArgs<T extends DetailPayload> = {
   slug: string
   locale: string
   detailKey: RouteKey
   listingKey: RouteKey
-  fetchDetail: (slug: string, locale: string) => Promise<DetailPayload>
+  fetchDetail: (slug: string, locale: string) => Promise<T>
 }
 
 /**
  * Load detail for the current locale. If the slug belongs to the other locale,
  * redirect to the translated path instead of hard-404.
  */
-export async function resolveTranslatedDetail({
+export async function resolveTranslatedDetail<T extends DetailPayload>({
   slug,
   locale,
   detailKey,
   listingKey,
   fetchDetail,
-}: ResolveArgs): Promise<NonNullable<DetailPayload>> {
+}: ResolveArgs<T>): Promise<NonNullable<T> | { success: false; data: null }> {
   const primary = await fetchDetail(slug, locale).catch(() => null)
   if (isUsableDetail(primary)) return primary!
 

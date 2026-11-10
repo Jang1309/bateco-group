@@ -24,6 +24,8 @@ export function LenisProvider({ children }: Props) {
         duration: 1.2,
         smoothWheel: true,
         syncTouch: false,
+        // Link `#id` cùng trang: cuộn mượt qua Lenis (tôn trọng scroll-margin-top) thay vì nhảy
+        anchors: true,
       }}
     >
       {children}

@@ -72,7 +72,8 @@ export function pairTranslatedSlugs<T extends TranslatableItem>(
     if (!viSlug) continue
 
     const enSlug = item.translations?.en?.slug
-    if (enSlug) {
+    // Bản dịch đã vào thùng rác (`...__trashed`) → coi như chưa dịch
+    if (enSlug && !enSlug.endsWith('__trashed')) {
       pairedEnSlugs.add(enSlug)
       paired.push({
         viSlug,

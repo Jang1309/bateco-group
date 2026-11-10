@@ -95,7 +95,9 @@ export function resolveTranslatedSlug(
 ): string | null {
   const locale = currentLocale === 'en' ? 'en' : 'vi'
   if (locale === targetLocale) return currentSlug
-  return translations?.[targetLocale]?.slug ?? null
+  const slug = translations?.[targetLocale]?.slug
+  // CMS vẫn trả bản dịch đã vào thùng rác (slug `...__trashed`) → coi như chưa dịch
+  return slug && !slug.endsWith('__trashed') ? slug : null
 }
 
 /**

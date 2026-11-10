@@ -66,7 +66,8 @@ export function PreloaderPanels({ withContent = false }: { withContent?: boolean
 
           {withContent && (
             <div
-              className='absolute top-1/2 left-(--cx) w-[min(18.75rem,22vw)] -translate-x-1/2 -translate-y-1/2 tablet:w-[25vw] xsm:top-(--cy) xsm:left-1/2 xsm:w-max'
+              data-preloader-content-box
+              className='absolute top-1/2 left-(--cx) w-[min(18.75rem,22vw)] -translate-x-1/2 -translate-y-1/2 tablet:w-[25vw] xsm:top-(--cy) xsm:left-1/2 xsm:w-max xsm:min-w-(--pl-content-w)'
               style={{ '--cx': panel.contentX, '--cy': panel.mobile.contentY } as CSSProperties}
             >
               <div

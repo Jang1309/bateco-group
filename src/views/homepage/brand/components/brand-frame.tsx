@@ -1,3 +1,5 @@
+import { getImageProps } from 'next/image'
+
 export const BRAND_FRAME = 'M0 226.5H331.717L445.5 82.8172L408.5 0H0V226.5Z'
 export const BRAND_FRAME_FLIP = 'M0 0H331.717L445.5 143.6828L408.5 226.5H0V0Z'
 
@@ -11,6 +13,8 @@ type BrandFrameProps = {
 const BrandFrame = ({ src, alt, id, d }: BrandFrameProps) => {
   const clipId = `${id}-clip`
   const maskId = `${id}-stroke`
+  // <image> SVG không qua next/image → lấy URL tối ưu (AVIF/WebP) thay vì PNG gốc ~2MB
+  const { src: optimizedSrc } = getImageProps({ src, alt, width: 446, height: 227 }).props
 
   return (
     <svg
@@ -32,7 +36,7 @@ const BrandFrame = ({ src, alt, id, d }: BrandFrameProps) => {
         </mask>
       </defs>
       <image
-        href={src}
+        href={optimizedSrc}
         width='446'
         height='227'
         preserveAspectRatio='xMidYMid slice'

@@ -25,7 +25,8 @@ const AboutHero = ({ data }: AboutHeroProps) => {
       imageAlt={srTitle}
       srTitle={srTitle}
       eyebrow={data?.subtitle || ''}
-      titleHtml={data?.title}
+      // CMS tách tiêu đề thành 2 <p> → nối lại để chữ tự xuống dòng theo bề rộng, không vỡ dòng lẻ trên mobile
+      titleHtml={data?.title?.replace(/<\/p>\s*<p>/gi, ' ')}
       description={data?.desc || ''}
     />
   )

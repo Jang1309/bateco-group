@@ -73,7 +73,7 @@ const HomeNews = async ({ posts }: { posts?: PostListItem[] }) => {
             {featured.title ? (
               <h2
                 data-aos='fade-up'
-                className='text-pretty text-[2.5rem] leading-[3.25rem] font-bold text-[#525252] xsm:text-[1.25rem] xsm:leading-[1.55]'
+                className='line-clamp-4 text-pretty text-[1.875rem] leading-[1.35] font-bold text-[#525252] xsm:text-[1.25rem] xsm:leading-[1.45]'
               >
                 <Link
                   href={postHref(featured, locale)}

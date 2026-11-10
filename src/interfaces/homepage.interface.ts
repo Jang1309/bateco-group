@@ -71,7 +71,7 @@ export interface HomepageFootprint {
 export interface HomepagePartnerGallery {
   ecosystem_title?: string
   partners_title?: string
-  gallery?: string[]
+  gallery?: string[] | false
 }
 
 export interface HomepagePartners {

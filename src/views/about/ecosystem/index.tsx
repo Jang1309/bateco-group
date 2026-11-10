@@ -13,7 +13,8 @@ type AboutEcosystemProps = {
 const AboutEcosystem = ({ locale = 'vi', data }: AboutEcosystemProps) => {
   const stats = data?.stats ?? []
   const groups = data?.groups ?? []
-  const gallery = data?.gallery ?? []
+  // ACF trả `false` khi gallery trống
+  const gallery = Array.isArray(data?.gallery) ? data.gallery : []
 
   return (
     <section
